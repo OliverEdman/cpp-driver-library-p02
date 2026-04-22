@@ -5,6 +5,7 @@
 build/
 sdkconfig
 sdkconfig.old
+dependencies.lock
 
 # --- Compiled Object Files & Binaries ---
 *.o
@@ -16,6 +17,7 @@ sdkconfig.old
 *.exe
 *.bin
 *.elf
+*.map
 
 # --- VS Code & IDEs ---
 .vscode/
