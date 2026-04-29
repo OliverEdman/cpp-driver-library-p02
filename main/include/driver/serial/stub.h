@@ -9,6 +9,7 @@
 
 #include "driver/serial/interface.h"
 
+
 namespace driver::serial
 {
 /**
