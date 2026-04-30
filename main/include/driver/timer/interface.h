@@ -31,7 +31,7 @@ public:
      * @brief Get the current timeout.
      * @return Timeout in milliseconds.
      */
-    virtual std::uint16_t timeout_ms() const noexcept = 0;
+    virtual std::uint32_t timeout_ms() const noexcept = 0;
 
     /**
      * @brief Sets the timer timeout period.
