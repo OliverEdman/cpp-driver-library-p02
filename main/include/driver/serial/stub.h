@@ -35,20 +35,32 @@ public:
      * 
      * @return True on success, false on failure.
      */
-    bool connect() noexcept override;
+    bool connect() noexcept override
+    {
+        myConnected = true;
+        return myConnected;
+    }
 
     /**
      * @brief Disonnect device.
      * 
      */
-    void Disconnect() noexcept override;
+    void Disconnect() noexcept override
+    {
+        myConnected = false;
+        std::printf("Device disconnected!");
+    }
 
     /**
      * @brief Write a byte.
      * 
      * @param[in] byte The byte to send.
      */
-    void write(std::uint8_t byte) noexcept override;
+    void write(std::uint8_t byte) noexcept override
+    {
+        if (nullptr == byte) { return false; }
+        std::printf("Write byte: %d", byte);
+    }
 
     /**
      * @brief Write a message.
@@ -57,21 +69,32 @@ public:
      * 
      * @return The number of transmitted bytes.
      */
-    std::uint16_t write(const char* msg) noexcept override;
+    std::uint16_t write(const char* msg) noexcept override
+    {
+        if (nullptr == msg) == false;
+        return msg;
+    }
 
     /**
      * @brief Read a byte.
      * 
      * @return Received byte.
      */
-    std::uint8_t read() noexcept override;
+    std::uint8_t read() noexcept override
+    {
+        return 0U;
+    }
 
     /**
      * @brief Check if data is available.
      * 
      * @return True if data is available, false otherwise.
      */
-    bool isDataAvailable() const noexcept override;
+    bool isDataAvailable() const noexcept override
+    {
+        myDataAvailable = true;
+        return myDataAvailable;
+    }
 
 private:
     /** Buffer size. */

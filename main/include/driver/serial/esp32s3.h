@@ -6,6 +6,7 @@
 #include <cstdint>
 
 #include "driver/serial/interface.h"
+#include "driver/uart.h"
 
 namespace driver::serial
 {
