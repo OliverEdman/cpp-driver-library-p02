@@ -10,6 +10,15 @@ public:
     virtual ~Interface() noexcept = default;
 
     /**
+     * @brief Check if pin is valid.
+     * 
+     * @param[in] pin Corresponding bit to check in PinRegister.
+     * 
+     * @return True if valid, otherwise false.
+     */
+    virtual bool isPinValid(std::uint8_t pin) const noexcept = 0;
+
+    /**
      * @brief Check if pin is being used.
      * 
      * @param[in] pin Corresponding bit to check in PinRegister.
