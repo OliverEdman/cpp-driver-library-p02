@@ -45,7 +45,7 @@ public:
      * @brief Disonnect device.
      * 
      */
-    void Disconnect() noexcept override
+    void disconnect() noexcept override
     {
         myConnected = false;
         std::printf("Device disconnected!");
@@ -96,6 +96,22 @@ public:
         return myDataAvailable;
     }
 
+    /**
+     * @brief Simulate input data.
+     * 
+     * @param[in] data Pointer to input data array.
+     * @param[in] dataLen Data length (number of elements/bytes in the array).
+     * 
+     * @return The number of copied input bytes.
+     */
+    std::uint8_t simulateInput(const std::uint8_t* data, std::uint8_t dataLen) noexcept;
+
+    Stub(const Stub&)            = delete; // No copy constructor.
+    Stub(Stub&&)                 = delete; // No move constructor.
+    Stub& operator=(const Stub&) = delete; // No copy assignment.
+    Stub& operator=(Stub&&)      = delete; // No move assignment.
+
+
 private:
     /** Buffer size. */
     static constexpr std::uint8_t BufSize{100U};
@@ -105,6 +121,9 @@ private:
 
     /** Buffer length (indicates the number of bytes in the buffer). */
     std::uint8_t myBufLen;
+
+    /** Index of next byte to read. */
+    std::uint8_t myBufIndex;
 
     /** True if data is available, false otherwise. */
     bool myDataAvailable;
