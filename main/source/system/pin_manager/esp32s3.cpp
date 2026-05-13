@@ -8,21 +8,6 @@ namespace
 {
 constexpr std::uint8_t PinMax{47U};
 
-
-constexpr bool isPinValid(const std::uint8_t pin) noexcept
-{
-    // Pins to avoid (boot strapping pins).
-    constexpr std::uint8_t InvalidPins[]{0U, 2U, 12U, 15U};
-
-    // Check through invalid pins list, return false on match.
-    for (const auto invalidPin : InvalidPins)
-    {
-        if (invalidPin == pin) { return false; }
-    }
-    return true;
-}
-
-
 } // namespace
 
 Interface& Esp32s3::instance() noexcept
@@ -34,6 +19,23 @@ Interface& Esp32s3::instance() noexcept
     return myInstance;
 
 }
+
+bool Esp32s3::isPinValid(const std::uint8_t pin) const noexcept
+{
+    // Return false if the pin number is out of range.
+    if (PinMax < pin) { return false; }
+
+    // Pins to avoid (boot strapping pins).
+    constexpr std::uint8_t invalidPins[]{0U, 2U, 12U, 15U};
+
+    // Check through invalid pins list, return false on match.
+    for (const auto invalidPin : invalidPins)
+    {
+        if (invalidPin == pin) { return false; }
+    }
+    return true;
+}
+
 bool Esp32s3::isPinBusy(std::uint8_t pin) const noexcept
 {
     if ((pin > PinMax) || !isPinValid(pin)) { return false; }
@@ -42,8 +44,7 @@ bool Esp32s3::isPinBusy(std::uint8_t pin) const noexcept
 
 bool Esp32s3::reservePin(std::uint8_t pin) noexcept
 {
-    if (pin > PinMax) { return false; }
-    if (isPinBusy(pin)) { return false; }
+    if (!isPinValid(pin) || isPinBusy(pin)) { return false; }
 
     myPinReg |= (1ULL << pin);
     return true;
@@ -51,7 +52,7 @@ bool Esp32s3::reservePin(std::uint8_t pin) noexcept
 
 void Esp32s3::releasePin(std::uint8_t pin) noexcept
 {   
-    if (pin > PinMax) { return false; }
+    if (pin > PinMax) { return; }
     myPinReg &= ~(1ULL << pin);
 };
 
