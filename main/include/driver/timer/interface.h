@@ -59,6 +59,9 @@ public:
      * @brief Toggle the timer state (start/stop).
      */
     virtual void toggle() noexcept = 0;
+
+    
+    virtual bool isTimeout() noexcept = 0;
   
 };
 } // namespace driver::timer
