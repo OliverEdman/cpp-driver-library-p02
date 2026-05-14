@@ -13,16 +13,19 @@ namespace driver::adc
 class Interface
 {
 public:    
+
     /**
      * @brief Destructor.
      */
+
     virtual ~Interface() noexcept = default;
     
-    /**
+     /**
      * @brief Initiate ADC
      * 
      * @return True if the ADC was initialized successfully, false otherwise.
      */
+
     virtual bool init() noexcept = 0;
 
     /**
@@ -31,13 +34,29 @@ public:
      * @return True if the ADC was deinitialized succesfully, false otherwise.
      * 
      */
+    
     virtual bool deinit() noexcept = 0;
 
     /**
-     * @brief Read input from the given pin.
-     * 
-     * @return Input value.
+     * @brief Check if the ADC is initialized.
+     * @return True if initialized and ready.
      */
-    virtual std::uint16_t read() const noexcept = 0;
+    virtual bool isInitialized() const noexcept = 0;
+
+    /**
+     * @brief Read raw digital value from the ADC.
+     * For ESP32-S3, this is 0-4095 (12-bit).
+     * 
+     * @return Raw ADC value.
+     */
+    virtual std::uint16_t readRaw() const noexcept = 0;
+
+    /**
+     * @brief Read the input voltage in Volts.
+     * This handle the raw value to voltage.
+     * 
+     * @return Input voltage in Volts.
+     */
+    virtual float readVoltage() const noexcept = 0;
 };
 } // namespace driver::adc
