@@ -1,5 +1,5 @@
 #pragma once
-
+#include "esp_attr.h"
 #include "driver/timer/interface.h"
 #include "driver/gptimer.h" // esp-idf gptimer
 #include <cstdint>
@@ -72,9 +72,7 @@ private:
     /**
      * @brief Static callback function called by the hardware on alarm events.
      */
-    static bool IRAM_ATTR timer_callback(gptimer_handle_t timer,
-		    			const gptimer_alarm_event_data_t *edata,
-					void *user_ctx);
+    static bool IRAM_ATTR timer_callback(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx);
 
 };
 
