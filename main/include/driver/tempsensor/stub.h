@@ -1,6 +1,6 @@
 #pragma once
 
-#include "interface.h"
+#include "driver/tempsensor/interface.h"
 
 
 namespace driver::tempsensor {
