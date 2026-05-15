@@ -31,7 +31,7 @@ public:
     /** * @brief Sets the simulated period.
      * @param[in] period_ms Period in milliseconds.
      */
-    void setPeriod(std::uint32_t period_ms) override { _period = period_ms; }
+    void setPeriod(std::uint32_t period_ms) override { my_period = period_ms; }
 
     /** * @brief Returns the simulated timeout state and resets it.
      */
