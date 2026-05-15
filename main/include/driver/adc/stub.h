@@ -23,11 +23,22 @@ public:
         : myRawInput{0U}
         , myIsInitialized{false}
     {}
-
+     
     /**
      * @brief Destructor.
      */
     ~Stub() noexcept override = default;
+
+    /**
+     * @brief Check if the ADC is initialized.
+     * 
+     * @return True if initialized, false otherwise.
+     */
+    bool isInitialized() const noexcept
+    {
+        // Not applicable for stub, return true.
+        return true;
+    }
 
     /**
      * @brief Initiate ADC 
@@ -35,9 +46,10 @@ public:
      */
     bool init() noexcept override 
     {
-        if (myIsInitialized) { return false; }
-        myIsInitialized = true;
-        std::printf("ADC Initialized\n");
+        // Return false if the ADC is already initialized.
+        if (myInitialized) { return false; }
+        myInitialized = true;
+        std::printf("ADC initialized!\n");
         return true;
     }
 
@@ -47,9 +59,10 @@ public:
      */
     bool deinit() noexcept override 
     {
-        if (!myIsInitialized) { return false; }
-        myIsInitialized = false;
-        std::printf("ADC Deinitialized\n");
+        // Return false if the ADC is already uninitialized.
+        if (!myInitialized) { return false; }
+        myInitialized = false;
+        std::printf("ADC deinitialized!\n");
         return true;
     }
 
