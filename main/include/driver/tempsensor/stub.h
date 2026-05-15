@@ -13,18 +13,23 @@ namespace driver::tempsensor {
  * @class Stub
  * @brief Simulation class for a temperature sensor.
  */
-class Stub : public Interface {
+class Stub final : public Interface {
 public:
 
     /**
      * @brief Default constructor.
      */
-    Stub() = default;
+    Stub() noexcept = default;
 
     /**
-     * @brief Virtual destructor.
+     * @brief Destructor.
      */
-    virtual ~Stub() = default;
+    ~Stub() noexcept override = default;
+
+    Stub(const Stub&)            = delete;
+    Stub& operator=(const Stub&) = delete;
+    Stub(Stub&&)                 = delete;
+    Stub& operator=(Stub&&)      = delete;
 
     /**
      * @brief Reads the currently set simulated temperature.
