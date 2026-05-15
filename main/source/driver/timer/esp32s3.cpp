@@ -8,7 +8,7 @@ namespace driver::timer {
  * Configures the GPTimer with 1us resolution.
  */
 
-Esp32s3::Esp32s3() {
+Esp32s3::Esp32s3() noexcept: handle{nullptr}, timeout_flag{false}, my_initialized{false} {
     
     gptimer_config_t timer_config = {}; 
     
@@ -39,7 +39,7 @@ Esp32s3::~Esp32s3() noexcept {
     }
 }
 
-void Esp32s3::setPeriod(std::uint32_t period_ms) {
+void Esp32s3::setPeriod(std::uint32_t period_ms) noexcept {
     if (!my_initialized) return;
 
     gptimer_alarm_config_t alarm_config = {};
@@ -49,19 +49,19 @@ void Esp32s3::setPeriod(std::uint32_t period_ms) {
     gptimer_set_alarm_action(handle, &alarm_config);
 }
 
-void Esp32s3::start() {
+void Esp32s3::start() noexcept {
     if (my_initialized) {
         gptimer_start(handle);
     }
 }
 
-void Esp32s3::stop() {
+void Esp32s3::stop() noexcept {
     if (my_initialized) {
         gptimer_stop(handle);
     }
 }
 
-bool Esp32s3::isTimeout() {
+bool Esp32s3::isTimeout() noexcept {
     // Check if ISR hasn set the flag, then reset it.
     if (timeout_flag) {
         timeout_flag = false; 
@@ -70,7 +70,7 @@ bool Esp32s3::isTimeout() {
     return false;
 }
 
-bool Esp32s3::isInitialized() const {
+bool Esp32s3::isInitialized() const noexcept {
     return my_initialized;
 }
 
