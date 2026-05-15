@@ -11,6 +11,13 @@ namespace driver::timer {
  */
 class Esp32s3 : public Interface {
 public:
+
+
+    Esp32s3(const Esp32s3&)            = delete;
+    Esp32s3& operator=(const Esp32s3&) = delete;
+    Esp32s3(Esp32s3&&)                 = delete;
+    Esp32s3& operator=(Esp32s3&&)      = delete;
+
     /**
      * @brief Constructor that initializes the GPTimer hardware.
      */
