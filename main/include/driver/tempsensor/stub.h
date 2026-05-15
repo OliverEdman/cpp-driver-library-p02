@@ -4,7 +4,6 @@
  */
 
 #pragma once
-#include <cstdint>
 #include "tempsensor/interface.h"
 
 namespace driver::tempsensor {
@@ -19,12 +18,20 @@ public:
     /**
      * @brief Default constructor.
      */
-    Stub() noexcept = default;
+    Stub() noexcept 
+	    : my_simulatedtemp{25.0f}
+            , my_initialized{true}
+{
+
+}
+
 
     /**
      * @brief Destructor.
      */
     ~Stub() noexcept override = default;
+
+    // Disable Copy and Move
 
     Stub(const Stub&)            = delete;
     Stub& operator=(const Stub&) = delete;
@@ -67,8 +74,8 @@ public:
     }
 
 private:
-    float my_simulatedTemp = 25.0f; // Simulated temperature 
-    bool my_initialized = true;     // Simulated initialization state.
+    float my_simulatedTemp; // Simulated temperature 
+    bool my_initialized;     // Simulated initialization state.
 };
 
 } // namespace driver::tempsensor
