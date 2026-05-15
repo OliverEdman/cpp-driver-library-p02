@@ -19,7 +19,7 @@ public:
      * @brief Default constructor.
      */
     Stub() noexcept 
-	    : my_simulatedtemp{25.0f}
+	    : my_simulatedTemp{25.0f}
             , my_initialized{true}
 {
 
