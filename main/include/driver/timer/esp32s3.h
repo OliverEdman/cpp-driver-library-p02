@@ -1,79 +1,56 @@
 #pragma once
+#include "interface.h"
+#include "driver/gptimer.h"
 #include "esp_attr.h"
-#include "driver/timer/interface.h"
-#include "driver/gptimer.h" // esp-idf gptimer
-#include <cstdint>
 
-namespace driver::timer
-{
+namespace driver::timer {
 
-	/**
-	 * @brief Hardware implementation of the Timer for ESP32-S3.
-	 ** This class implements the Timer Interface using the ESP-IDF GPtimer peripheral.
-	 */
-
-class Esp32s3 final : public Interface
-{
+/**
+ * @class Esp32s3
+ * @brief Real hardware implementation of the Timer interface for ESP32-S3.
+ */
+class Esp32s3 : public Interface {
 public:
-
-	/**
-	 *  @brief Constructor. Initialize the GPTimer hardware.
-	 */
-    Esp32s3();
-	
-    	/**
-	 * @brief Destructor. Disables hardware and releases rescources to prevent memory leaks.
-	 */
-    ~Esp32s3() noexcept override;
-
-
-	// Interface implementations.
-    /** @brief Returns true if the timer has been succuessfully initialized. */
-    bool isInitialized() const noexcept override;
-
-    /** @brief Returns the current timeout period in milliseconds. */
-    std::uint32_t timeout_ms() const noexcept override;
-
-    /** @brief Configures the timer alarm period in milliseconds.*/
-    void setPeriod(std::uint32_t period_ms) noexcept override;
-
-    /** @brief Starts the hardware timer counter. */
-    void start() noexcept override;
-
-    /** @brief Stops the hardware timer counter.*/
-    void stop() noexcept override;
-
-    /** @brief Checks if the timer is currently running. */
-    bool isRunning() const noexcept override;
-
-    /** @brief Toggles the timer between running and stopped states. */
-    void toggle() noexcept override;
-
-    /** @brief Checks if a timeout event has ocurred since the last check. */
-    bool isTimeout() noexcept override;
-
-private: 
     /**
-     *  @brief This function configure the ESP-IDF GPtimer settings.
-    */
-    void timer_init();
-
-    // ESP-IDF specific handle for timer.
-    gptimer_handle_t my_timer_handle{nullptr};
-
-    //state variables to track driver status.
-    bool my_is_initialized{false};
-    bool my_is_running{false};
-    std::uint32_t my_period_ms{0};
-
-    /** @brief Flag set by the Interrupt Serivce Routine (ISR) when a timeout occurs. */
-    volatile bool my_is_timeout_triggered{false};
-
-    /**
-     * @brief Static callback function called by the hardware on alarm events.
+     * @brief Constructor that initializes the GPTimer hardware.
      */
-    static bool IRAM_ATTR timer_callback(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_ctx);
+    Esp32s3();
 
+    /**
+     * @brief Destructor that ensures hardware resources are released.
+     */
+    virtual ~Esp32s3();
+
+    /** @brief Starts the ESP32-S3 hardware timer. */
+    void start() override;
+
+    /** @brief Stops the ESP32-S3 hardware timer. */
+    void stop() override;
+
+    /** * @brief Configures the alarm value based on milliseconds. 
+     * @param[in] period_ms Period in milliseconds.
+     */
+    void setPeriod(std::uint32_t period_ms) override;
+
+    /** * @brief Returns true if the hardware timer has triggered an interrupt. 
+     */
+    bool isTimeout() override;
+    
+    /** * @brief Returns the initialization status of the GPTimer. 
+     */
+    bool isInitialized() const override;
+
+private:
+    gptimer_handle_t handle = nullptr;
+    volatile bool timeout_flag = false;
+    bool my_initialized = false;
+    
+    /**
+     * @brief ISR callback.
+     */
+    static bool IRAM_ATTR timer_callback(gptimer_handle_t timer, 
+                                        const gptimer_alarm_event_data_t *edata, 
+                                        void *user_data);
 };
 
 } // namespace driver::timer

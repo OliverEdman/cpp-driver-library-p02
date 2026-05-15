@@ -1,110 +1,90 @@
-#include "driver/timer/esp32s3.h"
-#include "esp_attr.h"
 
+#include "esp_attr.h" // IRAM_ATTR
+#include "driver/timer/esp32s3.h"
 namespace driver::timer {
 
-
+/**
+ * @brief Constructor for the ESP32-S3 Timer driver.
+ * Configures the GPTimer with 1us resolution.
+ */
 
 Esp32s3::Esp32s3() {
-    timer_init();
-}
-
-Esp32s3::~Esp32s3() noexcept {
-    if (my_timer_handle) {
-        gptimer_stop(my_timer_handle);
-        gptimer_disable(my_timer_handle);
-        gptimer_del_timer(my_timer_handle);
-    }
-}
-
-void Esp32s3::timer_init() {
-
-	gptimer_config_t timer_config = {};
-	
-	timer_config.clk_src = GPTIMER_CLK_SRC_DEFAULT;
-	timer_config.direction = GPTIMER_COUNT_UP;
-	timer_config.resolution_hz = 1000000;
-
-	ESP_ERROR_CHECK(gptimer_new_timer(&timer_config, &my_timer_handle));
-        
-
-    if (gptimer_new_timer(&timer_config, &my_timer_handle) == ESP_OK) {
-        gptimer_event_callbacks_t cbs = {
-            .on_alarm = timer_callback,
-        };
-
-
-        gptimer_register_event_callbacks(my_timer_handle, &cbs, this);
-        gptimer_enable(my_timer_handle);
-        my_is_initialized = true;
-    }
-}
-
-bool Esp32s3::isInitialized() const noexcept {
-    return my_is_initialized;
-}
-
-std::uint32_t Esp32s3::timeout_ms() const noexcept {
-    return my_period_ms;
-}
-
-void Esp32s3::setPeriod(std::uint32_t period_ms) noexcept {
-    my_period_ms = period_ms;
     
-    gptimer_alarm_config_t alarm_config = {
-        .alarm_count = static_cast<uint64_t>(period_ms) * 1000, // Convert ms to microseconds
-        .reload_count = 0,
-        .flags = { .auto_reload_on_alarm = true }
-    };
+    gptimer_config_t timer_config = {}; 
+    
+    timer_config.clk_src = GPTIMER_CLK_SRC_DEFAULT;
+    timer_config.direction = GPTIMER_COUNT_UP;
+    timer_config.resolution_hz = 1000000; // 1 tick = 1us
 
-    gptimer_set_alarm_action(my_timer_handle, &alarm_config);
-}
-
-void Esp32s3::start() noexcept {
-    if (my_timer_handle && !my_is_running) {
-        if (gptimer_start(my_timer_handle) == ESP_OK) {
-            my_is_running = true;
-        }
+    // Initialize timer hardware
+    if (gptimer_new_timer(&timer_config, &handle) == ESP_OK) {
+        gptimer_event_callbacks_t cbs = {};
+        cbs.on_alarm = timer_callback;
+        
+        gptimer_register_event_callbacks(handle, &cbs, this);
+        gptimer_enable(handle);
+        
+        my_initialized = true; 
     }
 }
 
-void Esp32s3::stop() noexcept {
-    if (my_timer_handle && my_is_running) {
-        if (gptimer_stop(my_timer_handle) == ESP_OK) {
-            my_is_running = false;
-        }
+/**
+ * @brief Destructor. Ensures timer is stopped.
+ */
+Esp32s3::~Esp32s3() noexcept {
+    if (handle != nullptr) {
+        gptimer_stop(handle);
+        gptimer_disable(handle);
+        gptimer_del_timer(handle);
     }
 }
 
-bool Esp32s3::isRunning() const noexcept {
-    return my_is_running;
+void Esp32s3::setPeriod(std::uint32_t period_ms) {
+    if (!my_initialized) return;
+
+    gptimer_alarm_config_t alarm_config = {};
+    alarm_config.alarm_count = period_ms * 1000; // Convert ms to us
+    alarm_config.flags.auto_reload_on_alarm = true;
+    
+    gptimer_set_alarm_action(handle, &alarm_config);
 }
 
-void Esp32s3::toggle() noexcept {
-    if (my_is_running) {
-        stop();
-    } else {
-        start();
+void Esp32s3::start() {
+    if (my_initialized) {
+        gptimer_start(handle);
     }
 }
 
-bool Esp32s3::isTimeout() noexcept {
-    if (my_is_timeout_triggered) {
-        my_is_timeout_triggered = false;
+void Esp32s3::stop() {
+    if (my_initialized) {
+        gptimer_stop(handle);
+    }
+}
+
+bool Esp32s3::isTimeout() {
+    // Check if ISR hasn set the flag, then reset it.
+    if (timeout_flag) {
+        timeout_flag = false; 
         return true;
     }
     return false;
 }
 
-// Static ISR Callback
+bool Esp32s3::isInitialized() const {
+    return my_initialized;
+}
+
+/**
+ * @brief Static ISR callback. 
+ */
 bool IRAM_ATTR Esp32s3::timer_callback(gptimer_handle_t timer, 
                                       const gptimer_alarm_event_data_t *edata, 
-                                      void *user_ctx) {
-    auto* instance = static_cast<Esp32s3*>(user_ctx);
-    instance->my_is_timeout_triggered = true;
-    return true; 
+                                      void *user_data) {
+    // Cast void pointer back to our object instance
+    auto* instance = static_cast<Esp32s3*>(user_data);
+    instance->timeout_flag = true;
+    
+    return false;
 }
 
 } // namespace driver::timer
-
-
