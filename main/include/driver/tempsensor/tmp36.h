@@ -52,8 +52,11 @@ public:
      */
     bool isInitialized() const noexcept override;
 
+    // Disable Copy and Move operations
     Tmp36(const Tmp36&)            = delete;
     Tmp36& operator=(const Tmp36&) = delete;
+    Tmp36(Tmp36&&)                 = delete;
+    Tmp36& operator=(Tmp36&&)      = delete; 
 
 private:
     /** 
