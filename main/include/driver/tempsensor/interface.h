@@ -13,7 +13,7 @@ public:
     * @brief Virtual destructor.
     */
 
-    virtual ~Interface() = default;
+    virtual ~Interface() noexcept = default;
 	
     /**
      * @brief Read the current temperature.
