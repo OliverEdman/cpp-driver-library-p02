@@ -14,31 +14,31 @@ public:
     /**
      * @brief Constructor that initializes the GPTimer hardware.
      */
-    Esp32s3();
+    Esp32s3() noexcept;
 
     /**
      * @brief Destructor that ensures hardware resources are released.
      */
-    virtual ~Esp32s3();
+    virtual ~Esp32s3() noexcept;
 
     /** @brief Starts the ESP32-S3 hardware timer. */
-    void start() override;
+    void start() noexcept override;
 
     /** @brief Stops the ESP32-S3 hardware timer. */
-    void stop() override;
+    void stop() noexcept override;
 
     /** * @brief Configures the alarm value based on milliseconds. 
      * @param[in] period_ms Period in milliseconds.
      */
-    void setPeriod(std::uint32_t period_ms) override;
+    void setPeriod(std::uint32_t period_ms) noexcept override;
 
     /** * @brief Returns true if the hardware timer has triggered an interrupt. 
      */
-    bool isTimeout() override;
+    bool isTimeout() noexcept override;
     
     /** * @brief Returns the initialization status of the GPTimer. 
      */
-    bool isInitialized() const override;
+    bool isInitialized() const noexcept override;
 
 private:
     gptimer_handle_t handle = nullptr;

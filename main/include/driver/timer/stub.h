@@ -23,19 +23,25 @@ public:
     virtual ~Stub() noexcept override = default;
 
     /** @brief Simulates starting the timer. */
-    void start() override { my_running = true; }
+    void start() noexcept override {
+	    my_running = true;
+    }
 
     /** @brief Simulates stopping the timer. */
-    void stop() override { my_running = false; }
+    void stop() noexcept override {
+	    my_running = false;
+    }
 
     /** * @brief Sets the simulated period.
      * @param[in] period_ms Period in milliseconds.
      */
-    void setPeriod(std::uint32_t period_ms) override { my_period = period_ms; }
+    void setPeriod(std::uint32_t period_ms) noexcept override {
+	    my_period = period_ms;
+    }
 
     /** * @brief Returns the simulated timeout state and resets it.
      */
-    bool isTimeout() override {
+    bool isTimeout() noexcept override {
         bool result = my_timeout;
         my_timeout = false; // Reset on read to match real driver behavior
         return result;
@@ -43,22 +49,30 @@ public:
 
     /** * @brief Stubs are always considered initialized.
      */
-    bool isInitialized() const override { return true; }
+    bool isInitialized() const noexcept override {
+	    return true;
+    }
     
     /**
      * @brief Manually triggers a timeout for testing purposes.
      */
-    void simulateTimeout() { my_timeout = true; }
+    void simulateTimeout() noexcept {
+	    my_timeout = true;
+    }
 
     /**
      * @brief Checks if the timer is currently "running".
      */
-    bool isRunning() const { return my_running; }
+    bool isRunning() const noexcept {
+	    return my_running;
+    }
 
     /**
      * @brief Gets the current period set in the stub.
      */
-    std::uint32_t getPeriod() const { return my_period; }
+    std::uint32_t getPeriod() const noexcept {
+	    return my_period;
+    }
 
 private:
     bool my_running;
