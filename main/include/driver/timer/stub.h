@@ -15,7 +15,12 @@ public:
     /**
      * @brief Constructor sets stub variables.
      */
-    Stub() : my_running(false), my_timeout(false), my_period(0) {}
+    Stub() : my_running{false}, my_timeout{false}, my_period{0} {}
+
+    Stub(const Stub&)            = delete; 
+    Stub& operator=(const Stub&) = delete;
+    Stub(Stub&&)                 = delete; 
+    Stub& operator=(Stub&&)      = delete;
 
     /**
      * @brief Virtual destructor.
