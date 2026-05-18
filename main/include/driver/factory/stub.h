@@ -17,7 +17,7 @@ namespace driver::gpio {
 
 namespace driver::factory {
 
-class Stub : public Interface {
+class Stub final : public Interface {
 public:
 
     Stub() noexcept = default;
