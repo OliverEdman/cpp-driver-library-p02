@@ -4,7 +4,11 @@
 #include <cstdint>
 
 namespace driver {
-    namespace gpio { class Interface; }
+    namespace gpio {
+	    class Interface;
+	    enum class Direction : std::uint8_t; // matchar Anthons enum klass namn
+    }
+
     namespace adc { class Interface; }
     namespace serial { class Interface; }
     namespace timer { class Interface; }
@@ -15,10 +19,14 @@ namespace driver {
 namespace driver::factory {
 	
 class Interface {
+
+protected: 
+	Interface() noexcept = default;
 public:
     
     virtual ~Interface() noexcept = default;
-    virtual std::unique_ptr<gpio::Interface> gpio(std::uint8_t pin) noexcept = 0;
+
+    virtual std::unique_ptr<gpio::Interface> gpio(std::uint8_t pin, gpio::Direction direction) noexcept = 0;
     virtual std::unique_ptr<adc::Interface> adc() noexcept = 0;
     virtual std::unique_ptr<serial::Interface> serial() noexcept = 0;
     virtual std::unique_ptr<timer::Interface> timer() noexcept = 0;
@@ -28,7 +36,7 @@ public:
     Interface(const Interface&) = delete;
     Interface& operator=(const Interface&) = delete;
     Interface(Interface&&) = delete;
-    interface& operator=(interface&&) = delete;
+    Interface& operator=(Interface&&) = delete;
 
 
 
