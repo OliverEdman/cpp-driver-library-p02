@@ -30,29 +30,18 @@ public:
     ~Stub() noexcept override = default;
 
     /**
-     * @brief Check if the ADC is initialized.
-     * 
-     * @return True if initialized, false otherwise.
-     */
-    bool isInitialized() const noexcept
-    {
-        // Not applicable for stub, return true.
-        return true;
-    }
-
-    /**
      * @brief Initiate ADC 
      * @return True if success.
      */
     bool init() noexcept override 
     {
         // Return false if the ADC is already initialized.
-        if (myInitialized) { return false; }
-        myInitialized = true;
+        if (myIsInitialized) { return false; }
+        myIsInitialized = true;
         std::printf("ADC initialized!\n");
         return true;
     }
-
+    
     /**
      * @brief Deinitiate ADC
      * @return True if success.
@@ -60,12 +49,12 @@ public:
     bool deinit() noexcept override 
     {
         // Return false if the ADC is already uninitialized.
-        if (!myInitialized) { return false; }
-        myInitialized = false;
+        if (!myIsInitialized) { return false; }
+        myIsInitialized = false;
         std::printf("ADC deinitialized!\n");
         return true;
     }
-
+    
     /**
      * @brief Check if initialized.
      */
