@@ -45,12 +45,6 @@ public:
     virtual bool deinit() noexcept = 0;
 
     /**
-     * @brief Check if the ADC is initialized.
-     * @return True if initialized and ready.
-     */
-    virtual bool isInitialized() const noexcept = 0;
-
-    /**
      * @brief Read raw digital value from the ADC.
      * For ESP32-S3, this is 0-4095 (12-bit).
      * 
