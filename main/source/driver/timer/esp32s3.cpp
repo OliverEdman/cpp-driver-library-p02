@@ -3,6 +3,9 @@
 #include "driver/timer/esp32s3.h"
 namespace driver::timer {
 
+constexpr std::uint32_t TimerResolutionHz{1'000'000U};
+constexpr std::uint32_t MsToUs{1000U};
+
 /**
  * @brief Constructor for the ESP32-S3 Timer driver.
  * Configures the GPTimer with 1us resolution.
@@ -14,7 +17,7 @@ Esp32s3::Esp32s3() noexcept: handle{nullptr}, timeout_flag{false}, my_initialize
     
     timer_config.clk_src = GPTIMER_CLK_SRC_DEFAULT;
     timer_config.direction = GPTIMER_COUNT_UP;
-    timer_config.resolution_hz = 1000000; // 1 tick = 1us
+    timer_config.resolution_hz = TimerResolutionHz; // 1 tick = 1us
 
     // Initialize timer hardware
     if (gptimer_new_timer(&timer_config, &handle) == ESP_OK) {
@@ -43,7 +46,7 @@ void Esp32s3::setPeriod(std::uint32_t period_ms) noexcept {
     if (!my_initialized) return;
 
     gptimer_alarm_config_t alarm_config = {};
-    alarm_config.alarm_count = period_ms * 1000; // Convert ms to us
+    alarm_config.alarm_count = period_ms * MsToUs; // Convert ms to us
     alarm_config.flags.auto_reload_on_alarm = true;
     
     gptimer_set_alarm_action(handle, &alarm_config);
