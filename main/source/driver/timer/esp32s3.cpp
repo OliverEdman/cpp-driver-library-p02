@@ -44,7 +44,7 @@ Esp32s3::~Esp32s3() noexcept {
 
 void Esp32s3::setPeriod(std::uint32_t period_ms) noexcept {
 
-    if (!my_initialized || period_ms == 0) {
+    if (!my_initialized || period_ms == 0U) {
 	    return;
     } 
 
