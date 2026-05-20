@@ -43,7 +43,10 @@ Esp32s3::~Esp32s3() noexcept {
 }
 
 void Esp32s3::setPeriod(std::uint32_t period_ms) noexcept {
-    if (!my_initialized) return;
+
+    if (!my_initialized || period_ms == 0) {
+	    return;
+    } 
 
     gptimer_alarm_config_t alarm_config = {};
     alarm_config.alarm_count = period_ms * MsToUs; // Convert ms to us
