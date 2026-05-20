@@ -29,7 +29,7 @@ public:
     virtual ~Interface() noexcept = default;
 
     /** @return A smart pointer to the created ADC interface. */
-    virtual std::unique_ptr<adc::Interface> adc() noexcept = 0;
+    virtual std::unique_ptr<adc::Interface> adc(std::uint8_t pin) noexcept = 0;
 
     /** @return A smart pointer to the created GPIO input instance. */
     virtual std::unique_ptr<gpio::Interface> gpioInput(std::uint8_t pin) noexcept = 0;
