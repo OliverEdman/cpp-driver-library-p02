@@ -8,8 +8,8 @@
 namespace driver::adc
 {
 /**
- * @brief ADC driver interface.
- */
+* @brief ADC driver interface.
+*/
 class Interface
 {
 public:    
@@ -19,8 +19,15 @@ public:
      */
 
     virtual ~Interface() noexcept = default;
-    
-     /**
+
+    /**
+     * @brief Check if the ADC is initialized.
+     * 
+     * @return True if initialized, false otherwise.
+     */
+    virtual bool isInitialized() const noexcept = 0;
+
+    /**
      * @brief Initiate ADC
      * 
      * @return True if the ADC was initialized successfully, false otherwise.
@@ -36,12 +43,6 @@ public:
      */
     
     virtual bool deinit() noexcept = 0;
-
-    /**
-     * @brief Check if the ADC is initialized.
-     * @return True if initialized and ready.
-     */
-    virtual bool isInitialized() const noexcept = 0;
 
     /**
      * @brief Read raw digital value from the ADC.
