@@ -35,32 +35,20 @@ public:
      * 
      * @return True on success, false on failure.
      */
-    bool connect() noexcept override
-    {
-        myConnected = true;
-        return myConnected;
-    }
+    bool connect() noexcept override;
 
     /**
      * @brief Disonnect device.
      * 
      */
-    void disconnect() noexcept override
-    {
-        myConnected = false;
-        std::printf("Device disconnected!");
-    }
+    void disconnect() noexcept override;
 
     /**
      * @brief Write a byte.
      * 
      * @param[in] byte The byte to send.
      */
-    void write(std::uint8_t byte) noexcept override
-    {
-        if (nullptr == byte) { return false; }
-        std::printf("Write byte: %d", byte);
-    }
+    void write(std::uint8_t byte) noexcept override;
 
     /**
      * @brief Write a message.
@@ -69,32 +57,21 @@ public:
      * 
      * @return The number of transmitted bytes.
      */
-    std::uint16_t write(const char* msg) noexcept override
-    {
-        if (nullptr == msg) == false;
-        return msg;
-    }
+    std::uint16_t write(const char* msg) noexcept override;
 
     /**
      * @brief Read a byte.
      * 
      * @return Received byte.
      */
-    std::uint8_t read() noexcept override
-    {
-        return 0U;
-    }
+    std::uint8_t read() noexcept override;
 
     /**
      * @brief Check if data is available.
      * 
      * @return True if data is available, false otherwise.
      */
-    bool isDataAvailable() const noexcept override
-    {
-        myDataAvailable = true;
-        return myDataAvailable;
-    }
+    bool isDataAvailable() const noexcept override;
 
     /**
      * @brief Simulate input data.

@@ -10,6 +10,11 @@
 
 namespace driver::serial
 {
+/**
+ * @brief Serial driver for ESP32-S3.
+ * 
+ *        This class non-copyable and non-movable.
+ */
 class Esp32 final: public interface
 {
 public:

@@ -19,7 +19,6 @@ Stub::Stub() noexcept
 {
     std::printf("Created new serial stub instance!\n");
 }
-{
 
 // -----------------------------------------------------------------------------
 Stub::~Stub() noexcept
