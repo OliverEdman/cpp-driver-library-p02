@@ -29,7 +29,7 @@ public:
      * @brief Disonnect device.
      * 
      */
-    virtual void Disconnect() noexcept = 0;
+    virtual void disconnect() noexcept = 0;
 
     /**
      * @brief Write a byte.

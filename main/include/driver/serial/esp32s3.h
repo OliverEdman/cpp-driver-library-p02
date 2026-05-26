@@ -1,5 +1,5 @@
 /**
- * @brief A serial driver for the ESP32-s3.
+ * @brief A serial driver for the ESP32-S3.
  */
 #pragma once
 
@@ -10,77 +10,101 @@
 
 namespace driver::serial
 {
+
+/**
+ * @brief Configuration for the ESP32-S3 serial driver.
+ */
+struct Config
+{
+    /** UART port number (e.g. UART_NUM_1). */
+    uart_port_t port;
+
+    /** TX GPIO pin number. */
+    int txPin;
+
+    /** RX GPIO pin number. */
+    int rxPin;
+
+    /** Baud rate (e.g. 115200). */
+    int baudRate;
+
+    /** RX ring buffer size in bytes (must be > 0). */
+    uint32_t rxBufSize;
+};
+
 /**
  * @brief Serial driver for ESP32-S3.
- * 
- *        This class non-copyable and non-movable.
+ *
+ *        This class is non-copyable and non-movable.
  */
-class Esp32 final: public interface
+class Esp32s3 final: public Interface
 {
 public:
     /**
      * @brief Constructor.
+     *
+     * @param[in] config Driver configuration.
      */
-    Esp32() noexcept override;
-    
-    /**
-     * @brief Deconstructor.
-     */
-    ~Esp32() noexcept override; 
+    explicit Esp32s3(const Config& config) noexcept;
 
     /**
-     * @brief Connect device.
-     * 
+     * @brief Destructor. Disconnects automatically if still connected.
+     */
+    ~Esp32s3() noexcept override;
+
+    /**
+     * @brief Connect device (installs UART driver, configures pins).
+     *
      * @return True on success, false on failure.
      */
     bool connect() noexcept override;
 
     /**
-     * @brief Disconnect device.
+     * @brief Disconnect device (uninstalls UART driver).
      */
     void disconnect() noexcept override;
 
     /**
-     * @brief Write a byte.
-     * 
+     * @brief Write a single byte.
+     *
      * @param[in] byte The byte to send.
      */
     void write(std::uint8_t byte) noexcept override;
 
     /**
-     * @brief Write a message.
-     * 
+     * @brief Write a null-terminated string.
+     *
      * @param[in] msg The message to send.
+     *
+     * @return The number of transmitted bytes, or 0 on error.
      */
     std::uint16_t write(const char* msg) noexcept override;
 
-    /** 
-     * @brief Read a byte.
-     * 
-     * @return The read byte.
+    /**
+     * @brief Read a single byte (blocks up to 10 ms).
+     *
+     * @return The received byte, or 0 if none available.
      */
     std::uint8_t read() noexcept override;
 
     /**
-     * @brief Check if data is available.
-     * 
-     * @return Return true if data is available, otherwise false.
+     * @brief Check if data is available in the RX buffer.
+     *
+     * @return True if at least one byte is waiting, false otherwise.
      */
     bool isDataAvailable() const noexcept override;
+
+    Esp32s3(const Esp32s3&)            = delete;
+    Esp32s3(Esp32s3&&)                 = delete;
+    Esp32s3& operator=(const Esp32s3&) = delete;
+    Esp32s3& operator=(Esp32s3&&)      = delete;
+
 private:
-    /** Buffer size. */
-    static constexpr std::uint8_t BufSize{100U};
+    /** Driver configuration. */
+    Config myConfig;
 
-    /** Serial buffer to simulate input. */
-    std::uint8_t myBuf[BufSize];
-
-    /** Buffer length (indicates the number of bytes in the buffer). */
-    std::uint8_t myBufLen;
-
-    /** True if data is available, false otherwise. */
-    bool myDataAvailable;
-
-    /** True if the device is connected, false otherwise. */
+    /** True if the UART driver is installed and active. */
     bool myConnected;
-}  
+};
+
 } // namespace driver::serial

@@ -38,7 +38,7 @@ bool Stub::connect() noexcept
 void Stub::disconnect() noexcept
 {
     myConnected = false;
-    std::printf("Serial device disconnected!\n")
+    std::printf("Serial device disconnected!\n");
 }
 
 // -----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ bool Stub::isDataAvailable() const noexcept
 { return myDataAvailable; };
 
 // -----------------------------------------------------------------------------
-std::uint8_t Stub::simulateInput(const std::uint* data, std::uint8_t dataLen) noexcept
+std::uint8_t Stub::simulateInput(const std::uint8_t* data, std::uint8_t dataLen) noexcept
 {
     // Return 0 if the device isn't connected.
     if (!myConnected) { return 0U; }
@@ -112,7 +112,7 @@ std::uint8_t Stub::simulateInput(const std::uint* data, std::uint8_t dataLen) no
     if ((nullptr == data) || (0U == dataLen)) { return 0U; }
 
     // Compute the number of bytes to copy
-    const std::uint8_t bytesToCopy{myBufLen < dataLen ? BufSize : dataLen};
+    const std::uint8_t bytesToCopy{BufSize < dataLen ? BufSize : dataLen};
 
     // Copy data from the input array to our buffer.
     for (std::uint8_t i{}; i < bytesToCopy; ++i)
