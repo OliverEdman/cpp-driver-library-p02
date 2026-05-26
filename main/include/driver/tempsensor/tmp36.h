@@ -30,7 +30,7 @@ public:
      * @param adc Reference to the ADC interface used to get sensor voltage.
      */
 
-   explicit Tmp36(driver::adc::Interface& adc) noexcept; 
+   explicit Tmp36(driver::adc::Interface& adc, std::uint8_t pin) noexcept; 
 
     /**
      * @brief Destructor.
@@ -64,6 +64,7 @@ private:
      */
 
     driver::adc::Interface& myAdc;
+    std::uint8_t myPin;
 };
 
 } // namespace driver::tempsensor
