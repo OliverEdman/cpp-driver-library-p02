@@ -56,9 +56,16 @@ public:
 
         /**
      * @brief Check if data is available.
-     * 
+     *
      * @return True if data is available, false otherwise.
      */
     virtual bool isDataAvailable() const noexcept = 0;
+
+    /**
+     * @brief Check if the device is initialized (connected).
+     *
+     * @return True if initialized, false otherwise.
+     */
+    virtual bool isInitialized() const noexcept = 0;
 };
 }// namespace driver:: serial

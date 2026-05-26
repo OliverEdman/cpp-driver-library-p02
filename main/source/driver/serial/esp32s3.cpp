@@ -111,4 +111,10 @@ bool Esp32s3::isDataAvailable() const noexcept
     return buffered > 0U;
 }
 
+// -----------------------------------------------------------------------------
+bool Esp32s3::isInitialized() const noexcept
+{
+    return myConnected;
+}
+
 } // namespace driver::serial

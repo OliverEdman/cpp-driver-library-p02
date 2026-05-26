@@ -100,7 +100,15 @@ std::uint8_t Stub::read() noexcept
 
 // -----------------------------------------------------------------------------
 bool Stub::isDataAvailable() const noexcept
-{ return myDataAvailable; };
+{
+    return myDataAvailable;
+}
+
+// -----------------------------------------------------------------------------
+bool Stub::isInitialized() const noexcept
+{
+    return myConnected;
+}
 
 // -----------------------------------------------------------------------------
 std::uint8_t Stub::simulateInput(const std::uint8_t* data, std::uint8_t dataLen) noexcept

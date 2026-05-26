@@ -68,10 +68,17 @@ public:
 
     /**
      * @brief Check if data is available.
-     * 
+     *
      * @return True if data is available, false otherwise.
      */
     bool isDataAvailable() const noexcept override;
+
+    /**
+     * @brief Check if the device is initialized (connected).
+     *
+     * @return True if initialized, false otherwise.
+     */
+    bool isInitialized() const noexcept override;
 
     /**
      * @brief Simulate input data.

@@ -94,6 +94,13 @@ public:
      */
     bool isDataAvailable() const noexcept override;
 
+    /**
+     * @brief Check if the driver is initialized (connected).
+     *
+     * @return True if initialized, false otherwise.
+     */
+    bool isInitialized() const noexcept override;
+
     Esp32s3(const Esp32s3&)            = delete;
     Esp32s3(Esp32s3&&)                 = delete;
     Esp32s3& operator=(const Esp32s3&) = delete;
