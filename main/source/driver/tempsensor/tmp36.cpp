@@ -10,8 +10,9 @@ namespace driver::tempsensor {
 /**
  * @brief Constructor. When Tmp36 instance is created we force to bind it to ADC interface.
  */
-Tmp36::Tmp36(driver::adc::Interface& adc) noexcept 
-    : myAdc{adc} 
+Tmp36::Tmp36(driver::adc::Interface& adc, std::uint8_t pin) noexcept 
+    : myAdc{adc}
+    , myPin{pin}
 {
     // The reference to the ADC interface is located in the initializier list above, with the . operator we can use adc functions to get celsius from voltage. 
 }
