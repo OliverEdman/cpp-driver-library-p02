@@ -7,6 +7,8 @@
 
 #include "driver/serial/interface.h"
 #include "driver/uart.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 
 namespace driver::serial
 {
@@ -102,9 +104,9 @@ public:
     std::uint16_t read(char* buf, std::uint16_t maxLen) noexcept override;
 
     /**
-     * @brief Check if data is available in the RX buffer.
+     * @brief Check if a complete newline-terminated message is available.
      *
-     * @return True if at least one byte is waiting, false otherwise.
+     * @return True if a full message is waiting, false otherwise.
      */
     bool isDataAvailable() const noexcept override;
 
@@ -121,8 +123,14 @@ public:
     Esp32s3& operator=(Esp32s3&&)      = delete;
 
 private:
+    /** Event queue depth for pattern detection. */
+    static constexpr int QueueDepth{10};
+
     /** Driver configuration. */
     Config myConfig;
+
+    /** FreeRTOS event queue used for pattern detection. */
+    QueueHandle_t myQueue;
 
     /** True if the UART driver is installed and active. */
     bool myConnected;

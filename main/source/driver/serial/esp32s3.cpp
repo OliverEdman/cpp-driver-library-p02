@@ -7,6 +7,7 @@
 #include "driver/serial/esp32s3.h"
 #include "driver/uart.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/queue.h"
 #include "freertos/task.h"
 
 namespace driver::serial
@@ -14,6 +15,7 @@ namespace driver::serial
 // -----------------------------------------------------------------------------
 Esp32s3::Esp32s3(const Config& config) noexcept
     : myConfig{config}
+    , myQueue{nullptr}
     , myConnected{false}
 {}
 
@@ -54,14 +56,24 @@ bool Esp32s3::connect() noexcept
 
     if (uart_driver_install(myConfig.port,
                             static_cast<int>(myConfig.rxBufSize),
-                            0,       // TX buffer: 0 = write blocks until done
-                            0,       // Queue size: 0 = no event queue
-                            nullptr, // Queue handle
-                            0)       // Interrupt flags
+                            0,          // TX buffer: 0 = write blocks until done
+                            QueueDepth, // Event queue depth
+                            &myQueue,   // Queue handle (needed for pattern detection)
+                            0)          // Interrupt flags
         != ESP_OK)
     {
         return false;
     }
+
+    // Enable hardware detection of '\n' as the message delimiter.
+    if (uart_enable_pattern_det_baud_intr(myConfig.port, '\n', 1, 9, 0, 0) != ESP_OK)
+    {
+        uart_driver_delete(myConfig.port);
+        return false;
+    }
+
+    // Align the pattern queue size with the event queue depth.
+    uart_pattern_queue_reset(myConfig.port, QueueDepth);
 
     myConnected = true;
     return true;
@@ -71,6 +83,7 @@ bool Esp32s3::connect() noexcept
 void Esp32s3::disconnect() noexcept
 {
     uart_driver_delete(myConfig.port);
+    myQueue     = nullptr;
     myConnected = false;
 }
 
@@ -108,21 +121,28 @@ std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
     if (nullptr == buf) { return 0U; }
     if (0U == maxLen)   { return 0U; }
 
-    // Leave one slot for the null terminator.
+    // Check how many bytes are waiting before the detected '\n'.
+    // Returns -1 if no complete message is available yet.
+    const int patternPos = uart_pattern_pop_pos(myConfig.port);
+    if (patternPos < 0) { return 0U; }
+
+    // Cap the read length to leave room for the null terminator.
     const std::uint16_t limit{static_cast<std::uint16_t>(maxLen - 1U)};
-    std::uint16_t bytesRead{};
+    const std::uint16_t toRead{(static_cast<std::uint16_t>(patternPos) < limit)
+                                ? static_cast<std::uint16_t>(patternPos)
+                                : limit};
 
-    while (bytesRead < limit)
-    {
-        std::uint8_t byte{};
-        const int result = uart_read_bytes(myConfig.port, &byte, 1U, pdMS_TO_TICKS(10U));
+    // Read the full message in one call.
+    const int result = uart_read_bytes(myConfig.port,
+                                       reinterpret_cast<std::uint8_t*>(buf),
+                                       toRead,
+                                       pdMS_TO_TICKS(100U));
 
-        if (result <= 0)  { break; } // Timeout or error — no more data.
-        if ('\n' == byte) { break; } // End of message.
+    // Consume the '\n' from the buffer so it doesn't pollute the next read.
+    std::uint8_t newline{};
+    uart_read_bytes(myConfig.port, &newline, 1U, pdMS_TO_TICKS(10U));
 
-        buf[bytesRead++] = static_cast<char>(byte);
-    }
-
+    const std::uint16_t bytesRead{(result < 0) ? 0U : static_cast<std::uint16_t>(result)};
     buf[bytesRead] = '\0';
     return bytesRead;
 }
@@ -132,9 +152,9 @@ bool Esp32s3::isDataAvailable() const noexcept
 {
     if (!myConnected) { return false; }
 
-    size_t buffered{};
-    uart_get_buffered_data_len(myConfig.port, &buffered);
-    return buffered > 0U;
+    // Returns the position of the next detected '\n', or -1 if none found.
+    // A non-negative result means a complete message is ready to read.
+    return uart_pattern_get_pos(myConfig.port) >= 0;
 }
 
 // -----------------------------------------------------------------------------
