@@ -10,14 +10,24 @@
 // Local headers.
 #include "driver/gpio/direction.h"
 #include "driver/gpio/esp32s3.h"
+#include "system/pin_manager/esp32s3.h"
+
 
 namespace driver::gpio
 {
+// -----------------------------------------------------------------------------
+
+/** Singleton pin manager instance. */
+auto& myPinManager = system::pin_manager::Esp32s3::instance();
+
 // -----------------------------------------------------------------------------
 Esp32s3::Esp32s3(std::uint8_t pin, Direction direction) noexcept
     : myPin{pin}
     , myDirection{direction}
 {
+    // Validate and reserve pin.
+    if (!myPinManager.reservePin(myPin)) { return; }
+
     // Greate GPIO config.
     // Configure all pins as input + output (read and write access).
     gpio_config_t config{};
@@ -38,7 +48,8 @@ Esp32s3::Esp32s3(std::uint8_t pin, Direction direction) noexcept
 Esp32s3::~Esp32s3() noexcept 
 {
     // Kolla hur man återställer pinnen till startläget.
-    gpio_reset_pin(pin);
+    gpio_reset_pin(myPin);
+    myPinManager.releasePin(myPin);
 }
 
 // -----------------------------------------------------------------------------
@@ -46,14 +57,14 @@ void Esp32s3::write(bool state) noexcept
 {
     // Check data direction, ignore if input.
     if (Direction::Output != myDirection) { return; }
-    gpio_set_level(pin, state);
+    gpio_set_level(myPin, state);
 }
 
 // -----------------------------------------------------------------------------
 bool Esp32s3::read() const noexcept
 {
     // Read state, cast to bool (1 => true, 0 => false).
-    return static_cast<bool>(gpio_set_level(pin));
+    return static_cast<bool>(gpio_get_level(myPin));
 }
 
 // -----------------------------------------------------------------------------
