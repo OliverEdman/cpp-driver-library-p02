@@ -59,5 +59,6 @@ public:
 private:
     /** GPIO pin. */
     const std::uint8_t myPin;
+    const Direction myDirection;
 };
 } // namespace driver::gpio

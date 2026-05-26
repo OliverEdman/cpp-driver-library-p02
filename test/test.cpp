@@ -1,11 +1,10 @@
 #include <cstdio>
 
-#include "driver/adc/stub.h"
+#include "driver/gpio/stub.h"
 
 int main()
 {
-    driver::adc::Stub adc{};
-    adc.init();
-    adc.simulateInput(230U);
-    std::printf("ADC input: %u!\n", adc.readRaw());
+    driver::gpio::Stub gpio{};
+    gpio.write(false);
+    std::printf("gpio funkar %u!\n",gpio.read());
 }
