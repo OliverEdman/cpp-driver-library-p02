@@ -88,6 +88,20 @@ public:
     std::uint8_t read() noexcept override;
 
     /**
+     * @brief Read a newline-terminated message into a buffer.
+     *
+     *        Reads bytes until '\n' is received, the buffer is full, or
+     *        a per-byte timeout (10 ms) elapses with no data. The result
+     *        is always null-terminated.
+     *
+     * @param[out] buf    Destination buffer.
+     * @param[in]  maxLen Size of the destination buffer (including '\0').
+     *
+     * @return Number of bytes written, excluding the null terminator.
+     */
+    std::uint16_t read(char* buf, std::uint16_t maxLen) noexcept override;
+
+    /**
      * @brief Check if data is available in the RX buffer.
      *
      * @return True if at least one byte is waiting, false otherwise.

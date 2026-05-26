@@ -48,11 +48,25 @@ public:
     virtual std::uint16_t write(const char* msg) noexcept = 0;
 
     /**
-     * @brief Read a byte.
-     * 
-     * @return Received byte.
+     * @brief Read a single byte.
+     *
+     * @return Received byte, or 0 if none available.
      */
     virtual std::uint8_t read() noexcept = 0;
+
+    /**
+     * @brief Read a newline-terminated message into a buffer.
+     *
+     *        Reads bytes until a '\n' is received, the buffer is full
+     *        (maxLen - 1 bytes), or no more data is available. The result
+     *        is always null-terminated.
+     *
+     * @param[out] buf    Destination buffer.
+     * @param[in]  maxLen Size of the destination buffer (including '\0').
+     *
+     * @return Number of bytes written, excluding the null terminator.
+     */
+    virtual std::uint16_t read(char* buf, std::uint16_t maxLen) noexcept = 0;
 
         /**
      * @brief Check if data is available.

@@ -60,11 +60,25 @@ public:
     std::uint16_t write(const char* msg) noexcept override;
 
     /**
-     * @brief Read a byte.
-     * 
-     * @return Received byte.
+     * @brief Read a single byte.
+     *
+     * @return Received byte, or 0 if none available.
      */
     std::uint8_t read() noexcept override;
+
+    /**
+     * @brief Read a newline-terminated message into a buffer.
+     *
+     *        Reads bytes from the simulated input buffer until '\n' is
+     *        found, the buffer is full, or the simulated data runs out.
+     *        The result is always null-terminated.
+     *
+     * @param[out] buf    Destination buffer.
+     * @param[in]  maxLen Size of the destination buffer (including '\0').
+     *
+     * @return Number of bytes written, excluding the null terminator.
+     */
+    std::uint16_t read(char* buf, std::uint16_t maxLen) noexcept override;
 
     /**
      * @brief Check if data is available.

@@ -102,6 +102,32 @@ std::uint8_t Esp32s3::read() noexcept
 }
 
 // -----------------------------------------------------------------------------
+std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
+{
+    if (!myConnected)   { return 0U; }
+    if (nullptr == buf) { return 0U; }
+    if (0U == maxLen)   { return 0U; }
+
+    // Leave one slot for the null terminator.
+    const std::uint16_t limit{static_cast<std::uint16_t>(maxLen - 1U)};
+    std::uint16_t bytesRead{};
+
+    while (bytesRead < limit)
+    {
+        std::uint8_t byte{};
+        const int result = uart_read_bytes(myConfig.port, &byte, 1U, pdMS_TO_TICKS(10U));
+
+        if (result <= 0)  { break; } // Timeout or error — no more data.
+        if ('\n' == byte) { break; } // End of message.
+
+        buf[bytesRead++] = static_cast<char>(byte);
+    }
+
+    buf[bytesRead] = '\0';
+    return bytesRead;
+}
+
+// -----------------------------------------------------------------------------
 bool Esp32s3::isDataAvailable() const noexcept
 {
     if (!myConnected) { return false; }
