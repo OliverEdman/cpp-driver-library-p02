@@ -44,7 +44,7 @@ public:
     virtual std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept = 0;
 
     /** @return A smart pointer to the created Timer instance. */
-    virtual std::unique_ptr<timer::Interface> timer(std::uint16_t timeout_ms) noexcept = 0;
+    virtual std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept = 0;
 
     // No copy and move operations allowed
     Interface(const Interface&)            = delete;
