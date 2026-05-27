@@ -50,6 +50,13 @@ public:
      */
     void toggle() noexcept override;
 
+    /**
+    * @brief Check initialization state.
+     * 
+     * @return True if the GPIO was successfully initialized.
+     */
+    bool isInitialized() const noexcept override;
+
     Esp32s3()                          = delete; // No default constructor (we need a pin).
     Esp32s3(const Esp32s3&)            = delete; // No copy constructor.
     Esp32s3(Esp32s3&&)                 = delete; // No move constructor.
@@ -59,6 +66,9 @@ public:
 private:
     /** GPIO pin. */
     const std::uint8_t myPin;
+    /** GPIO direction. */
     const Direction myDirection;
+    /** True if GPIO was successfully configured. */
+    bool myInitialized;
 };
 } // namespace driver::gpio

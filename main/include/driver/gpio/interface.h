@@ -4,7 +4,6 @@
 #pragma once
 
 #include <cstdint>
-#include <cstdio>
 
 namespace driver::gpio
 {
@@ -37,6 +36,13 @@ public:
      * @brief toggle the GPIO.
      */
     virtual void toggle() noexcept = 0;
+
+    /**
+     * @brief Check whether the GPIO has been initialized.
+     * 
+     * @return True if the GPIO driver is initialized and ready for use, false otherwise.
+     */
+    virtual bool isInitialized() const noexcept = 0;
     
 };
 } // namespace driver::gpio

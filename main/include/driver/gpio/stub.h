@@ -53,6 +53,13 @@ public:
         myState = !myState;
     }
 
+    /**
+     * @brief Check initialization state.
+     */
+    bool isInitialized() const noexcept override {
+    return true;
+    }
+
     Stub(const Stub&)            = delete; // No copy constructor.
     Stub(Stub&&)                 = delete; // No move constructor.
     Stub& operator=(const Stub&) = delete; // No copy assignment.
