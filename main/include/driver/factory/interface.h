@@ -17,13 +17,7 @@ namespace driver::factory {
  * @brief Abstract Factory interface for creating drivers.
  */
 class Interface {
-protected:
 
-    /**
-     * @brief Protected constructor to allow inheritance but prevent creating objects directly.
-     */
-
-    Interface() noexcept = default;
 
 public:
     virtual ~Interface() noexcept = default;
@@ -51,6 +45,15 @@ public:
     Interface& operator=(const Interface&) = delete;
     Interface(Interface&&)                 = delete;
     Interface& operator=(Interface&&)      = delete;
+
+
+protected:
+
+    /**
+     * @brief Protected constructor to allow inheritance but prevent creating objects directly.
+     */
+
+    Interface() noexcept = default;
 };
 
 } // namespace driver::factory
