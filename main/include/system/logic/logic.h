@@ -1,76 +1,140 @@
-
 /**
  * @file logic.h
- * @brief Declaration of the logic class.
+ * @brief Declaration of the Logic class.
+ * @author Oliver Edman
  */
 
 #pragma once
 
-#include <memory>
+#include "driver/factory/interface.h"
+
 #include <atomic>
-#include <string>
+#include <memory>
 #include <cstdint>
+#include <string>
 
-
-namespace driver {
-    namespace factory { class Interface; }
-    namespace gpio { class Interface; }
-    namespace serial { class Interface; }
-    namespace timer { class Interface; }
-    namespace adc { class Interface; }
-    namespace tempsensor { class Interface; }
-}
-
-namespace system::logic {
+namespace app::logic {
 
 /**
  * @class Logic
- * @brief Coordinates system logic by communicating with interfaces.
- * * This class implements the core application logic ()toggling LEDs,
- * and reading sensors etc). 
+ * @brief Main system logic class.
+ *
+ * This class contains the application logic for the system.
+ * It communicates only with driver interfaces and does not
+ * know anything about ESP-IDF or hardware specific code.
+ *
+ * The class controls:
+ *  LED behavior
+ *  Serial commands
+ *  Timer based blinking
+ *  Temperature reading
  */
-
 class Logic final {
 public:
-    /**
-     * @brief Constructor 
-     * @param[in] factory Must Reference to an abstract driver factory used to create drivers.
-     */
-    explicit Logic(driver::factory::Interface& factory) noexcept;
 
     /**
-     * @brief Destructor clean up.
+     * @brief The constructor uses the factory to create all drivers needed by the system.
+     * @param[in] factory Reference to a driver factory.
+     */
+    explicit Logic(driver::factory::Interface& factory);
+
+    /**
+     * @brief Destructor used to clean up the logic class safely.
      */
     ~Logic() noexcept = default;
 
     /**
-     * @brief The main execution loop of the system.
-     * @param[in] stop An atomic boolean used to safely terminate the execution loop.
+     * @brief Start the main loop.
+     *
+     * The loop runs until the stop flag becomes true.
+     *
+     * @param[in] stop Atomic flag used to stop the system safely.
      */
-    void run(std::atomic<bool>& stop) noexcept;
+    void run(std::atomic<bool>& stop);
 
-    // no copy move
+    /**
+     * @brief Disable copy operations.
+     *
+     * The logic class owns hardware drivers through
+     * std::unique_ptr and should not be copied or moved.
+     */
     Logic(const Logic&) = delete;
     Logic& operator=(const Logic&) = delete;
     Logic(Logic&&) = delete;
     Logic& operator=(Logic&&) = delete;
 
 private:
-    
-    // Factory reference 
-    driver::factory::Interface& myFactory;
 
-    // System logic owns its drivers through smart pointers
-    std::unique_ptr<::driver::serial::Interface> mySerial;
-    std::unique_ptr<::driver::gpio::Interface> myLed;
-    std::unique_ptr<::driver::timer::Interface> myTimer;
-    std::unique_ptr<::driver::adc::Interface> myAdc;
-    std::unique_ptr<::driver::tempsensor::Interface> myTempSensor;
+    /**
+     * @brief Set the default startup state.
+     *
+     * Startup state = LED OFF and Blink mode disabled.
+     */
+    void setStartState();
 
-    // Internal system state variables
+    /**
+     * @brief Read and process serial input.
+     *
+     * Reads commands from the serial driver and forwards
+     * them to the command handler.
+     */
+    void processSerial();
 
-    bool myBlinkActive{false}; // Tracks if the LED timer blink mode is enabled.
-    std::uint32_t myPeriodMs{500}; //Current LED blink interval in milliseconds.
+    /**
+     * @brief Handle timer events.
+     *
+     * Toggles the LED when blink mode is active
+     * and the timer has timed out.
+     */
+    void processTimer();
+
+    /**
+     * @brief Execute serial commands.
+     *
+     * Supported commands are on,off,blink on/off, period <value>, status and temp.
+     * @param[in] command Command string from serial input.
+     */
+    void handleCommand(const std::string& command);
+
+    /**
+     * @brief Print current system status.
+     *
+     * Prints blink state, blink period and current temperature.
+     */
+    void printStatus();
+
+    /**
+     * @brief Print the current temperature.
+     */
+    void printTemperature();
+
+    /**
+     * @brief Driver interfaces used by the logic class.
+     *
+     * The logic class uses these pointers to communicate
+     * with the hardware drivers through their interfaces.
+     */ 
+
+    // Serial communication driver.
+    std::unique_ptr<driver::serial::Interface> mySerial;
+
+    // GPIO driver used for LED control.
+    std::unique_ptr<driver::gpio::Interface> myLed;
+
+    // Timer driver used for blink timing.
+    std::unique_ptr<driver::timer::Interface> myTimer;
+
+    // ADC driver used by the temperature sensor.
+    std::unique_ptr<driver::adc::Interface> myAdc;
+
+    // Temperature sensor driver.
+    std::unique_ptr<driver::tempsensor::Interface> myTempSensor;
+
+    // True when blink mode is enabled.
+    bool myBlinkEnabled{false};
+
+    // Current LED blink period in milliseconds.
+    std::uint32_t myPeriodMs{500};
 };
 
-} // namespace system::logic
+} // namespace app::logic
