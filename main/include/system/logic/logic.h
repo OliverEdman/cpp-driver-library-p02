@@ -50,7 +50,7 @@ public:
      *
      * @param[in] stop Atomic flag used to stop the system safely.
      */
-    void run(std::atomic<bool>& stop);
+    void run(const std::atomic<bool>& stop) noexcept;
 
     /**
      * @brief Disable copy operations.
