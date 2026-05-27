@@ -3,13 +3,11 @@
 #include <cstdint>
 #include <memory>
 
-namespace driver {
-    namespace adc { class Interface; }
-    namespace gpio { class Interface; }
-    namespace serial { class Interface; }
-    namespace tempsensor { class Interface; }
-    namespace timer { class Interface; }
-} 
+namespace driver::adc { class Interface; }
+namespace driver::gpio { class Interface; }
+namespace driver::serial { class Interface; }
+namespace driver::tempsensor { class Interface; }
+namespace driver::timer { class Interface; }
 
 namespace driver::factory {
 
