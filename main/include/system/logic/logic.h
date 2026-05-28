@@ -11,7 +11,6 @@
 #include <atomic>
 #include <memory>
 #include <cstdint>
-#include <string>
 
 namespace app::logic {
 
@@ -36,7 +35,7 @@ public:
      * @brief The constructor uses the factory to create all drivers needed by the system.
      * @param[in] factory Reference to a driver factory.
      */
-    explicit Logic(driver::factory::Interface& factory);
+    explicit Logic(driver::factory::Interface& factory) noexcept;
 
     /**
      * @brief Destructor used to clean up the logic class safely.
@@ -70,7 +69,7 @@ private:
      *
      * Startup state = LED OFF and Blink mode disabled.
      */
-    void setStartState();
+    void setStartState() noexcept;
 
     /**
      * @brief Read and process serial input.
@@ -78,7 +77,7 @@ private:
      * Reads commands from the serial driver and forwards
      * them to the command handler.
      */
-    void processSerial();
+    void processSerial() noexcept;
 
     /**
      * @brief Handle timer events.
@@ -86,7 +85,7 @@ private:
      * Toggles the LED when blink mode is active
      * and the timer has timed out.
      */
-    void processTimer();
+    void processTimer() noexcept;
 
     /**
      * @brief Execute serial commands.
@@ -94,19 +93,19 @@ private:
      * Supported commands are on,off,blink on/off, period <value>, status and temp.
      * @param[in] command Command string from serial input.
      */
-    void handleCommand(const std::string& command);
+    void handleCommand(const char* command) noexcept;
 
     /**
      * @brief Print current system status.
      *
      * Prints blink state, blink period and current temperature.
      */
-    void printStatus();
+    void printStatus() noexcept;
 
     /**
      * @brief Print the current temperature.
      */
-    void printTemperature();
+    void printTemperature() noexcept;
 
     /**
      * @brief Driver interfaces used by the logic class.
@@ -134,7 +133,7 @@ private:
     bool myBlinkEnabled{false};
 
     // Current LED blink period in milliseconds.
-    std::uint32_t myPeriodMs{500};
+    std::uint32_t myPeriodMs{500U};
 };
 
 } // namespace app::logic
