@@ -101,12 +101,11 @@ std::uint8_t Stub::read() noexcept
 // -----------------------------------------------------------------------------
 std::uint16_t Stub::read(char* buf, std::uint16_t maxLen) noexcept
 {
-    if (!myConnected)     { return 0U; }
-    if (nullptr == buf)   { return 0U; }
-    if (0U == maxLen)     { return 0U; }
-    if (!myDataAvailable) { return 0U; }
+    if (!myConnected || nullptr == buf || 0U == maxLen || !myDataAvailable) 
+    { 
+        return 0U; 
+    }
 
-    // Leave one slot for the null terminator.
     const std::uint16_t limit{static_cast<std::uint16_t>(maxLen - 1U)};
     std::uint16_t bytesRead{};
 
@@ -114,16 +113,18 @@ std::uint16_t Stub::read(char* buf, std::uint16_t maxLen) noexcept
     {
         const std::uint8_t byte{myBuf[myBufIndex]};
 
-        // Advance the index; mark the buffer empty when all bytes are consumed.
+        // Advance index and mark empty if consumed
         if (++myBufIndex >= myBufLen)
         {
             myDataAvailable = false;
             myBufIndex      = 0U;
         }
 
-        if ('\n' == byte) { break; } // End of message.
-
+        // Copy the byte first (including '\n')
         buf[bytesRead++] = static_cast<char>(byte);
+
+        // Now break if it was the end of the message
+        if ('\n' == byte) { break; }
     }
 
     buf[bytesRead] = '\0';
