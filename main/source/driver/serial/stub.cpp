@@ -120,11 +120,8 @@ std::uint16_t Stub::read(char* buf, std::uint16_t maxLen) noexcept
             myBufIndex      = 0U;
         }
 
-        // Copy the byte first (including '\n')
-        buf[bytesRead++] = static_cast<char>(byte);
-
-        // Now break if it was the end of the message
         if ('\n' == byte) { break; }
+        buf[bytesRead++] = static_cast<char>(byte);
     }
 
     buf[bytesRead] = '\0';

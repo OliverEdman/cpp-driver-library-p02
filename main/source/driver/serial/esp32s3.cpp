@@ -36,8 +36,10 @@ bool Esp32s3::connect() noexcept
         .data_bits  = UART_DATA_8_BITS,
         .parity     = UART_PARITY_DISABLE,
         .stop_bits  = UART_STOP_BITS_1,
-        .flow_ctrl  = UART_HW_FLOWCTRL_DISABLE,
-        .source_clk = UART_SCLK_DEFAULT,
+        .flow_ctrl           = UART_HW_FLOWCTRL_DISABLE,
+        .rx_flow_ctrl_thresh = 0,
+        .source_clk          = UART_SCLK_DEFAULT,
+        .flags               = {},
     };
 
     if (uart_param_config(myConfig.port, &uartConfig) != ESP_OK)
@@ -142,7 +144,7 @@ std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
     std::uint8_t newline{};
     uart_read_bytes(myConfig.port, &newline, 1U, pdMS_TO_TICKS(10U));
 
-    const std::uint16_t bytesRead{(result < 0) ? 0U : static_cast<std::uint16_t>(result)};
+    const std::uint16_t bytesRead{result < 0 ? std::uint16_t{0} : static_cast<std::uint16_t>(result)};
     buf[bytesRead] = '\0';
     return bytesRead;
 }

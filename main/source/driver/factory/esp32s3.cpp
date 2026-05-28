@@ -30,7 +30,7 @@ std::unique_ptr<adc::Interface> Esp32s3::adc(std::uint8_t pin) noexcept {
  */
 std::unique_ptr<gpio::Interface> Esp32s3::gpioInput(std::uint8_t pin) noexcept {
     // Create a real GPIO pin configured as an input
-    return std::make_unique<driver::gpio::Esp32s3>(pin, driver::gpio::Mode::Input);
+    return std::make_unique<driver::gpio::Esp32s3>(pin, driver::gpio::Direction::Input);
 }
 
 /**
@@ -40,7 +40,7 @@ std::unique_ptr<gpio::Interface> Esp32s3::gpioInput(std::uint8_t pin) noexcept {
  */
 std::unique_ptr<gpio::Interface> Esp32s3::gpioOutput(std::uint8_t pin) noexcept {
     // Create a real GPIO pin configured as an output
-    return std::make_unique<driver::gpio::Esp32s3>(pin, driver::gpio::Mode::Output);
+    return std::make_unique<driver::gpio::Esp32s3>(pin, driver::gpio::Direction::Output);
 }
 
 /**
@@ -50,7 +50,14 @@ std::unique_ptr<gpio::Interface> Esp32s3::gpioOutput(std::uint8_t pin) noexcept 
  */
 std::unique_ptr<serial::Interface> Esp32s3::serial(std::uint32_t baud_bps) noexcept {
     // Create the real UART driver with the specified baud rate
-    return std::make_unique<driver::serial::Esp32s3>(baud_bps);
+    const driver::serial::Config config{
+        .port      = UART_NUM_1,
+        .txPin     = 17,
+        .rxPin     = 18,
+        .baudRate  = static_cast<int>(baud_bps),
+        .rxBufSize = 256U,
+    };
+    return std::make_unique<driver::serial::Esp32s3>(config);
 }
 
 /**
@@ -61,7 +68,7 @@ std::unique_ptr<serial::Interface> Esp32s3::serial(std::uint32_t baud_bps) noexc
  */
 std::unique_ptr<tempsensor::Interface> Esp32s3::tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept {
     // Inject both the hardware pin and the required ADC dependency into the TMP36 instance
-    return std::make_unique<driver::tempsensor::Tmp36>(pin, adc);
+    return std::make_unique<driver::tempsensor::Tmp36>(adc, pin);
 }
 
 /**
@@ -71,7 +78,9 @@ std::unique_ptr<tempsensor::Interface> Esp32s3::tempSensor(std::uint8_t pin, adc
  */
 std::unique_ptr<timer::Interface> Esp32s3::timer(std::uint32_t timeout_ms) noexcept {
 
-    return std::make_unique<driver::timer::Esp32s3>(timeout_ms);
+    auto t = std::make_unique<driver::timer::Esp32s3>();
+    t->setPeriod(timeout_ms);
+    return t;
 }
 
 } // namespace driver::factory

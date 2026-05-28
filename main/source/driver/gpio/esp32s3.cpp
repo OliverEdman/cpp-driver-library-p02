@@ -67,7 +67,7 @@ Esp32s3::Esp32s3(std::uint8_t pin, Direction direction) noexcept
 Esp32s3::~Esp32s3() noexcept 
 {
     // Reset the gpio pin and pin manager.
-    gpio_reset_pin(myPin);
+    gpio_reset_pin(static_cast<gpio_num_t>(myPin));
     myPinManager.releasePin(myPin);
 }
 
@@ -76,14 +76,14 @@ void Esp32s3::write(bool state) noexcept
 {
     // Check data direction, ignore if input.
     if (Direction::Output != myDirection) { return; }
-    gpio_set_level(myPin, state);
+    gpio_set_level(static_cast<gpio_num_t>(myPin), state);
 }
 
 // -----------------------------------------------------------------------------
 bool Esp32s3::read() const noexcept
 {
     // Read state, cast to bool (1 => true, 0 => false).
-    return static_cast<bool>(gpio_get_level(myPin));
+    return static_cast<bool>(gpio_get_level(static_cast<gpio_num_t>(myPin)));
 }
 
 // -----------------------------------------------------------------------------
