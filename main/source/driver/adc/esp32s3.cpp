@@ -41,7 +41,7 @@ adc_channel_t pinToAdc1Channel(const std::uint8_t pin) noexcept
 }
 
 /** Singleton pin manager instance. */
-auto& myPinManager = system::pin_manager::Esp32s3::instance();
+auto& myPinManager = sys::pin_manager::Esp32s3::instance();
 
 } // namespace
 

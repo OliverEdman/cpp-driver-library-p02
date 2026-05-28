@@ -18,7 +18,7 @@ namespace driver::gpio
 // -----------------------------------------------------------------------------
 
 /** Singleton pin manager instance. */
-auto& myPinManager = system::pin_manager::Esp32s3::instance();
+auto& myPinManager = sys::pin_manager::Esp32s3::instance();
 
 // -----------------------------------------------------------------------------
 Esp32s3::Esp32s3(std::uint8_t pin, Direction direction) noexcept
