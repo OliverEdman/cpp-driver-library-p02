@@ -5,7 +5,7 @@
 
 int main()
 {
-    auto& pinManager = system::pin_manager::Esp32s3::instance();
+    auto& pinManager = sys::pin_manager::Esp32s3::instance();
     if (!test::runPinManagerTest(pinManager)) { return -1; }
 
     return 0;

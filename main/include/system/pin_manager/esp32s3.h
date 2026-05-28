@@ -4,7 +4,7 @@
 
 #include "system/pin_manager/interface.h"
 
-namespace system::pin_manager
+namespace sys::pin_manager
 {
 class Esp32s3 final : public Interface
 {
@@ -59,4 +59,4 @@ private:
 
     std::uint64_t myPinReg;
 };
-} // namespace system::pin_manager
+} // namespace sys::pin_manager
