@@ -5,7 +5,7 @@
 
 namespace test
 {
-bool runPinManagerTest(system::pin_manager::Interface& manager) noexcept
+bool runPinManagerTest(sys::pin_manager::Interface& manager) noexcept
 {
     constexpr std::uint8_t pinMax{100U};
 
