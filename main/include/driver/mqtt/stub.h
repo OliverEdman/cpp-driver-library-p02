@@ -86,7 +86,7 @@ public:
     /**
      * @brief Process MQTT events and incoming messages.
      * 
-     *        shouled be called periodically from the main loop/task.
+     *        should be called periodically from the main loop/task.
      */
     void loop() noexcept override{
         // No operation in Stub.
@@ -100,5 +100,5 @@ public:
 private:
     /** Simulated state (True = connected, false = disconnected. ) */
     bool myConnected;
-}
-}; // namespace driver::mqtt
+};
+} // namespace driver::mqtt
