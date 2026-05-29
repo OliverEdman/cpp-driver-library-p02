@@ -2,7 +2,7 @@
 
 #include "system/pin_manager/esp32s3.h"
 
-namespace system::pin_manager
+namespace sys::pin_manager
 {
 namespace
 {
@@ -59,4 +59,4 @@ void Esp32s3::releasePin(std::uint8_t pin) noexcept
 Esp32s3::Esp32s3() noexcept
     : myPinReg{}
 {}
-} // namespace system::pin_manager
+} // namespace sys::pin_manager

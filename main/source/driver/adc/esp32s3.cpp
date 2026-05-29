@@ -7,6 +7,7 @@
 
 #include "driver/adc/esp32s3.h"
 #include "system/pin_manager/esp32s3.h"
+#include "esp_log.h"
 
 namespace driver::adc 
 {
@@ -41,7 +42,7 @@ adc_channel_t pinToAdc1Channel(const std::uint8_t pin) noexcept
 }
 
 /** Singleton pin manager instance. */
-auto& myPinManager = system::pin_manager::Esp32s3::instance();
+auto& myPinManager = sys::pin_manager::Esp32s3::instance();
 
 } // namespace
 
@@ -165,7 +166,9 @@ float Esp32s3::readVoltage() const noexcept
     const auto rawValue = readRaw();
 
     // Convert raw ADC value to volts.
-    return (rawValue / maxRawValue) * supplyVoltage;
+    const auto voltage = (rawValue / maxRawValue) * supplyVoltage;
+
+    return voltage;
 }
 
 } // namespace driver::adc 

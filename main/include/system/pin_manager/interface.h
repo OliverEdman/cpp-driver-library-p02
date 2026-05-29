@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace system::pin_manager
+namespace sys::pin_manager
 {
 class Interface
 {
@@ -42,4 +42,4 @@ public:
      */
     virtual void releasePin(std::uint8_t pin) noexcept = 0;
 };
-} // namespace system::pin_manager
+} // namespace sys::pin_manager
