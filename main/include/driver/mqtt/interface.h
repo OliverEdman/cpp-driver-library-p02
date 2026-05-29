@@ -59,8 +59,8 @@ public:
     /**
      * @brief Process MQTT events and incoming messages.
      * 
-     *        shouled be called periodically from the main loop/task.
+     *        should be called periodically from the main loop/task.
      */
     virtual void loop() noexcept = 0;
-}
-}; // namespace driver::mqtt
+};
+} // namespace driver::mqtt

@@ -1,16 +1,23 @@
 /**
- * @brief MQTT driver interface
+ * @brief MQTT driver for Esp32s3.
  */
 #pragma once
 
 #include <cstdint>
+
+/**
+ * @brief Include ESP-IDF MQTT C API with C linkage.
+ */
+extern "C" {
+#include "mqtt_client.h"
+}
 
 #include "driver/mqtt/interface.h"
 
 namespace driver::mqtt
 {
 /**
- * @brief MQTT driver interface
+ * @brief MQTT driver for Esp32s3
  * 
  *        This class is non-copyable and non-movable.
  */
@@ -19,10 +26,12 @@ class Esp32s3 final : public Interface
 public:
     /**
      * @brief Constructor
+     * 
+     * @param[in] brokerUri MQTT broker URI.
+     * @param[in] clientId MQTT client ID.
      */
-    Esp32s3() noexcept
-        : myConnected{false}
-    {}
+    Esp32s3(const char* brokerUri,
+            const char* clientId) noexcept;
 
     /**
      * @brief Destructor.
@@ -70,17 +79,35 @@ public:
     /**
      * @brief Process MQTT events and incoming messages.
      * 
-     *        shouled be called periodically from the main loop/task.
+     *        should be called periodically from the main loop/task.
      */
     void loop() noexcept override;
 
-    Stub(const Stub&)            = delete; // No copy constructor.
-    Stub(Stub&&)                 = delete; // No move constructor.
-    Stub& operator=(const Stub&) = delete; // No copy assignment.
-    Stub& operator=(Stub&&)      = delete; // No move assignment.
+    Esp32s3(const Esp32s3&)            = delete; // No copy constructor.
+    Esp32s3(Esp32s3&&)                 = delete; // No move constructor.
+    Esp32s3& operator=(const Esp32s3&) = delete; // No copy assignment.
+    Esp32s3& operator=(Esp32s3&&)      = delete; // No move assignment.
 
 private:
-    /** Simulated state (True = connected, false = disconnected. ) */
+    /**
+     * @brief MQTT event callback handler.
+     */
+    static void mqttEventHandler(void* handler_args,
+                                 esp_event_base_t base,
+                                 int32_t event_id,
+                                 void* event_data);
+
+    /** ESP-IDF MQTT client handle. */
+    esp_mqtt_client_handle_t myHandle;
+
+    /** MQTT broker URI. */
+    const char* myBrokerUri;
+
+    /** MQTT client ID. */
+    const char* myClientId;
+
+    /** MQTT connection state. */
     bool myConnected;
-}
-}; // namespace driver::mqtt
+                                 
+};
+} // namespace driver::mqtt
