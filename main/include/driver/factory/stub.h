@@ -30,7 +30,8 @@ public:
     }
 
     /** @return A smart pointer to the created ADC interface. */
-    std::unique_ptr<adc::Interface> adc() noexcept override {
+    std::unique_ptr<adc::Interface> adc(std::uint8_t pin) noexcept override {
+        (void)pin;
         return std::make_unique<driver::adc::Stub>();
     }
 
