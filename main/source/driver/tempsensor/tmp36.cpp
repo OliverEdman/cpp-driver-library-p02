@@ -4,7 +4,6 @@
  */
 
 #include "driver/tempsensor/tmp36.h"
-#include "esp_log.h"
 
 namespace driver::tempsensor {
 
@@ -30,7 +29,6 @@ float Tmp36::readCelsius() noexcept {
     // Tmp36 have a offset of 0.5v so we must subtract 0.5V from the output voltage. (500mV)
     const auto temp = (voltage - 0.5f) * 100.0f;
 
-    ESP_LOGI("TMP36", "Temperature: %f", temp);
     return temp;
 }
 

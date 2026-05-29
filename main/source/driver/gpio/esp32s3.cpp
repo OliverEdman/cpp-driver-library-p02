@@ -29,8 +29,6 @@ Esp32s3::Esp32s3(std::uint8_t pin, Direction direction) noexcept
     // Validate and reserve pin.
     if (!myPinManager.reservePin(myPin)) { return; }
 
-    ESP_LOGI("Constructor", "myPin %d", myPin);
-
     // Create GPIO config.
     // Configure GPIO mode based on direction.
     gpio_config_t config{};
@@ -77,12 +75,7 @@ bool Esp32s3::read() const noexcept
 {
     // Read state, cast to bool (1 => true, 0 => false).
     const uint8_t gpioLevel = gpio_get_level(static_cast<gpio_num_t>(myPin));
-
-    ESP_LOGI("read", "gpioLevel %d", gpioLevel);
-
     const bool state = static_cast<bool>(gpioLevel);
-
-    ESP_LOGI("read", "State %d", state);
 
     return state; 
 }
@@ -92,7 +85,6 @@ void Esp32s3::toggle() noexcept
 {
     // Read the pin, toggle the state.
     const auto state = read();
-    ESP_LOGI("toggle", "State %d", state);
     write(!state);
 }
 
