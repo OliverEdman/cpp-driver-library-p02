@@ -27,7 +27,9 @@ float Tmp36::readCelsius() noexcept {
     // Convert voltage to Celsius using the the following formula:
     // (Voltage - 500mV offset) * 100 degrees/V
     // Tmp36 have a offset of 0.5v so we must subtract 0.5V from the output voltage. (500mV)
-    return (voltage - 0.5f) * 100.0f;
+    const auto temp = (voltage - 0.5f) * 100.0f;
+
+    return temp;
 }
 
 /**
