@@ -35,6 +35,7 @@ Esp32s3::~Esp32s3() noexcept
 // -----------------------------------------------------------------------------
 bool Esp32s3::connect() noexcept
 {
+    // Configure brokerUri and clientId.
     const esp_mqtt_client_config_t config{
         .broker = {.address.uri = myBrokerUri},
         .credentials = {.client_id = myClientId},
@@ -44,18 +45,19 @@ bool Esp32s3::connect() noexcept
     myHandle = esp_mqtt_client_init(&config);
     if (nullptr == myHandle) { return false; }
 
+    // Register MQTT event callback handler.
     esp_mqtt_client_register_event(
-    myHandle,
-    MQTT_EVENT_ANY,
-    &Esp32s3::mqttEventHandler,
-    this
+        myHandle,
+        MQTT_EVENT_ANY,
+        &Esp32s3::mqttEventHandler,
+        this
     );
 
     // Start MQTT client.
-    myConnected = ESP_OK == esp_mqtt_client_start(myHandle);
+    const bool started = (ESP_OK == esp_mqtt_client_start(myHandle));
 
     // Return true if connected.
-    return myConnected;
+    return started;
 }
 
 // -----------------------------------------------------------------------------
@@ -65,7 +67,6 @@ void Esp32s3::disconnect() noexcept
     if (nullptr != myHandle)
     {
         esp_mqtt_client_stop(myHandle);
-        esp_mqtt_client_disconnect(myHandle);
         esp_mqtt_client_destroy(myHandle);
         myHandle = nullptr;
     }
@@ -81,20 +82,20 @@ bool Esp32s3::isConnected() const noexcept
 // -----------------------------------------------------------------------------
 bool Esp32s3::publish(const char* topic, const char* payload) noexcept
 {
-    // Kolla att topic och payload inte är null, return annars false.
+    // Check that topic and payload is nit null, false otherwise
     if ((nullptr == topic) || (nullptr == payload))
     {
         return false;
     }
 
-    // Kolla att vi är connected, returna annars false.
+    // Check to see if connected, false otherwise.
     if (!myConnected)
     {
         return false;
     }
 
     const auto len = static_cast<int>(std::strlen(payload));
-    constexpr int qos{1U};
+    constexpr int qos{1};
 
     // Publish to broker, return true if a message ID was returned.
     return 0 <= esp_mqtt_client_publish(myHandle, topic, payload, len, qos, 0);
@@ -103,6 +104,7 @@ bool Esp32s3::publish(const char* topic, const char* payload) noexcept
 // -----------------------------------------------------------------------------
 bool Esp32s3::subscribe(const char* topic) noexcept
 {
+    // Check to see if myHandle and topic is not null, and myConnected is true, false otherwise
     if ((nullptr == myHandle) || (!myConnected) || (nullptr == topic))
     {
         return false;
@@ -114,10 +116,7 @@ bool Esp32s3::subscribe(const char* topic) noexcept
 }
 
 // -----------------------------------------------------------------------------
-void Esp32s3::loop() noexcept
-{
-
-}
+void Esp32s3::loop() noexcept{}
 
 // -----------------------------------------------------------------------------
 void Esp32s3::mqttEventHandler(void* handler_args,

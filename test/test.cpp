@@ -1,6 +1,6 @@
 #include <cstdio>
 
-#include "driver/mqtt/esp32s3.h"
+#include "driver/adc/stub.h"
 
 int main()
 {
