@@ -72,6 +72,13 @@ private:
     void setStartState() noexcept;
 
     /**
+     * @brief Initiate drivers
+     * 
+     *  Initiates neccesiray drivers.
+     */
+    void initializeDrivers() noexcept;
+
+    /**
      * @brief Read and process serial input.
      *
      * Reads commands from the serial driver and forwards
