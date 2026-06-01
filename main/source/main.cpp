@@ -1,3 +1,9 @@
+/** @attention Uncomment DRIVER_TEST_MODE to run the local driver test code. */
+// #define DRIVER_TEST_MODE
+
+
+#ifdef DRIVER_TEST_MODE
+
 #include "driver/timer/esp32s3.h"
 #include "driver/tempsensor/tmp36.h"
 #include "driver/gpio/esp32s3.h"
@@ -6,17 +12,25 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-// Uncomment to run tests.
-// #define TEST
+#else
+
+#include "driver/factory/esp32s3.h"
+#include "system/logic/logic.h"
+#include <atomic>
+
+#endif
+
+   
 
 extern "C" void app_main(void)
 {
+    
+    #ifdef DRIVER_TEST_MODE
     // test kod bara för att ha något i main innan vi har gjort factory och logic
     driver::timer::Esp32s3 testTimer;
     driver::adc::Esp32s3 testADC(1U);
     driver::tempsensor::Tmp36 testTemp(testADC, 1U);
     driver::gpio::Esp32s3 testLedGpio(6U, driver::gpio::Direction::Output);
-
 
     ESP_LOGI("main", "gpio.isInitialized %d", testLedGpio.isInitialized());
     testADC.init();
@@ -37,4 +51,11 @@ extern "C" void app_main(void)
         }
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
+    #else
+    std::atomic<bool> stop{false};
+    driver::factory::Esp32s3 factory;
+    app::logic::Logic logic(factory);
+    logic.run(stop);
+    #endif
+
 }
