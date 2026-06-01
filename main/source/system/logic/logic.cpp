@@ -27,6 +27,7 @@ namespace
         }
         return true;
     }
+    
     bool startsWith(const char* text, const char* prefix) noexcept
     {
     if ((text == nullptr) || (prefix == nullptr)) { return false; }
@@ -66,7 +67,7 @@ namespace
 namespace app::logic
 {
 
-Logic::Logic(driver::factory::Interface& factory)
+Logic::Logic(driver::factory::Interface& factory) noexcept
     :mySerial{factory.serial(BaudRate)}
     ,myLed{factory.gpioOutput(LedPin)}
     ,myTimer{factory.timer(DefaultPeriodMs)}
@@ -74,13 +75,15 @@ Logic::Logic(driver::factory::Interface& factory)
     ,myTempSensor{factory.tempSensor(Tmp36Pin, *myAdc)}
     {
         setStartState();
+        initializeDrivers();
     }
 
-void Logic::setStartState()
+void Logic::setStartState() noexcept
 {
     myBlinkEnabled = false;
     myPeriodMs     = DefaultPeriodMs;
     
+
     if (myLed) {myLed->write(false); }
 
     if (myTimer)
@@ -90,12 +93,18 @@ void Logic::setStartState()
     }
 }
 
-/**
-     * @brief Read and process serial input.
-     *
-     * Reads commands from the serial driver and forwards
-     * them to the command handler.
-     */
+void Logic::initializeDrivers() noexcept
+{
+    if (myAdc && !myAdc->isInitialized())
+    {
+    myAdc->init();
+    }
+    if (mySerial && !mySerial->isInitialized())
+    {
+    mySerial->connect();
+    }
+}
+
 void Logic::processSerial() noexcept
 {
     if (!mySerial) return;
@@ -111,24 +120,21 @@ void Logic::processSerial() noexcept
     }
 }
 
-    /**
-     * @brief Execute serial commands.
-     *
-     * Supported commands are on,off,blink on/off, period <value>, status and temp.
-     * @param[in] command Command string from serial input.
-     */
+
 void Logic::handleCommand(const char* command) noexcept
 {
     if (!myLed || !myTimer || (command == nullptr)) return;
 
-    if (matchStrings(command, "on") || matchStrings(command, "On")) 
+    if (matchStrings(command, "on")) 
     {
         myBlinkEnabled = false;
+        myTimer->stop();
         myLed->write(true);
     }
     else if (matchStrings(command, "off")) 
     {
         myBlinkEnabled = false;
+        myTimer->stop();
         myLed->write(false);
     }
     else if (matchStrings(command, "blink on")) 
@@ -140,6 +146,7 @@ void Logic::handleCommand(const char* command) noexcept
     else if (matchStrings(command, "blink off")) 
     {
         myBlinkEnabled = false;
+        myTimer->stop();
         myLed->write(false);
     }
     else if (matchStrings(command, "status")) 
@@ -179,17 +186,16 @@ void Logic::handleCommand(const char* command) noexcept
 }
 }
 
-void Logic::processTimer()
+void Logic::processTimer() noexcept
 {
     if (myBlinkEnabled && myLed && myTimer && myTimer->isTimeout())
-{
+    {
     myLed->toggle();
-    myTimer->reset();
-}
+    }
 }
 
 
-void Logic::printStatus()
+void Logic::printStatus() noexcept
 {
     if (!mySerial || !myTempSensor) {
         return;
@@ -211,7 +217,7 @@ void Logic::printStatus()
     mySerial->write(buffer);
 }
 
-void Logic::printTemperature()
+void Logic::printTemperature() noexcept
 {
     if(!mySerial || !myTempSensor) { return; }
 
@@ -235,10 +241,12 @@ void Logic::printTemperature()
 
 void Logic::run(const std::atomic<bool>& stop) noexcept
 {
-
+    while(!stop.load())
+    {
+        processSerial();
+        processTimer();
+    }
 }
-
-
 
 
 } // namespace app::logic
