@@ -40,7 +40,7 @@ public:
     /**
      * @brief Destructor used to clean up the logic class safely.
      */
-    ~Logic() noexcept = default;
+    ~Logic() noexcept;
 
     /**
      * @brief Start the main loop.
@@ -70,6 +70,13 @@ private:
      * Startup state = LED OFF and Blink mode disabled.
      */
     void setStartState() noexcept;
+
+    /**
+     * @brief Initiate drivers
+     * 
+     *  Initiates neccesiray drivers.
+     */
+    void initializeDrivers() noexcept;
 
     /**
      * @brief Read and process serial input.
