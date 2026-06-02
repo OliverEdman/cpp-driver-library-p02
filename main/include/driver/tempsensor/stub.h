@@ -15,11 +15,13 @@ namespace driver::tempsensor {
 class Stub final : public Interface {
 public:
 
+static constexpr float DefaultTemp{25.0f};
+
     /**
      * @brief Default constructor.
      */
     Stub() noexcept 
-	    : my_simulatedTemp{25.0f}
+	    : my_simulatedTemp{DefaultTemp}
             , my_initialized{true}
 {
 
