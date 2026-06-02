@@ -7,6 +7,7 @@
 #include <cstdio>
 #include "driver/adc/interface.h"
 
+
 namespace driver::adc
 {
 /**
@@ -15,6 +16,11 @@ namespace driver::adc
  */
 class Stub final : public Interface
 {
+
+private :
+static constexpr float MaxRawValue{4095.0f};
+static constexpr float SupplyVoltage{3.3f};
+
 public:
     /**
      * @brief Constructor.
@@ -77,7 +83,7 @@ public:
      */
     float readVoltage() const noexcept override 
     { 
-        return (static_cast<float>(myRawInput) / 4095.0f) * 3.3f; 
+        return (static_cast<float>(myRawInput) / MaxRawValue) * SupplyVoltage; 
     }
 
     /**
