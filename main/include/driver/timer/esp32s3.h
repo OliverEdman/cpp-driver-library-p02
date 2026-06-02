@@ -1,3 +1,8 @@
+/*
+* @file esp32s3.h
+* @brief interface for the real esp32s3 timer 
+*/
+
 #pragma once
 #include "interface.h"
 #include "driver/gptimer.h"
