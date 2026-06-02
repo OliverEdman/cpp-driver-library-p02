@@ -35,14 +35,14 @@ public:
     bool isInitialized() const noexcept override;
 
      /**
-      * @brief Initiate ADC
+      * @brief Initialize ADC
       *
       * @return True if the ADC was initialized successfully, false otherwise.
       */
     bool init() noexcept override;
 
      /**
-      * @brief Deinitiate ADC
+      * @brief Deinitialize ADC
       *
       * @return True if the ADC was deinitialized succesfully, false otherwise.
       *
