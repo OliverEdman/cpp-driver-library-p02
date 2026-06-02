@@ -1,3 +1,8 @@
+/*
+* @file interface.h
+* @brief interface for the tempsensor driver
+*/
+
 #pragma once 
 
 namespace driver::tempsensor {
