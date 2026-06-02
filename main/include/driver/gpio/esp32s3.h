@@ -1,4 +1,5 @@
 /**
+ * @file esp32s3.h
  * @brief GPIO driver for ESP32-S3.
  */
 #pragma once
