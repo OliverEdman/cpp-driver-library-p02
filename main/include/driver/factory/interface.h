@@ -1,3 +1,8 @@
+/**
+ * @file Interface.h
+ * @brief Abstract Factory interface for creating drivers.
+ */
+
 #pragma once
 
 #include <cstdint>
