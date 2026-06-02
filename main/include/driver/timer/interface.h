@@ -1,3 +1,8 @@
+/**
+ * @file Interface.h
+ * @brief Timer driver interface defining the contract for hardware timers.
+ */
+
 #pragma once
 #include <cstdint>
 
