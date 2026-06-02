@@ -1,3 +1,10 @@
+/**
+ * @file Stub.h
+ * @brief Factory implementation for creating simulated hardware drivers.
+ * * This file provides a Stub factory that instantiates simulated hardware drivers,
+ * allowing testing without ESP32-S3 hardware.
+ */
+
 #pragma once
 
 #include "interface.h"
@@ -24,7 +31,7 @@ public:
         return std::make_unique<driver::gpio::Stub>(); 
     }
 
-    /** @return nullptr since the GPIO driver is not implemented yet. */
+    /** @return A smart pointer to the created GPIO output Stub instance. */
     std::unique_ptr<gpio::Interface> gpioOutput(std::uint8_t pin) noexcept override {
         (void)pin;
         return std::make_unique<driver::gpio::Stub>(); 
