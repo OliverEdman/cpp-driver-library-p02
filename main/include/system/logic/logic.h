@@ -40,7 +40,7 @@ public:
     /**
      * @brief Destructor used to clean up the logic class safely.
      */
-    ~Logic() noexcept = default;
+    ~Logic() noexcept;
 
     /**
      * @brief Start the main loop.

@@ -6,12 +6,14 @@
 #include "driver/adc/interface.h"
 
 #include <cstdio>
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 
 namespace
 {
     constexpr std::uint8_t  LedPin{6};
     constexpr std::uint8_t  Tmp36Pin{1};
-    constexpr std::uint32_t BaudRate{9600};
+    constexpr std::uint32_t BaudRate{115200};
     constexpr std::uint16_t DefaultPeriodMs{500};
 
     bool matchStrings(const char* s1, const char* s2) noexcept
@@ -66,6 +68,8 @@ namespace
 
 namespace app::logic
 {
+
+Logic::~Logic() noexcept = default;
 
 Logic::Logic(driver::factory::Interface& factory) noexcept
     :mySerial{factory.serial(BaudRate)}
@@ -124,6 +128,17 @@ void Logic::processSerial() noexcept
 void Logic::handleCommand(const char* command) noexcept
 {
     if (!myLed || !myTimer || (command == nullptr)) return;
+
+    // Strip trailing \r (CRLF terminals send \r\n; \n is already consumed by read()).
+    char buf[16]{};
+    std::size_t i{0};
+    while (command[i] != '\0' && command[i] != '\r' && i < (sizeof(buf) - 1U))
+    {
+        buf[i] = command[i];
+        i++;
+    }
+    buf[i] = '\0';
+    command = buf;
 
     if (matchStrings(command, "on")) 
     {
@@ -245,6 +260,7 @@ void Logic::run(const std::atomic<bool>& stop) noexcept
     {
         processSerial();
         processTimer();
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 

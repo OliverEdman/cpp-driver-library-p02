@@ -18,20 +18,23 @@ namespace driver::serial
  */
 struct Config
 {
-    /** UART port number (e.g. UART_NUM_1). */
+    /** UART port number (e.g. UART_NUM_1). Ignored when useUsbJtag is true. */
     uart_port_t port;
 
-    /** TX GPIO pin number. */
+    /** TX GPIO pin number. Ignored when useUsbJtag is true. */
     int txPin;
 
-    /** RX GPIO pin number. */
+    /** RX GPIO pin number. Ignored when useUsbJtag is true. */
     int rxPin;
 
-    /** Baud rate (e.g. 115200). */
+    /** Baud rate (e.g. 115200). Ignored when useUsbJtag is true. */
     int baudRate;
 
-    /** RX ring buffer size in bytes (must be > 0). */
+    /** RX ring buffer size in bytes (must be > 0). Ignored when useUsbJtag is true. */
     uint32_t rxBufSize;
+
+    /** Use built-in USB-Serial-JTAG instead of a UART port. */
+    bool useUsbJtag{false};
 };
 
 /**
@@ -126,6 +129,9 @@ private:
     /** Event queue depth for pattern detection. */
     static constexpr int QueueDepth{10};
 
+    /** Max line length for USB-Serial-JTAG accumulator. */
+    static constexpr std::uint16_t LineBufSize{64};
+
     /** Driver configuration. */
     Config myConfig;
 
@@ -134,6 +140,12 @@ private:
 
     /** True if the UART driver is installed and active. */
     bool myConnected;
+
+    /** Accumulated partial line for USB-Serial-JTAG mode. */
+    char myLineBuf[LineBufSize];
+
+    /** Number of valid bytes in myLineBuf. */
+    std::uint16_t myLineLen;
 };
 
 } // namespace driver::serial

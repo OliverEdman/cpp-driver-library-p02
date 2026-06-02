@@ -51,11 +51,12 @@ std::unique_ptr<gpio::Interface> Esp32s3::gpioOutput(std::uint8_t pin) noexcept 
 std::unique_ptr<serial::Interface> Esp32s3::serial(std::uint32_t baud_bps) noexcept {
     // Create the real UART driver with the specified baud rate
     const driver::serial::Config config{
-        .port      = UART_NUM_1,
-        .txPin     = 17,
-        .rxPin     = 18,
-        .baudRate  = static_cast<int>(baud_bps),
-        .rxBufSize = 256U,
+        .port       = UART_NUM_0,       // unused in USB-JTAG mode
+        .txPin      = UART_PIN_NO_CHANGE,
+        .rxPin      = UART_PIN_NO_CHANGE,
+        .baudRate   = static_cast<int>(baud_bps),
+        .rxBufSize  = 256U,
+        .useUsbJtag = true,
     };
     return std::make_unique<driver::serial::Esp32s3>(config);
 }
