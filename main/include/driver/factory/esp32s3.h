@@ -1,9 +1,13 @@
+/**
+ * @file Esp32s3.cpp
+ * @brief Factory implementation for creating ESP32-S3 specific drivers.
+ */
+
 #pragma once
 
 #include "interface.h"
 #include <memory>
 #include <cstdint>
-
 
 namespace driver {
     namespace adc { class Interface; }
