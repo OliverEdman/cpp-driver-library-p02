@@ -1,5 +1,6 @@
 /**
- * @brief GPIO direction type.
+ * @file Direction.h
+ * @brief Definition of GPIO direction types.
  */
 #pragma once
 
