@@ -1,4 +1,5 @@
 /**
+ * @file Stub.h
  * @brief GPIO driver stub.
  */
 #pragma once
@@ -10,8 +11,7 @@ namespace driver::gpio
 {
 /**
  * @brief GPIO driver stub.
- * 
- *        This class is non-copyable and non-movable.
+ * This class is non-copyable and non-movable.
  */
 class Stub final : public Interface
 {
