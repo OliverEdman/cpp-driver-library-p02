@@ -1,5 +1,6 @@
 /**
- * @brief ADC driver interface
+ * @file interface.h
+ * @brief Interface for the ADC driver.
  */
 #pragma once 
 
@@ -20,13 +21,13 @@ public:
     virtual ~Interface() noexcept = default;
     
     /**
-     * @brief Initiate ADC
+     * @brief Initialize ADC
      * * @return True if the ADC was initialized successfully, false otherwise.
      */
     virtual bool init() noexcept = 0;
 
     /**
-     * @brief Deinitiate ADC
+     * @brief Deinitialize ADC
      * * @return True if the ADC was deinitialized successfully, false otherwise.
      */
     virtual bool deinit() noexcept = 0;
