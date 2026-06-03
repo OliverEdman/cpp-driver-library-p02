@@ -1,82 +1,56 @@
 /**
- * @file esp32s3.h
- * @brief Interface for the ESP32-S3 driver. 
+ * @file interface.h
+ * @brief Interface for the ADC driver.
  */
-#pragma once
+#pragma once 
 
-#include "driver/adc/interface.h"
-#include "esp_adc/adc_oneshot.h"
+#include <cstdint>
 
-
-namespace driver::adc 
+namespace driver::adc
 {
-
-
-class Esp32s3 final : public Interface
+/**
+ * @brief ADC driver interface.
+ */
+class Interface
 {
 public:    
-    /**
-     * @brief Constructor.
-     * 
-     * @param[in] pin The pin to read analog value from (1-10).
-     */
-    explicit Esp32s3(std::uint8_t pin) noexcept;
+
     /**
      * @brief Destructor.
      */
-    ~Esp32s3() noexcept override = default;
-     
+    virtual ~Interface() noexcept = default;
+    
+    /**
+     * @brief Initialize ADC
+     * * @return True if the ADC was initialized successfully, false otherwise.
+     */
+    virtual bool init() noexcept = 0;
+
+    /**
+     * @brief Deinitialize ADC
+     * * @return True if the ADC was deinitialized successfully, false otherwise.
+     */
+    virtual bool deinit() noexcept = 0;
+
     /**
      * @brief Check if the ADC is initialized.
-     * 
-     * @return True if initialized, false otherwise.
+     * @return True if initialized and ready.
      */
-    bool isInitialized() const noexcept override;
-
-     /**
-      * @brief Initialize ADC
-      *
-      * @return True if the ADC was initialized successfully, false otherwise.
-      */
-    bool init() noexcept override;
-
-     /**
-      * @brief Deinitialize ADC
-      *
-      * @return True if the ADC was deinitialized successfully, false otherwise.
-      *
-      */
-    bool deinit() noexcept override;
+    virtual bool isInitialized() const noexcept = 0;
 
     /**
-    * @brief Read input from the given pin.
-    *
-    * @return Input value.
-    */
-    std::uint16_t readRaw() const noexcept override;
-
+     * @brief Read raw digital value from the ADC.
+     * For ESP32-S3, this is 0-4095 (12-bit).
+     * * @return Raw ADC value.
+     */
+    virtual std::uint16_t readRaw() const noexcept = 0;
 
     /**
      * @brief Read the input voltage in Volts.
-     * Converts the raw value to voltage.
-     * 
-     * @return Input voltage in Volts.
+     * This handles the conversion from raw value to voltage.
+     * * @return Input voltage in Volts.
      */
-    float readVoltage() const noexcept override;
-
-    Esp32s3(const Esp32s3&)            = delete; // No copy constructor.
-    Esp32s3(Esp32s3&&)                 = delete; // No move constructor.
-    Esp32s3& operator=(const Esp32s3&) = delete; // No copy assignment.
-    Esp32s3& operator=(Esp32s3&&)      = delete; // No move assignment.
-private:
-    /** ADC state. */
-    bool myState;
-    /** Target ADC pin. */
-    std::uint8_t myPin;
-    /** ESP-IDF ADC1 channel mapped from the GPIO pin.  */
-    adc_channel_t myChannel;
-    /** ESP-IDF ADC unit handle. */
-    adc_oneshot_unit_handle_t myHandle;
+    virtual float readVoltage() const noexcept = 0;
 };
 
-} // namespace driver::adc 
+} // namespace driver::adc
