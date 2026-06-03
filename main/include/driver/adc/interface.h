@@ -1,6 +1,6 @@
 /**
  * @file interface.h
- * @brief Interface for the ADC driver.
+ * @brief ADC driver interface
  */
 #pragma once 
 
@@ -47,7 +47,7 @@ public:
 
     /**
      * @brief Read the input voltage in Volts.
-     * This handles the conversion from raw value to voltage.
+     * Converts the conversion from raw value to voltage.
      * * @return Input voltage in Volts.
      */
     virtual float readVoltage() const noexcept = 0;
