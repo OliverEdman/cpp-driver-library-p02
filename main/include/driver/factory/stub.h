@@ -1,3 +1,8 @@
+/**
+ * @file stub.h
+ * @brief Factory interface for creating driver stubs in simulation.
+ */
+
 #pragma once
 
 #include "interface.h"
@@ -12,44 +17,86 @@
 
 namespace driver::factory {
 
+/**
+ * @brief Factory for creating simulated driver stubs.
+ * Used to run and test the application without physical hardware.
+ */
+
 class Stub final : public Interface {
 public:
-
+    /**
+     * @brief Constructor.
+     */
     Stub() noexcept = default;
+
+    /**
+     * @brief Destructor.
+     */
     ~Stub() noexcept override = default;
 
-    /** @return A smart pointer to the created GPIO input stub instance*/
+    /**
+     * @brief Create a simulated GPIO input stub instance.
+     *
+     * @param[in] pin The hardware pin number to simulate (unused).
+     * @return A unique pointer to the created simulated GPIO interface instance.
+     */
     std::unique_ptr<gpio::Interface> gpioInput(std::uint8_t pin) noexcept override {
         (void)pin;
         return std::make_unique<driver::gpio::Stub>(); 
     }
 
-    /** @return nullptr since the GPIO driver is not implemented yet. */
+    /**
+     * @brief Create a simulated GPIO output stub instance.
+     *
+     * @param[in] pin The hardware pin number to simulate (unused).
+     * @return A unique pointer to the created simulated GPIO interface instance.
+     */
     std::unique_ptr<gpio::Interface> gpioOutput(std::uint8_t pin) noexcept override {
         (void)pin;
         return std::make_unique<driver::gpio::Stub>(); 
     }
 
-    /** @return A smart pointer to the created ADC Stub instance. */
+    /**
+     * @brief Create a simulated ADC stub instance.
+     *
+     * @param[in] pin The hardware pin number to simulate (unused).
+     * @return A unique pointer to the created simulated ADC interface instance.
+     */
     std::unique_ptr<adc::Interface> adc(std::uint8_t pin) noexcept override {
         (void)pin;
 	return std::make_unique<driver::adc::Stub>();
     }
 
-    /** @return A smart pointer to the created Serial Stub instance. */
+    /**
+     * @brief Create a simulated Serial UART stub instance.
+     *
+     * @param[in] baud_bps The communication speed to simulate (unused).
+     * @return A unique pointer to the created simulated Serial interface instance.
+     */
     std::unique_ptr<serial::Interface> serial(std::uint32_t baud_bps) noexcept override {
         (void)baud_bps;
         return std::make_unique<driver::serial::Stub>();
     }
 
-    /** @return A smart pointer to the created Temperature sensor Stub instance. */
+    /**
+     * @brief Create a simulated Temperature sensor stub instance.
+     *
+     * @param[in] pin The hardware pin number to simulate (unused).
+     * @param[in] adc Reference to the simulated ADC driver instance (unused).
+     * @return A unique pointer to the created simulated Temperature Sensor interface instance.
+     */
     std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept override {
         (void)pin;
         (void)adc;
         return std::make_unique<driver::tempsensor::Stub>();
     }
 
-    /** @return A smart pointer to the created Timer Stub instance. */
+    /**
+     * @brief Create a simulated Timer stub instance.
+     *
+     * @param[in] timeout_ms The timer timeout duration to simulate (unused).
+     * @return A unique pointer to the created simulated Timer interface instance.
+     */
     std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept override {
         (void)timeout_ms;
         return std::make_unique<driver::timer::Stub>(); 
