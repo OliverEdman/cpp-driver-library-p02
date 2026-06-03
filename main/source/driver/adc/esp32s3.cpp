@@ -1,7 +1,3 @@
-/**
- * @brief ADC driver for ESP32-S3. 
- */
-
 #include <cstdio>
 #include <cstdint>
 
@@ -13,44 +9,23 @@ namespace driver::adc
 {
 namespace
 {
-/**
- * @brief Check if given GPIO pin is a valid ADC pin (1-10).
- * 
- * @param[in] pin The GPIO pin to check.
- * 
- * @return True if valid, false otherwise.
- */
+
 bool isAdcPin(const std::uint8_t pin) noexcept 
 {
     return (pin >= 1U) && (pin <= 10U);
 }
 
-/**
- * @brief Convert from a GPIO pin to the corresponding ADC1 channel.
- * 
- * @param[in] pin GPIO pin number.
- * 
- * @return adc_channel_t corresponding ADC channel.
- * 
- * @example pin = 4
- *          pin - 1 = 3
- *          Result: ADC_CHANNEL_3
- */
+
 adc_channel_t pinToAdc1Channel(const std::uint8_t pin) noexcept
 {
     return static_cast<adc_channel_t>(pin - 1U);
 }
 
-/** Singleton pin manager instance. */
+// Singleton pin manager instance.
 auto& myPinManager = sys::pin_manager::Esp32s3::instance();
 
 } // namespace
 
-/**
- * @brief Constructor.
- * 
- * @param[in] pin The GPIO pin to read analog value from (1-10).
- */
 Esp32s3::Esp32s3(std::uint8_t pin) noexcept
     : myState{false}
     , myPin{pin}
@@ -58,12 +33,7 @@ Esp32s3::Esp32s3(std::uint8_t pin) noexcept
     , myHandle{nullptr}
 {}
 
-    
-/**
-* @brief Check if the ADC is initialized.
-* 
-* @return True if initialized, false otherwise.
-*/
+
 bool Esp32s3::isInitialized() const noexcept 
 {
     return myState;
@@ -120,12 +90,7 @@ bool Esp32s3::init() noexcept
     return true;
 }
 
-/**
- * @brief Deinitiate ADC
- *
- * @return True if the ADC was deinitialized succesfully, false otherwise.
- *
- */
+
 bool Esp32s3::deinit() noexcept 
 {
     // Return false if init() never succeeded.
