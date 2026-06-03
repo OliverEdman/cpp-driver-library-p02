@@ -1,5 +1,4 @@
 /**
- * @file interface.h
  * @brief ADC driver interface
  */
 #pragma once 
@@ -21,13 +20,13 @@ public:
     virtual ~Interface() noexcept = default;
     
     /**
-     * @brief Initialize ADC
+     * @brief Initiate ADC
      * * @return True if the ADC was initialized successfully, false otherwise.
      */
     virtual bool init() noexcept = 0;
 
     /**
-     * @brief Deinitialize ADC
+     * @brief Deinitiate ADC
      * * @return True if the ADC was deinitialized successfully, false otherwise.
      */
     virtual bool deinit() noexcept = 0;
@@ -47,7 +46,7 @@ public:
 
     /**
      * @brief Read the input voltage in Volts.
-     * Converts the conversion from raw value to voltage.
+     * This handles the conversion from raw value to voltage.
      * * @return Input voltage in Volts.
      */
     virtual float readVoltage() const noexcept = 0;
