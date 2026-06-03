@@ -1,4 +1,5 @@
-/**
+/*
+ * @file stub.h
  * @brief GPIO driver stub.
  */
 #pragma once
@@ -9,15 +10,16 @@
 namespace driver::gpio
 {
 /**
- * @brief GPIO driver stub.
- * 
- *        This class is non-copyable and non-movable.
+ * @brief GPIO driver stub for simulation.
+ * * This class simulates physical GPIO behavior in memory.
+ * It is non-copyable and non-movable.
  */
 class Stub final : public Interface
 {
 public:
     /**
      * @brief Constructor.
+     * Initializes the simulated pin state to logic low.
      */
     Stub() noexcept
         : myState{false}
@@ -29,44 +31,43 @@ public:
     ~Stub() noexcept override = default;
 
     /**
-     * @brief Write GPIO state.
-     * 
-     * @param[in] state True to enable the GPIO, false otherwise.
-     */
+     * @brief Write the simulated digital output state of the GPIO pin.
+     * * @param[in] state True to set the simulated pin logic high, false to set it logic low.
+     */ 
     void write(bool state) noexcept override {
         myState = state;
     }
 
-    /**
-     * @brief Read GPIO state.
-     * 
-     * @return True if the GPIO is active/high, false otherwise.
-     */
+     /**
+     * @brief Read the simulated digital state of the GPIO pin.
+     * * @return True if the simulated pin is logic high, false if it is logic low.
+     */ 
     bool read() const noexcept override {
         return myState;
     }
 
-    /**
-     * @brief Toggle the GPIO.
-     */
+     /**
+     * @brief Toggle the current simulated digital state of the GPIO pin.
+     */ 
     void toggle() noexcept override {
         myState = !myState;
     }
 
-    /**
-     * @brief Check initialization state.
-     */
+     /**
+     * @brief Check if the simulated GPIO driver is initialized.
+     * * @return Always returns true since the simulation stub requires no hardware setup.
+     */ 
     bool isInitialized() const noexcept override {
     return true;
     }
-
-    Stub(const Stub&)            = delete; // No copy constructor.
-    Stub(Stub&&)                 = delete; // No move constructor.
-    Stub& operator=(const Stub&) = delete; // No copy assignment.
-    Stub& operator=(Stub&&)      = delete; // No move assignment.
+    // Delete copy/move operators.
+    Stub(const Stub&)            = delete;
+    Stub(Stub&&)                 = delete;
+    Stub& operator=(const Stub&) = delete;
+    Stub& operator=(Stub&&)      = delete;
 
 private:
-    /** Simulated state (true = high, false = low). */
+    /** @brief The simulated state of the GPIO pin (true = logic high, false = logic low). */
     bool myState;
 };
 } // namespace driver::gpio

@@ -1,6 +1,8 @@
-/**
- * @brief GPIO driver interface
+/*
+ * @file interface.h 
+ * @brief Abstract interface for GPIO driver.
  */
+
 #pragma once
 
 #include <cstdint>
@@ -8,39 +10,36 @@
 namespace driver::gpio
 {
 /**
- * @brief GPIO driver interface
+ * @brief Abstract interface for GPIO operations.
  */
 class Interface
 {
 public:
     /**
-     * @brief Destructor
+     * @brief Virtual destructor to ensure proper cleanup of derived objects.
      */
     virtual ~Interface() noexcept = default;
 
     /**
-     * @brief Write GPIO state.
-     * 
-     * @param[in] state True to enable the GPIO, false otherwise.
+     * @brief Write the digital output state of the GPIO pin.
+     * * @param[in] state True to set the pin logic high, false to set it logic low.
      */
     virtual void write(bool state) noexcept = 0;
 
     /**
-     * @brief Read GPIO state.
-     * 
-     * @return True if the GPIO is active/high, false otherwise.
+     * @brief Read the digital input state of the GPIO pin.
+     * * @return True if the pin is logic high, false if it is logic low.
      */
     virtual bool read() const noexcept = 0;
 
     /**
-     * @brief toggle the GPIO.
+     * @brief Toggle the current digital output state of the GPIO pin.
      */
     virtual void toggle() noexcept = 0;
 
     /**
-     * @brief Check whether the GPIO has been initialized.
-     * 
-     * @return True if the GPIO driver is initialized and ready for use, false otherwise.
+     * @brief Check if the GPIO pin has been successfully configured and initialized.
+     * * @return True if the driver is initialized and ready for use, false otherwise.
      */
     virtual bool isInitialized() const noexcept = 0;
     
