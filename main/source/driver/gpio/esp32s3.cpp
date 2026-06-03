@@ -1,13 +1,7 @@
-/**
- * @brief GPIO driver implementation details for ESP32-S3.
- */
-// Standard headers.
 #include <cstdint>
 
-// ESP32-specific headers.
 #include "driver/gpio.h"
 
-// Local headers.
 #include "driver/gpio/direction.h"
 #include "driver/gpio/esp32s3.h"
 #include "system/pin_manager/esp32s3.h"
