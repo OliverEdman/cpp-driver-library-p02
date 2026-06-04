@@ -80,10 +80,12 @@ public:
      * Formula: (raw / 4095.0) * 3.3V
      * @return Simulated input voltage in Volts.
      */
+
     float readVoltage() const noexcept override 
     { 
-        return (static_cast<float>(myRawInput) / 4095.0f) * 3.3f; 
+        return (static_cast<float>(myRawInput) / Interface::MaxRawValue) * Interface::ReferenceVoltage; 
     }
+    
 
     /**
      * @brief Simulation of hardware input.
