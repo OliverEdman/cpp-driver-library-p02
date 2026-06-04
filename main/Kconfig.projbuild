@@ -1,0 +1,34 @@
+menu "P02 network configuration"
+
+    config P02_ENABLE_MQTT
+        bool "Enable MQTT integration"
+        default y
+        help
+            Enable WiFi and MQTT support for the P02+ extension.
+            Disable this to run the original P02 serial-only behavior.
+
+    config P02_WIFI_SSID
+        string "WiFi SSID"
+        default "CHANGE_ME_WIFI_SSID"
+        help
+            WiFi network SSID used by the ESP32-S3 client.
+
+    config P02_WIFI_PASSWORD
+        string "WiFi password"
+        default "CHANGE_ME_WIFI_PASSWORD"
+        help
+            WiFi network password used by the ESP32-S3 client.
+
+    config P02_MQTT_BROKER_URI
+        string "MQTT broker URI"
+        default "mqtt://192.168.1.50:1883"
+        help
+            MQTT broker URI used by the ESP32-S3 client.
+
+    config P02_MQTT_CLIENT_ID
+        string "MQTT client ID"
+        default "p02-esp32s3-wolfpack"
+        help
+            Unique MQTT client ID used by this ESP32-S3 device.
+
+endmenu
