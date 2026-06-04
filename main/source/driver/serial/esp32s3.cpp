@@ -10,6 +10,21 @@
 
 namespace driver::serial
 {
+
+namespace {
+
+constexpr std::uint32_t WriteTimeoutTicks{pdMS_TO_TICKS(100U)};
+constexpr std::uint32_t ReadTimeoutTicks{pdMS_TO_TICKS(10U)};
+
+constexpr char NewlineChar{'\n'};
+constexpr int PatternQueueSize{1};
+constexpr int PatternGapMs{9};
+constexpr int PatternPreGapMs{0};
+constexpr int PatternPostGapMs{0};
+
+} // namespace
+
+
 // -----------------------------------------------------------------------------
 Esp32s3::Esp32s3(const Config& config) noexcept
     : myConfig{config}
@@ -95,7 +110,7 @@ bool Esp32s3::connect() noexcept
     }
 
     // Enable hardware detection of '\n' as the message delimiter.
-    if (uart_enable_pattern_det_baud_intr(myConfig.port, '\n', 1, 9, 0, 0) != ESP_OK)
+    if (uart_enable_pattern_det_baud_intr(myConfig.port, NewlineChar, PatternQueueSize, PatternGapMs, PatternPreGapMs, PatternPostGapMs) != ESP_OK) 
     {
         if (!preInstalled) { uart_driver_delete(myConfig.port); }
         return false;
@@ -137,7 +152,7 @@ void Esp32s3::write(std::uint8_t byte) noexcept
     if (!myConnected) { return; }
     if (myConfig.useUsbJtag)
     {
-        usb_serial_jtag_write_bytes(&byte, 1U, pdMS_TO_TICKS(10U));
+        usb_serial_jtag_write_bytes(&byte, 1U, ReadTimeoutTicks);
         return;
     }
     uart_write_bytes(myConfig.port, &byte, 1U);
@@ -151,7 +166,7 @@ std::uint16_t Esp32s3::write(const char* msg) noexcept
 
     if (myConfig.useUsbJtag)
     {
-        const int written = usb_serial_jtag_write_bytes(msg, std::strlen(msg), pdMS_TO_TICKS(100U));
+        const int written = usb_serial_jtag_write_bytes(msg, std::strlen(msg), WriteTimeoutTicks);
         return (written < 0) ? 0U : static_cast<std::uint16_t>(written);
     }
     const int written = uart_write_bytes(myConfig.port, msg, std::strlen(msg));
@@ -166,10 +181,10 @@ std::uint8_t Esp32s3::read() noexcept
     std::uint8_t byte{};
     if (myConfig.useUsbJtag)
     {
-        usb_serial_jtag_read_bytes(&byte, 1U, pdMS_TO_TICKS(10U));
+        usb_serial_jtag_read_bytes(&byte, 1U, ReadTimeoutTicks);
         return byte;
     }
-    uart_read_bytes(myConfig.port, &byte, 1U, pdMS_TO_TICKS(10U));
+    uart_read_bytes(myConfig.port, &byte, 1U, ReadTimeoutTicks);
     return byte;
 }
 
@@ -217,10 +232,10 @@ std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
     const int result = uart_read_bytes(myConfig.port,
                                        reinterpret_cast<std::uint8_t*>(buf),
                                        toRead,
-                                       pdMS_TO_TICKS(100U));
+                                       ReadTimeoutTicks);
 
     std::uint8_t newline{};
-    uart_read_bytes(myConfig.port, &newline, 1U, pdMS_TO_TICKS(10U));
+    uart_read_bytes(myConfig.port, &newline, 1U, ReadTimeoutTicks);
 
     const std::uint16_t bytesRead{result < 0 ? std::uint16_t{0} : static_cast<std::uint16_t>(result)};
     buf[bytesRead] = '\0';
