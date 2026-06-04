@@ -16,6 +16,8 @@ namespace driver {
     namespace serial { class Interface; }
     namespace tempsensor { class Interface; }
     namespace timer { class Interface; }
+    namespace mqtt { class Interface; }
+    namespace wifi { class Interface; }
 } 
 
 namespace driver::factory {
@@ -71,6 +73,24 @@ public:
      * @return A unique pointer to the created Timer interface instance.
      */
     std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept override;
+
+    /**
+     * @brief Create a real ESP32-S3 WiFi hardware instance.
+     *
+     * @param[in] ssid WiFi network SSID.
+     * @param[in] password WiFi network password.
+     * @return A unique pointer to the created WiFi interface instance.
+     */
+    std::unique_ptr<wifi::Interface> wifi(const char* ssid, const char* password) noexcept override;
+
+    /**
+     * @brief Create a real ESP32-S3 MQTT hardware instance.
+     *
+     * @param[in]  brokerUri MQTT broker URI.
+     * @param[in] clientId  MQTT client ID.
+     * @return A unique pointer to the created MQTT interface instance.
+     */
+    std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri, const char* clientId) noexcept override;
 
     // no copy move operators
     Esp32s3(const Esp32s3&)            = delete;

@@ -5,6 +5,8 @@
 #include "driver/serial/esp32s3.h"
 #include "driver/timer/esp32s3.h" 
 #include "driver/tempsensor/tmp36.h"
+#include "driver/mqtt/esp32s3.h"
+#include "driver/wifi/esp32s3.h"
 
 namespace driver::factory {
 
@@ -52,6 +54,16 @@ std::unique_ptr<timer::Interface> Esp32s3::timer(std::uint32_t timeout_ms) noexc
     auto t = std::make_unique<driver::timer::Esp32s3>();
     t->setPeriod(timeout_ms);
     return t;
+}
+
+std::unique_ptr<wifi::Interface> Esp32s3::wifi(const char* ssid, const char* password) noexcept {
+
+    return std::make_unique<driver::wifi::Esp32s3>(ssid, password);
+}
+
+std::unique_ptr<mqtt::Interface> Esp32s3::mqtt(const char *brokerUri, const char *clientId) noexcept {
+
+    return std::make_unique<driver::mqtt::Esp32s3>(brokerUri, clientId);
 }
 
 } // namespace driver::factory
