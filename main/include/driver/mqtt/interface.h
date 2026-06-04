@@ -56,5 +56,22 @@ public:
      * should be called periodically from the main loop/task.
      */
     virtual void loop() noexcept = 0;
+
+    /**
+     * @brief Read the latest received MQTT message.
+     *
+     * Copies the latest topic and payload into caller-provided buffers.
+     * Returns false if no unread message is available.
+     *
+     * @param[out] topic Buffer receiving the MQTT topic.
+     * @param[in] topicMaxLen Size of the topic buffer.
+     * @param[out] payload Buffer receiving the MQTT payload.
+     * @param[in] payloadMaxLen Size of the payload buffer.
+     * @return True if a message was copied, false otherwise.
+     */
+    virtual bool readMessage(char* topic,
+                            std::uint16_t topicMaxLen,
+                             char* payload,
+                             std::uint16_t payloadMaxLen ) noexcept = 0;
 };
 } // namespace driver::mqtt
