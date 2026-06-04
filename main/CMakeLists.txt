@@ -8,7 +8,15 @@ idf_component_register(
         "source/driver/tempsensor/tmp36.cpp"
         "source/driver/timer/esp32s3.cpp"
         "source/system/pin_manager/esp32s3.cpp"
+        "source/driver/wifi/esp32s3.cpp"
+        "source/driver/mqtt/esp32s3.cpp"
         "source/system/logic/logic.cpp"
         # Lägg till eeprom och watchdog här för VG sen
     INCLUDE_DIRS
-        "include")
+        "include"
+    REQUIRES
+        esp_event
+        esp_netif
+        esp_wifi
+        mqtt
+        nvs_flash)
