@@ -15,7 +15,6 @@
 namespace app::logic {
 
 /**
- * @class Logic
  * @brief Main system logic class.
  *
  * This class contains the application logic for the system.
@@ -23,10 +22,10 @@ namespace app::logic {
  * know anything about ESP-IDF or hardware specific code.
  *
  * The class controls:
- *  LED behavior
- *  Serial commands
- *  Timer based blinking
- *  Temperature reading
+ * - LED behavior
+ * - Serial commands
+ * - Timer based blinking
+ * - Temperature reading
  */
 class Logic final {
 public:
@@ -44,9 +43,7 @@ public:
 
     /**
      * @brief Start the main loop.
-     *
      * The loop runs until the stop flag becomes true.
-     *
      * @param[in] stop Atomic flag used to stop the system safely.
      */
     void run(const std::atomic<bool>& stop) noexcept;
@@ -63,24 +60,20 @@ public:
     Logic& operator=(Logic&&) = delete;
 
 private:
-
     /**
      * @brief Set the default startup state.
-     *
      * Startup state = LED OFF and Blink mode disabled.
      */
     void setStartState() noexcept;
 
     /**
-     * @brief Initiate drivers
-     * 
-     *  Initiates neccesiray drivers.
+     * @brief Initialize drivers.
+     * Initialize the necessary drivers required by the system.
      */
     void initializeDrivers() noexcept;
 
     /**
      * @brief Read and process serial input.
-     *
      * Reads commands from the serial driver and forwards
      * them to the command handler.
      */
@@ -88,7 +81,6 @@ private:
 
     /**
      * @brief Handle timer events.
-     *
      * Toggles the LED when blink mode is active
      * and the timer has timed out.
      */
@@ -96,7 +88,6 @@ private:
 
     /**
      * @brief Execute serial commands.
-     *
      * Supported commands are on,off,blink on/off, period <value>, status and temp.
      * @param[in] command Command string from serial input.
      */
@@ -104,7 +95,6 @@ private:
 
     /**
      * @brief Print current system status.
-     *
      * Prints blink state, blink period and current temperature.
      */
     void printStatus() noexcept;
@@ -114,33 +104,27 @@ private:
      */
     void printTemperature() noexcept;
 
-    /**
-     * @brief Driver interfaces used by the logic class.
-     *
-     * The logic class uses these pointers to communicate
-     * with the hardware drivers through their interfaces.
-     */ 
-
-    // Serial communication driver.
+    /** @brief Serial communication driver interface pointer. */
     std::unique_ptr<driver::serial::Interface> mySerial;
 
-    // GPIO driver used for LED control.
+    /** @brief GPIO driver interface pointer used for LED control. */
     std::unique_ptr<driver::gpio::Interface> myLed;
 
-    // Timer driver used for blink timing.
+    /** @brief Timer driver interface pointer used for blink timing. */
     std::unique_ptr<driver::timer::Interface> myTimer;
 
-    // ADC driver used by the temperature sensor.
+    /** @brief ADC driver interface pointer used by the temperature sensor. */
     std::unique_ptr<driver::adc::Interface> myAdc;
 
-    // Temperature sensor driver.
+    /** @brief Temperature sensor driver interface pointer. */
     std::unique_ptr<driver::tempsensor::Interface> myTempSensor;
 
-    // True when blink mode is enabled.
+    /** @brief Flag tracking whether blink mode is currently enabled. */
     bool myBlinkEnabled{false};
 
-    // Current LED blink period in milliseconds.
+    /** @brief Current LED blink period config in milliseconds. */
     std::uint32_t myPeriodMs{500U};
 };
 
 } // namespace app::logic
+

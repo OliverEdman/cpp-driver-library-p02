@@ -1,4 +1,5 @@
 /**
+ * @file esp32s3.h
  * @brief A serial driver for the ESP32-S3.
  */
 #pragma once
@@ -18,36 +19,34 @@ namespace driver::serial
  */
 struct Config
 {
-    /** UART port number (e.g. UART_NUM_1). Ignored when useUsbJtag is true. */
+    /** @brief UART port number (e.g. UART_NUM_1). Ignored when useUsbJtag is true. */
     uart_port_t port;
 
-    /** TX GPIO pin number. Ignored when useUsbJtag is true. */
+    /** @brief TX GPIO pin number. Ignored when useUsbJtag is true. */
     int txPin;
 
-    /** RX GPIO pin number. Ignored when useUsbJtag is true. */
+    /** @brief RX GPIO pin number. Ignored when useUsbJtag is true. */
     int rxPin;
 
-    /** Baud rate (e.g. 115200). Ignored when useUsbJtag is true. */
+    /** @brief Baud rate (e.g. 115200). Ignored when useUsbJtag is true. */
     int baudRate;
 
-    /** RX ring buffer size in bytes (must be > 0). Ignored when useUsbJtag is true. */
+    /** @brief RX ring buffer size in bytes (must be > 0). Ignored when useUsbJtag is true. */
     uint32_t rxBufSize;
 
-    /** Use built-in USB-Serial-JTAG instead of a UART port. */
+    /** @brief Use built-in USB-Serial-JTAG instead of a UART port. */
     bool useUsbJtag{false};
 };
 
 /**
  * @brief Serial driver for ESP32-S3.
- *
- *        This class is non-copyable and non-movable.
+ * This class is non-copyable and non-movable.
  */
 class Esp32s3 final: public Interface
 {
 public:
     /**
      * @brief Constructor.
-     *
      * @param[in] config Driver configuration.
      */
     explicit Esp32s3(const Config& config) noexcept;
@@ -59,92 +58,82 @@ public:
 
     /**
      * @brief Connect device (installs UART driver, configures pins).
-     *
-     * @return True on success, false on failure.
+     * @return True if successful, false on failure.
      */
     bool connect() noexcept override;
 
     /**
-     * @brief Disconnect device (uninstalls UART driver).
+     * @brief Disconnect device and uninstall the UART driver
      */
     void disconnect() noexcept override;
 
     /**
      * @brief Write a single byte.
-     *
      * @param[in] byte The byte to send.
      */
     void write(std::uint8_t byte) noexcept override;
 
     /**
      * @brief Write a null-terminated string.
-     *
      * @param[in] msg The message to send.
-     *
-     * @return The number of transmitted bytes, or 0 on error.
+     * @return The number of bytes successfully sent, or 0 on error.
      */
     std::uint16_t write(const char* msg) noexcept override;
 
     /**
-     * @brief Read a single byte (blocks up to 10 ms).
-     *
-     * @return The received byte, or 0 if none available.
+     * @brief Read a single byte (blocks for up to 10 ms).
+     * @return The received byte value, or 0 if no data is available.
      */
     std::uint8_t read() noexcept override;
 
     /**
      * @brief Read a newline-terminated message into a buffer.
-     *
-     *        Reads bytes until '\n' is received, the buffer is full, or
-     *        a per-byte timeout (10 ms) elapses with no data. The result
-     *        is always null-terminated.
-     *
-     * @param[out] buf    Destination buffer.
-     * @param[in]  maxLen Size of the destination buffer (including '\0').
-     *
-     * @return Number of bytes written, excluding the null terminator.
+     * Reads characters (bytes) until '\n' is found, the buffer becomes full, or
+     * a per-byte timeout (10 ms) occurs. The output is always null-terminated.
+     * @param[out] buf the Destination buffer to write the text into.
+     * @param[in] maxLen The maxinum size of the buffer (including '\0').
+     * @return Number of bytes read, excluding the null terminator.
      */
     std::uint16_t read(char* buf, std::uint16_t maxLen) noexcept override;
 
     /**
-     * @brief Check if a complete newline-terminated message is available.
-     *
-     * @return True if a full message is waiting, false otherwise.
+     * @brief Check if a complete newline-terminated message is ready to be read.
+     * @return True if a full message is waiting in the buffer, false otherwise.
      */
     bool isDataAvailable() const noexcept override;
 
     /**
-     * @brief Check if the driver is initialized (connected).
-     *
-     * @return True if initialized, false otherwise.
+     * @brief Check if the serial driver is initialized (connected) and active.
+     * @return True if connected and ready for use, false otherwise.
      */
     bool isInitialized() const noexcept override;
 
+    // Delete copy/move constructors and operators.
     Esp32s3(const Esp32s3&)            = delete;
     Esp32s3(Esp32s3&&)                 = delete;
     Esp32s3& operator=(const Esp32s3&) = delete;
     Esp32s3& operator=(Esp32s3&&)      = delete;
 
 private:
-    /** Event queue depth for pattern detection. */
+    /** @brief Event queue depth for pattern detection. */
     static constexpr int QueueDepth{10};
 
-    /** Max line length for USB-Serial-JTAG accumulator. */
+    /** @brief Max line length for USB-Serial-JTAG accumulator. */
     static constexpr std::uint16_t LineBufSize{64};
 
-    /** Driver configuration. */
+    /** @brief Driver configuration. */
     Config myConfig;
 
-    /** FreeRTOS event queue used for pattern detection. */
+    /** @brief FreeRTOS event queue used for pattern detection. */
     QueueHandle_t myQueue;
 
-    /** True if the UART driver is installed and active. */
+    /** @brief True if the UART driver is installed and active. */
     bool myConnected;
 
-    /** Accumulated partial line for USB-Serial-JTAG mode. */
+    /** @brief Accumulated partial line for USB-Serial-JTAG mode. */
     char myLineBuf[LineBufSize];
 
-    /** Number of valid bytes in myLineBuf. */
+    /** @brief Number of valid bytes in myLineBuf. */
     std::uint16_t myLineLen;
 };
 

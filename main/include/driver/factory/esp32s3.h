@@ -1,3 +1,8 @@
+/**
+ * @file esp32s3.h
+ * @brief Interface for the ESP32-S3 driver
+ */
+
 #pragma once
 
 #include "interface.h"
@@ -24,22 +29,47 @@ public:
     Esp32s3() noexcept = default;
     ~Esp32s3() noexcept override = default;
 
-    /** @return A smart pointer to the real ESP32-S3 ADC instance. */
+    /**
+     * @brief Create a real ESP32-S3 ADC hardware instance.
+     * * @param[in] pin The hardware pin number to use for the ADC channel.
+     * @return A unique pointer to the created ADC interface instance.
+     */
     std::unique_ptr<adc::Interface> adc(std::uint8_t pin) noexcept override;
 
-    /** @return A smart pointer to the real ESP32-S3 GPIO input instance. */
+    /**
+     * @brief Create a real ESP32-S3 GPIO input hardware instance.
+     * * @param[in] pin The hardware pin number to configure as input.
+     * @return A unique pointer to the created GPIO interface instance.
+     */
     std::unique_ptr<gpio::Interface> gpioInput(std::uint8_t pin) noexcept override;
 
-    /** @return A smart pointer to the real ESP32-S3 GPIO output instance. */
+    /**
+     * @brief Create a real ESP32-S3 GPIO output hardware instance.
+     * * @param[in] pin The hardware pin number to configure as output.
+     * @return A unique pointer to the created GPIO interface instance.
+     */
     std::unique_ptr<gpio::Interface> gpioOutput(std::uint8_t pin) noexcept override;
 
-    /** @return A smart pointer to the real ESP32-S3 Serial instance. */
+    /**
+     * @brief Create a real ESP32-S3 Serial UART hardware instance.
+     * * @param[in] baud_bps The communication speed in bits per second (baud rate).
+     * @return A unique pointer to the created Serial interface instance.
+     */
     std::unique_ptr<serial::Interface> serial(std::uint32_t baud_bps) noexcept override;
 
-    /** @return A smart pointer to the real TMP36 Temperature sensor instance. */
+    /**
+     * @brief Create a real TMP36 Temperature sensor hardware instance.
+     * * @param[in] pin The hardware pin number connected to the temperature sensor.
+     * @param[in] adc Reference to the initialized ADC driver instance to use for reading.
+     * @return A unique pointer to the created Temperature Sensor interface instance.
+     */
     std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept override;
 
-    /** @return A smart pointer to the real ESP32-S3 Timer instance. */
+    /**
+     * @brief Create a real ESP32-S3 Timer hardware instance.
+     * * @param[in] timeout_ms The timer timeout duration specified in milliseconds.
+     * @return A unique pointer to the created Timer interface instance.
+     */
     std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept override;
 
     // no copy move operators

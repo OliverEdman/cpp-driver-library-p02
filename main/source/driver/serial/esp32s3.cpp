@@ -1,7 +1,4 @@
-/**
- * @brief Serial driver ESP32-S3 implementation.
- */
-#include <cstdint>
+#include <icstdint>
 #include <cstring>
 
 #include "driver/serial/esp32s3.h"

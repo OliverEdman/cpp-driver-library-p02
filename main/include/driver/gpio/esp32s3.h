@@ -1,4 +1,5 @@
 /**
+ * @file esp32s3.h
  * @brief GPIO driver for ESP32-S3.
  */
 #pragma once
@@ -11,9 +12,9 @@
 namespace driver::gpio
 {
 /**
- * @brief GPIO driver Esp32-S3.
- * 
- *        This class is non-copyable and non-movable.
+ * @brief GPIO driver implementation for ESP32-S3.
+ * * This class handles physical GPIO pin configuration.
+ * It is explicitly non-copyable and non-movable.
  */
 class Esp32s3 final : public Interface
 {
@@ -34,7 +35,7 @@ public:
     /**
      * @brief Write GPIO state.
      * 
-     * @param[in] state True to enable the GPIO, false otherwise.
+     * @param[in] True if the pin is logic high, false if it is logic low.
      */
     void write(bool state) noexcept override;
 
@@ -51,24 +52,24 @@ public:
     void toggle() noexcept override;
 
     /**
-    * @brief Check initialization state.
-     * 
-     * @return True if the GPIO was successfully initialized.
+     * @brief Check if the GPIO pin was successfully initialized.
+     * * @return True if the hardware configuration succeeded, false otherwise.
      */
     bool isInitialized() const noexcept override;
 
-    Esp32s3()                          = delete; // No default constructor (we need a pin).
-    Esp32s3(const Esp32s3&)            = delete; // No copy constructor.
-    Esp32s3(Esp32s3&&)                 = delete; // No move constructor.
-    Esp32s3& operator=(const Esp32s3&) = delete; // No copy assignment.
-    Esp32s3& operator=(Esp32s3&&)      = delete; // No move assignment.
+    // Delete default constructor, copy/move constructors and assignment operators
+    Esp32s3()                          = delete;
+    Esp32s3(const Esp32s3&)            = delete; 
+    Esp32s3(Esp32s3&&)                 = delete; 
+    Esp32s3& operator=(const Esp32s3&) = delete; 
+    Esp32s3& operator=(Esp32s3&&)      = delete; 
 
 private:
-    /** GPIO pin. */
+    /** @brief The assigned hardware GPIO pin number. */
     const std::uint8_t myPin;
-    /** GPIO direction. */
+    /** @brief The configured data direction for the pin. */
     const Direction myDirection;
-    /** True if GPIO was successfully configured. */
+    /** @brief Flag indicating if the hardware was successfully initialized. */
     bool myInitialized;
 };
 } // namespace driver::gpio

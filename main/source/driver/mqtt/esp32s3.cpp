@@ -1,12 +1,6 @@
-/**
- * @brief MQTT driver implementation details for ESP32-S3.
- */
-
-// Standard headers.
 #include <cstdint>
 #include <cstring>
 
-// Local headers.
 #include "driver/mqtt/esp32s3.h"
 
 extern "C" 

@@ -1,4 +1,5 @@
 /**
+ * @file esp32s3.h
  * @brief ADC driver for ESP32-S3. 
  */
 #pragma once
@@ -35,16 +36,16 @@ public:
     bool isInitialized() const noexcept override;
 
      /**
-      * @brief Initiate ADC
+      * @brief Initialize ADC
       *
       * @return True if the ADC was initialized successfully, false otherwise.
       */
     bool init() noexcept override;
 
      /**
-      * @brief Deinitiate ADC
+      * @brief Deinitialize ADC
       *
-      * @return True if the ADC was deinitialized succesfully, false otherwise.
+      * @return True if the ADC was deinitialized successfully, false otherwise.
       *
       */
     bool deinit() noexcept override;
@@ -59,7 +60,7 @@ public:
 
     /**
      * @brief Read the input voltage in Volts.
-     * This handle the raw value to voltage.
+     * Converts the raw value to voltage.
      * 
      * @return Input voltage in Volts.
      */
@@ -79,4 +80,5 @@ private:
     /** ESP-IDF ADC unit handle. */
     adc_oneshot_unit_handle_t myHandle;
 };
+
 } // namespace driver::adc 

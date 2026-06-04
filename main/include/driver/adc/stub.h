@@ -1,4 +1,5 @@
 /**
+ * @file stub.h
  * @brief ADC driver stub for simulation.
  */
 #pragma once 
@@ -30,8 +31,8 @@ public:
     ~Stub() noexcept override = default;
 
     /**
-     * @brief Initiate ADC 
-     * @return True if success.
+     * @brief Initialize the ADC stub. 
+     * @return True if the ADC was initialized successfully, false otherwise.
      */
     bool init() noexcept override 
     {
@@ -43,8 +44,8 @@ public:
     }
 
     /**
-     * @brief Deinitiate ADC
-     * @return True if success.
+     * @brief Deinitialize the ADC stub.
+     * @return True if the ADC was deinitialized successfully, false otherwise.
      */
     bool deinit() noexcept override 
     {
@@ -56,7 +57,8 @@ public:
     }
 
     /**
-     * @brief Check if initialized.
+     * @brief Check if the ADC stub is initialized.
+     * @return True if initialized and ready, false otherwise.
      */
     bool isInitialized() const noexcept override 
     { 
@@ -64,7 +66,9 @@ public:
     }
 
     /**
-     * @brief Returns the simulated raw value (0-4095).
+     * @brief Read raw digital value from the simulated ADC.
+     * For ESP32-S3, this simulates 0-4095 (12 bit).
+     * @return Simulated raw ADC value.
      */
     std::uint16_t readRaw() const noexcept override 
     { 
@@ -72,8 +76,9 @@ public:
     }
 
     /**
-     * @brief Returns the simulated voltage.
+     * @brief Read the simulated input voltage in Volts.
      * Formula: (raw / 4095.0) * 3.3V
+     * @return Simulated input voltage in Volts.
      */
     float readVoltage() const noexcept override 
     { 

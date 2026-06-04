@@ -1,5 +1,6 @@
-/**
- * @brief MQTT driver interface
+/*
+ * @file stub.h
+ * @brief MQTT driver stub interface for simulation.
  */
 #pragma once
 
@@ -10,16 +11,16 @@
 namespace driver::mqtt
 {
 /**
- * @brief MQTT driver interface
- * 
- *        This class is non-copyable and non-movable.
+ * @brief MQTT driver stub interface for simulation.
+ * This class is non-copyable and non-movable.
  */
 class Stub final : public Interface
 {
 public:
-    /**
-     * @brief Constructor
-     */
+     /**
+     * @brief Constructor.
+     * Initializes the simulated connection state to disconnected.
+     */ 
     Stub() noexcept
         : myConnected{false}
     {}
@@ -30,8 +31,7 @@ public:
     ~Stub() noexcept override = default;
 
     /**
-     * @brief Connect to the MQTT broker.
-     * 
+     * @brief Connect to the simulated MQTT broker.
      * @return True if connection succeeded, false otherwise.
      */
     bool connect() noexcept override{
@@ -40,16 +40,15 @@ public:
     }
 
     /**
-     * @brief Disconnect from the MQTT broker.
+     * @brief Disconnect from the simulated MQTT broker.
      */
     void disconnect() noexcept override{
         myConnected = false;
     }
 
     /**
-     * @brief Check connection state.
-     * 
-     * @return True if connected, false otherwise.
+     * @brief Check the simulated connection state.
+     * @return True if currently simulated is connected, false otherwise.
      */
     bool isConnected() const noexcept override{
         return myConnected;
@@ -57,11 +56,9 @@ public:
 
     /**
      * @brief Publish MQTT message.
-     * 
      * @param[in] topic MQTT topic.
      * @param[in] payload Message payload.
-     * 
-     * @return True if successful, false otherwise.
+     * @return True if the simulated was connected, false if disconnected.
      */
     bool publish(const char* topic, const char* payload) noexcept override{
         (void)topic;
@@ -71,11 +68,9 @@ public:
     }
 
     /**
-     * @brief Subscribe to MQTT topic.
-     * 
+     * @brief Simulate subscribe to an MQTT topic.
      * @param[in] topic MQTT topic.
-     * 
-     * @return True if subscription succeeded, false otherwise.
+     * @return True if the simulated connected, false if disconnected.
      */
     bool subscribe(const char* topic) noexcept override{
         (void)topic;
@@ -84,21 +79,20 @@ public:
     }
 
     /**
-     * @brief Process MQTT events and incoming messages.
-     * 
-     *        should be called periodically from the main loop/task.
+     * @brief Process simulated MQTT events and incoming messages.
+     * This function does nothing since the simulated stub has no real backround tasks.
      */
     void loop() noexcept override{
         // No operation in Stub.
     }
 
-    Stub(const Stub&)            = delete; // No copy constructor.
-    Stub(Stub&&)                 = delete; // No move constructor.
-    Stub& operator=(const Stub&) = delete; // No copy assignment.
-    Stub& operator=(Stub&&)      = delete; // No move assignment.
+    Stub(const Stub&)            = delete;
+    Stub(Stub&&)                 = delete;
+    Stub& operator=(const Stub&) = delete;
+    Stub& operator=(Stub&&)      = delete;
 
 private:
-    /** Simulated state (True = connected, false = disconnected. ) */
+    /** @brief Simulated state (True = connected, false = disconnected. ) */
     bool myConnected;
 };
 } // namespace driver::mqtt

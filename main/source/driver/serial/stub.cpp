@@ -1,7 +1,3 @@
-/**
- * @brief Serial driver stub implementation details.
- * 
- */
 #include <cstdio>
 #include <cstdint>
 

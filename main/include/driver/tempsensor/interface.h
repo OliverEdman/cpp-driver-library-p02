@@ -1,10 +1,14 @@
+/**
+ * @file interface.h
+ * @brief Interface for the temperature driver.
+ */
+
 #pragma once 
 
 namespace driver::tempsensor {
 
 /**
- * @class Interface
- * @brief Abstraction for a temperature sensor driver.
+ * @brief Abstract interface for temperature sensor driver.
  */
 class Interface {
 public:
@@ -16,15 +20,15 @@ public:
     virtual ~Interface() noexcept = default;
 	
     /**
-     * @brief Read the current temperature.
-     * @return Temperature in degrees Celsius.
+     * @brief Read the current temperature from the sensor.
+     * @return The temperature value in degrees Celsius.
      */
 
     virtual float readCelsius() noexcept = 0;
 
     /**
-     * @brief Checks if the sensor driver is succuessfully initialized.
-     * @return true if initialized, false oterwise.
+     * @brief Checks if the temperature sensor driver is succuessfully initialized.
+     * @return true if initialized and ready, false oterwise.
      */
 
     virtual bool isInitialized() const noexcept = 0;

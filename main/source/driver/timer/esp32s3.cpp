@@ -1,4 +1,3 @@
-
 #include "esp_attr.h" // IRAM_ATTR
 #include "driver/timer/esp32s3.h"
 namespace driver::timer {
@@ -6,10 +5,6 @@ namespace driver::timer {
 constexpr std::uint32_t TimerResolutionHz{1'000'000U};
 constexpr std::uint32_t MsToUs{1000U};
 
-/**
- * @brief Constructor for the ESP32-S3 Timer driver.
- * Configures the GPTimer with 1us resolution.
- */
 
 Esp32s3::Esp32s3() noexcept: handle{nullptr}, timeout_flag{false}, my_initialized{false} {
     
@@ -31,9 +26,7 @@ Esp32s3::Esp32s3() noexcept: handle{nullptr}, timeout_flag{false}, my_initialize
     }
 }
 
-/**
- * @brief Destructor. Ensures timer is stopped.
- */
+
 Esp32s3::~Esp32s3() noexcept {
     if (handle != nullptr) {
         gptimer_stop(handle);
@@ -80,9 +73,7 @@ bool Esp32s3::isInitialized() const noexcept {
     return my_initialized;
 }
 
-/**
- * @brief Static ISR callback. 
- */
+
 bool IRAM_ATTR Esp32s3::timer_callback(gptimer_handle_t timer, 
                                       const gptimer_alarm_event_data_t *edata, 
                                       void *user_data) {

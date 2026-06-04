@@ -1,6 +1,6 @@
 /**
  * @file Stub.h
- * @brief Stub implementation of the temperature sensor interface for simulation and testing.
+ * @brief Temperature sensor driver stub for simulation.
  */
 
 #pragma once
@@ -9,14 +9,15 @@
 namespace driver::tempsensor {
 
 /**
- * @class Stub
- * @brief Simulation class for a temperature sensor.
+ * @brief Temperature sensor driver stub for simulation.
+ * This class simulates temperature readings in memory without real hardware.
+ * This class cannot be copied or moved.
  */
 class Stub final : public Interface {
 public:
 
     /**
-     * @brief Default constructor.
+     * @brief Constructor.
      */
     Stub() noexcept 
 	    : my_simulatedTemp{25.0f}
@@ -31,35 +32,31 @@ public:
      */
     ~Stub() noexcept override = default;
 
-    // Disable Copy and Move
-
+    // Delete copy/move cpnstructors and operators.
     Stub(const Stub&)            = delete;
     Stub& operator=(const Stub&) = delete;
     Stub(Stub&&)                 = delete;
     Stub& operator=(Stub&&)      = delete;
 
     /**
-     * @brief Reads the currently set simulated temperature.
-     * @return The simulated temperature in Celsius.
+     * @brief Reads the current simulated temperature.
+     * @return The simulated temperature value in degrees Celsius.
      */
     float readCelsius() noexcept override {
         return my_simulatedTemp;
     }
 
     /**
-     * @brief Checks if the simulated sensor is initialized.
-     * @return true if the stub is initialized,false otherwise.
+     * @brief Checks if the simulated sensor driver is successfully initialized.
+     * @return True if initialized, false otherwise.
      */
     bool isInitialized() const noexcept override {
         return my_initialized;
     }
 
-    /** @brief Simulation Functions
-     * These functions are unique to the Stub class and are used for tests. 
-     */
-
     /**
-     * @brief Sets the temperature that the stub should return.
+     * @brief Set the simulated temperature value that the stub should return.
+     * @param[in] temp The target temperature in degrees Celsius.
      */
     void setTemperature(float temp) noexcept {
         my_simulatedTemp = temp;
@@ -67,15 +64,18 @@ public:
 
     /**
      * @brief Sets the initialization state of the stub.
-     * @param state The state to set (true for initialized, false for not).
+     * @param[in] state Set to true to simulate an initialized sensor, false otherwise.
      */
     void setInitialized(bool state) noexcept {
         my_initialized = state;
     }
 
 private:
-    float my_simulatedTemp; // Simulated temperature 
-    bool my_initialized;     // Simulated initialization state.
+    /** @brief The currently stored simulated temperature value. */
+    float mySimulatedTemp;
+
+    /** @brief The currently stored simulated initialization state. */
+    bool myInitialized;
 };
 
 } // namespace driver::tempsensor
