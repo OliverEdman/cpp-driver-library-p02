@@ -10,6 +10,9 @@ namespace driver::adc
 namespace
 {
 
+constexpr float MaxRawValue{4095.0F};
+constexpr float SupplyVoltage{3.3F};
+
 bool isAdcPin(const std::uint8_t pin) noexcept 
 {
     return (pin >= 1U) && (pin <= 10U);
@@ -124,14 +127,12 @@ std::uint16_t Esp32s3::readRaw() const noexcept
 
 float Esp32s3::readVoltage() const noexcept
 {
-    constexpr float maxRawValue{4095.0F};
-    constexpr float supplyVoltage{3.3F};
 
     // Get raw ADC value (0-4095).
     const auto rawValue = readRaw();
 
     // Convert raw ADC value to volts.
-    const auto voltage = (rawValue / maxRawValue) * supplyVoltage;
+    const auto voltage = (rawValue / MaxRawValue) * SupplyVoltage;
 
     return voltage;
 }
