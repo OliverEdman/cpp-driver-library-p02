@@ -11,10 +11,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 
-extern "C" {
-    #include "driver/usb_serial_jtag.h"
-}
-
 namespace driver::serial
 {
 
