@@ -13,7 +13,10 @@ namespace driver::adc
  */
 class Interface
 {
-public:    
+public:
+
+    static constexpr float MaxRawValue{4095.0f};
+    static constexpr float ReferenceVoltage{3.3f};
 
     /**
      * @brief Destructor.
