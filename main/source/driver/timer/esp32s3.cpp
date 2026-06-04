@@ -1,10 +1,15 @@
 #include "esp_attr.h" // IRAM_ATTR
 #include "driver/timer/esp32s3.h"
-namespace driver::timer {
+namespace driver::timer
+{
 
-constexpr std::uint32_t TimerResolutionHz{1'000'000U};
-constexpr std::uint32_t MsToUs{1000U};
+namespace
+{
 
+constexpr std::uint32_t TimerResolutionHz{1'000'000U}; // 1 tick = 1us
+constexpr std::uint32_t MsToUs{1'000U};
+
+}
 
 Esp32s3::Esp32s3() noexcept: handle{nullptr}, timeout_flag{false}, my_initialized{false} {
     
