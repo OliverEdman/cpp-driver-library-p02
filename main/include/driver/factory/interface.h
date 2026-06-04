@@ -13,6 +13,8 @@ namespace driver::gpio { class Interface; }
 namespace driver::serial { class Interface; }
 namespace driver::tempsensor { class Interface; }
 namespace driver::timer { class Interface; }
+namespace driver::mqtt { class Interface; }
+namespace driver::wifi { class Interface; }
 
 namespace driver::factory {
 
@@ -73,6 +75,24 @@ public:
      * @return A unique pointer to the created Timer interface instance.
      */
     virtual std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept = 0;
+
+    /**
+     * @brief Create a WiFi driver instance.
+     *
+     * @param[in] ssid WiFi network SSID.
+     * @param[in] password WiFi network password.
+     * @return A unique pointer to the created WiFi interface instance.
+     */
+    virtual std::unique_ptr<wifi::Interface> wifi(const char* ssid, const char* password) noexcept = 0;
+
+    /**
+     * @brief Create a MQTT driver instance,
+     *
+     * @param[in] brokerUri MQTT broker URI.
+     * @param[in] clientId  MQTT client ID.
+     * @return A unique pointer to the created MQTT interface instance.
+     */
+    virtual std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri, const char *clientId) noexcept = 0;
 
     // No copy and move operations allowed
     Interface(const Interface&)            = delete;
