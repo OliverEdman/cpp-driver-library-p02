@@ -60,11 +60,9 @@ bool Esp32s3::connect() noexcept
     if (myConnected) { return true; }
     if (myHandle != nullptr) { return true; }
 
-    // Configure brokerUri and clientId.
-    const esp_mqtt_client_config_t config{
-        .broker = {.address.uri = myBrokerUri},
-        .credentials = {.client_id = myClientId},
-    };
+    esp_mqtt_client_config_t config{};
+    config.broker.address.uri = myBrokerUri;
+    config.credentials.client_id = myClientId;
 
     // Initialize MQTT client, return false on failure.
     myHandle = esp_mqtt_client_init(&config);
