@@ -18,5 +18,10 @@ idf_component_register(
         esp_event
         esp_netif
         esp_wifi
+        esp_driver_uart
+        esp_driver_gptimer
+        esp_driver_usb_serial_jtag
+        esp_driver_gpio
+        esp_adc
         mqtt
         nvs_flash)
