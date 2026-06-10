@@ -86,6 +86,25 @@ public:
         // No operation in Stub.
     }
 
+    /**
+     * @brief Read a simulated MQTT message.
+     *
+     * The minimal stub currently has no queued messages, so this always returns false.
+     */
+    bool readMessage(char* topic,
+                     std::uint16_t topicMaxLen,
+                     char* payload,
+                     std::uint16_t payloadMaxLen) noexcept override
+    {
+        (void)topic;
+        (void)topicMaxLen;
+        (void)payload;
+        (void)payloadMaxLen;
+
+        return false;
+    }
+
+
     Stub(const Stub&)            = delete;
     Stub(Stub&&)                 = delete;
     Stub& operator=(const Stub&) = delete;

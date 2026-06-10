@@ -14,6 +14,8 @@
 #include "driver/serial/stub.h"
 #include "driver/timer/stub.h"
 #include "driver/tempsensor/stub.h"
+#include "driver/mqtt/stub.h"
+#include "driver/wifi/stub.h"
 
 namespace driver::factory {
 
@@ -100,6 +102,32 @@ public:
     std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept override {
         (void)timeout_ms;
         return std::make_unique<driver::timer::Stub>(); 
+    }
+
+    /**
+     * @brief Create a simulated WiFi stub instance.
+     *
+     * @param[in] ssid WiFi network SSID to simulate (unused).
+     * @param[in] password WiFi network password to simulate (unused).
+     * @return A unique pointer to the created simulated WiFi stub instance.
+     */
+    std::unique_ptr<wifi::Interface> wifi(const char* ssid, const char* password) noexcept override {
+        (void)ssid;
+        (void)password;
+        return std::make_unique<driver::wifi::Stub>();
+    }
+
+    /**
+     * @brief Create a simulated MQTT stub instance,
+     *
+     * @param[in] brokerUri MQTT broker URI to simulate (unused).
+     * @param[in] clientId  MQTT client ID to simulate (unused).
+     * @return A unique pointer to the created simulated MQTT stub instance.
+     */
+    std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri, const char* clientId) noexcept override {
+        (void)brokerUri;
+        (void)clientId;
+        return std::make_unique<driver::mqtt::Stub>();
     }
 
     // No copy and move

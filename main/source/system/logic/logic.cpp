@@ -4,6 +4,13 @@
 #include "driver/timer/interface.h"
 #include "driver/tempsensor/interface.h"
 #include "driver/adc/interface.h"
+#include "sdkconfig.h"
+
+// P02+ only: keep WiFi/MQTT dependencies out of the original P02 logic build.
+#if CONFIG_P02_ENABLE_MQTT
+    #include "driver/mqtt/interface.h"
+    #include "driver/wifi/interface.h"
+#endif
 
 #include <cstdio>
 #include "freertos/FreeRTOS.h"
@@ -15,6 +22,13 @@ namespace
     constexpr std::uint8_t  Tmp36Pin{1};
     constexpr std::uint32_t BaudRate{115200};
     constexpr std::uint16_t DefaultPeriodMs{500};
+#if CONFIG_P02_ENABLE_MQTT
+    // Values come from menuconfig/sdkconfig so private WiFi data is not hardcoded.
+    constexpr const char*   WifiSsid{CONFIG_P02_WIFI_SSID};               // WiFi network used by the ESP32-S3 client.
+    constexpr const char*   WifiPassword{CONFIG_P02_WIFI_PASSWORD};       // WiFi password used by the ESP32-S3 client.
+    constexpr const char*   brokerUri{CONFIG_P02_MQTT_BROKER_URI};        // MQTT broker used by the ESP32-S3 client.
+    constexpr const char*   clientId{CONFIG_P02_MQTT_CLIENT_ID};          // Unique MQTT client ID for this device.
+#endif
 
     bool matchStrings(const char* s1, const char* s2) noexcept
     {
@@ -29,39 +43,39 @@ namespace
         }
         return true;
     }
-    
+
     bool startsWith(const char* text, const char* prefix) noexcept
     {
-    if ((text == nullptr) || (prefix == nullptr)) { return false; }
+        if ((text == nullptr) || (prefix == nullptr)) { return false; }
 
-    std::size_t i{0};
-    while (prefix[i] != '\0')
-    {
-        if (text[i] != prefix[i]) { return false; }
-        i++;
-    }
+        std::size_t i{0};
+        while (prefix[i] != '\0')
+        {
+            if (text[i] != prefix[i]) { return false; }
+            i++;
+        }
 
-    return true;
+        return true;
     }
 
     std::uint32_t parseUint32(const char* text) noexcept
-{
-    if (text == nullptr) { return 0U; }
-
-    std::uint32_t value{0U};
-
-    for (std::size_t i{0}; text[i] != '\0'; i++)
     {
-        if ((text[i] < '0') || (text[i] > '9')) {
-            return 0U;
+        if (text == nullptr) { return 0U; }
+
+        std::uint32_t value{0U};
+
+        for (std::size_t i{0}; text[i] != '\0'; i++)
+        {
+            if ((text[i] < '0') || (text[i] > '9')) {
+                return 0U;
+            }
+
+            value = (value * 10U) + static_cast<std::uint32_t>(text[i] - '0');
         }
 
-        value = (value * 10U) + static_cast<std::uint32_t>(text[i] - '0');
+        return value;
     }
 
-    return value;
-}
-    
 } // namespace 
 
 
@@ -77,6 +91,10 @@ Logic::Logic(driver::factory::Interface& factory) noexcept
     ,myTimer{factory.timer(DefaultPeriodMs)}
     ,myAdc{factory.adc(Tmp36Pin)}
     ,myTempSensor{factory.tempSensor(Tmp36Pin, *myAdc)}
+#if CONFIG_P02_ENABLE_MQTT
+    ,myWifi{factory.wifi(WifiSsid, WifiPassword)}
+    ,myMqtt{factory.mqtt(brokerUri, clientId)}
+#endif
     {
         setStartState();
         initializeDrivers();
@@ -101,12 +119,23 @@ void Logic::initializeDrivers() noexcept
 {
     if (myAdc && !myAdc->isInitialized())
     {
-    myAdc->init();
+        myAdc->init();
     }
     if (mySerial && !mySerial->isInitialized())
     {
-    mySerial->connect();
+        mySerial->connect();
     }
+#if CONFIG_P02_ENABLE_MQTT
+    // P02+ mode: networking must be ready before MQTT can connect.
+    if (myWifi && !myWifi->isConnected())
+    {
+        myWifi->connect();
+    }
+    if (myMqtt && myWifi && myWifi->isConnected() && !myMqtt->isConnected())
+    {
+        myMqtt->connect();
+    }
+#endif
 }
 
 void Logic::processSerial() noexcept
@@ -124,6 +153,41 @@ void Logic::processSerial() noexcept
     }
 }
 
+#if CONFIG_P02_ENABLE_MQTT
+void Logic::processMqtt() noexcept
+{
+    if (!myMqtt) { return; }
+
+    if (myWifi && !myWifi->isConnected())
+    {
+        myMqttSubscribed = false;
+        myWifi->reconnect();
+        return;
+    }
+
+    if (!myMqtt->isConnected())
+    {
+        myMqttSubscribed = false;
+        myMqtt->connect();
+        return;
+    }
+
+    if (!myMqttSubscribed)
+    {
+        myMqttSubscribed = myMqtt->subscribe("p02/command");
+    }
+
+    myMqtt->loop();
+
+    char topic[32]{};
+    char payload[32]{};
+
+    if (myMqtt->readMessage(topic, sizeof(topic), payload, sizeof(payload)))
+    {
+        handleCommand(payload);
+    }
+}
+#endif
 
 void Logic::handleCommand(const char* command) noexcept
 {
@@ -140,81 +204,79 @@ void Logic::handleCommand(const char* command) noexcept
     buf[i] = '\0';
     command = buf;
 
-    if (matchStrings(command, "on")) 
+    if (matchStrings(command, "on"))
     {
         myBlinkEnabled = false;
         myTimer->stop();
         myLed->write(true);
     }
-    else if (matchStrings(command, "off")) 
+    else if (matchStrings(command, "off"))
     {
         myBlinkEnabled = false;
         myTimer->stop();
         myLed->write(false);
     }
-    else if (matchStrings(command, "blink on")) 
+    else if (matchStrings(command, "blink on"))
     {
         myBlinkEnabled = true;
         myTimer->setPeriod(myPeriodMs);
         myTimer->start();
     }
-    else if (matchStrings(command, "blink off")) 
+    else if (matchStrings(command, "blink off"))
     {
         myBlinkEnabled = false;
         myTimer->stop();
         myLed->write(false);
     }
-    else if (matchStrings(command, "status")) 
+    else if (matchStrings(command, "status"))
     {
         printStatus();
     }
-    else if (matchStrings(command, "temp")) 
+    else if (matchStrings(command, "temp"))
     {
         printTemperature();
     }
     else if (startsWith(command, "period "))
     {
-    const char* valueText = command + 7; 
-    const std::uint32_t newPeriod = parseUint32(valueText);
+        const char* valueText = command + 7;
+        const std::uint32_t newPeriod = parseUint32(valueText);
 
-    if (newPeriod > 0U)
-    {
-        myPeriodMs = newPeriod;
-        myTimer->setPeriod(myPeriodMs);
-
-        if (myBlinkEnabled)
+        if (newPeriod > 0U)
         {
-            myTimer->start();
-        }
-        if (mySerial)
+            myPeriodMs = newPeriod;
+            myTimer->setPeriod(myPeriodMs);
+
+            if (myBlinkEnabled)
             {
-            mySerial->write("Period updated\n");
+                myTimer->start();
+            }
+            if (mySerial)
+            {
+                mySerial->write("Period updated\n");
             }
         }
         else
         {
             if (mySerial)
             {
-            mySerial->write("Invalid period\n");
+                mySerial->write("Invalid period\n");
             }
         }
-}
+    }
 }
 
 void Logic::processTimer() noexcept
 {
     if (myBlinkEnabled && myLed && myTimer && myTimer->isTimeout())
     {
-    myLed->toggle();
+        myLed->toggle();
     }
 }
 
 
 void Logic::printStatus() noexcept
 {
-    if (!mySerial || !myTempSensor) {
-        return;
-    }
+    if (!myTempSensor) { return; }
 
     const float temp = myTempSensor->readCelsius();
 
@@ -229,7 +291,17 @@ void Logic::printStatus() noexcept
         static_cast<double>(temp)
     );
 
-    mySerial->write(buffer);
+    if (mySerial)
+    {
+        mySerial->write(buffer);
+    }
+
+#if CONFIG_P02_ENABLE_MQTT
+    if (myMqtt && myMqtt->isConnected())
+    {
+        myMqtt->publish("p02/status", buffer);
+    }
+#endif
 }
 
 void Logic::printTemperature() noexcept
@@ -259,6 +331,9 @@ void Logic::run(const std::atomic<bool>& stop) noexcept
     while(!stop.load())
     {
         processSerial();
+#if CONFIG_P02_ENABLE_MQTT
+        processMqtt();
+#endif
         processTimer();
         vTaskDelay(pdMS_TO_TICKS(10));
     }

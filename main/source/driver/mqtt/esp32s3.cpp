@@ -8,6 +8,31 @@ extern "C"
 #include "mqtt_client.h"
 } // extern "C"
 
+namespace
+{
+void copyMqttField(char* dst, std::uint16_t dstSize, const char* src, int srcLen) noexcept
+{
+    if ((dst == nullptr) || (dstSize == 0U)) { return; }
+
+    std::uint16_t count{0U};
+
+    if ((src != nullptr) && (srcLen > 0))
+    {
+        const auto maxCopy = static_cast<std::uint16_t>(dstSize - 1U);
+        const auto wanted = static_cast<std::uint16_t>(
+            (srcLen < static_cast<int>(maxCopy)) ? srcLen : static_cast<int>(maxCopy)
+        );
+
+        while (count < wanted)
+        {
+            dst[count] = src[count];
+            ++count;
+        }
+    }
+
+    dst[count] = '\0';
+}
+}
 
 namespace driver::mqtt
 {
@@ -18,6 +43,9 @@ Esp32s3::Esp32s3(const char* brokerUri,
     , myBrokerUri{brokerUri}
     , myClientId{clientId}
     , myConnected{false}
+    , myLastTopic{}
+    , myLastPayload{}
+    , myMessageAvailable{false}
 {}
 
 // -----------------------------------------------------------------------------
@@ -29,29 +57,39 @@ Esp32s3::~Esp32s3() noexcept
 // -----------------------------------------------------------------------------
 bool Esp32s3::connect() noexcept
 {
-    // Configure brokerUri and clientId.
-    const esp_mqtt_client_config_t config{
-        .broker = {.address.uri = myBrokerUri},
-        .credentials = {.client_id = myClientId},
-    };
+    if (myConnected) { return true; }
+    if (myHandle != nullptr) { return true; }
+
+    esp_mqtt_client_config_t config{};
+    config.broker.address.uri = myBrokerUri;
+    config.credentials.client_id = myClientId;
 
     // Initialize MQTT client, return false on failure.
     myHandle = esp_mqtt_client_init(&config);
     if (nullptr == myHandle) { return false; }
 
     // Register MQTT event callback handler.
-    esp_mqtt_client_register_event(
-        myHandle,
-        MQTT_EVENT_ANY,
-        &Esp32s3::mqttEventHandler,
-        this
-    );
+    if (esp_mqtt_client_register_event(myHandle,
+                                       MQTT_EVENT_ANY,
+                                       &Esp32s3::mqttEventHandler,
+                                       this)
+        != ESP_OK)
+    {
+        esp_mqtt_client_destroy(myHandle);
+        myHandle = nullptr;
+        return false;
+    }
 
     // Start MQTT client.
-    const bool started = (ESP_OK == esp_mqtt_client_start(myHandle));
+    if (esp_mqtt_client_start(myHandle) != ESP_OK)
+    {
+        esp_mqtt_client_destroy(myHandle);
+        myHandle = nullptr;
+        return false;
+    }
 
-    // Return true if connected.
-    return started;
+    // The actual broker connection is reported asynchronously by MQTT_EVENT_CONNECTED.
+    return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -119,9 +157,10 @@ void Esp32s3::mqttEventHandler(void* handler_args,
                                void* event_data)
 {
     (void)base;
-    (void)event_data;
+
 
     // Recover class instance from callback context.
+    if (nullptr == handler_args) { return; }
     auto* self = static_cast<Esp32s3*>(handler_args);
 
     switch (event_id)
@@ -137,6 +176,18 @@ void Esp32s3::mqttEventHandler(void* handler_args,
             self->myConnected = false;
             break;
         }
+        case MQTT_EVENT_DATA:
+        {
+            const auto* event = static_cast<esp_mqtt_event_handle_t>(event_data);
+            if ( nullptr == event) { break; }
+
+            copyMqttField(self->myLastTopic, topicBufSize, event->topic, event->topic_len);
+            copyMqttField(self->myLastPayload, payloadBufSize, event->data, event->data_len);
+
+            self->myMessageAvailable = true;
+            break;
+        }
+
 
         default:
         {
@@ -144,6 +195,23 @@ void Esp32s3::mqttEventHandler(void* handler_args,
         }
     }
 }
+
+bool Esp32s3::readMessage(char* topic,
+                         std::uint16_t topicMaxLen,
+                         char* payload,
+                         std::uint16_t payloadMaxLen ) noexcept {
+
+    if (!myMessageAvailable) { return false; }
+    if ((topic == nullptr) || (payload == nullptr)) { return false; }
+    if ((topicMaxLen == 0U) || (payloadMaxLen == 0U)) { return false; }
+
+    copyMqttField(topic, topicMaxLen, myLastTopic, static_cast<int>(std::strlen(myLastTopic)));
+    copyMqttField(payload, payloadMaxLen, myLastPayload, static_cast<int>(std::strlen(myLastPayload)));
+
+    myMessageAvailable = false;
+    return true;
+
+ }
 
 // -----------------------------------------------------------------------------
 } // namespace driver::mqtt

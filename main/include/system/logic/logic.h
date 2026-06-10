@@ -12,6 +12,8 @@
 #include <memory>
 #include <cstdint>
 
+#include "sdkconfig.h"
+
 namespace app::logic {
 
 /**
@@ -79,6 +81,16 @@ private:
      */
     void processSerial() noexcept;
 
+#if CONFIG_P02_ENABLE_MQTT
+    /**
+     * @brief Read and process MQTT commands.
+     *
+     * Reads incoming MQTT payloads and forwards them to the shared
+     * command handler used by the serial interface.
+     */
+    void processMqtt() noexcept;
+#endif
+
     /**
      * @brief Handle timer events.
      * Toggles the LED when blink mode is active
@@ -87,9 +99,9 @@ private:
     void processTimer() noexcept;
 
     /**
-     * @brief Execute serial commands.
-     * Supported commands are on,off,blink on/off, period <value>, status and temp.
-     * @param[in] command Command string from serial input.
+     * @brief Execute system commands.
+     * Supported commands are on, off, blink on/off, period <value>, status and temp.
+     * @param[in] command Command string received from Serial or MQTT.
      */
     void handleCommand(const char* command) noexcept;
 
@@ -119,12 +131,24 @@ private:
     /** @brief Temperature sensor driver interface pointer. */
     std::unique_ptr<driver::tempsensor::Interface> myTempSensor;
 
+#if CONFIG_P02_ENABLE_MQTT
+    /** @brief WiFi driver interface pointer used before MQTT networking. */
+    std::unique_ptr<driver::wifi::Interface> myWifi;
+
+    /** @brief MQTT driver interface pointer used by the P02+ integration. */
+    std::unique_ptr<driver::mqtt::Interface> myMqtt;
+#endif
+
     /** @brief Flag tracking whether blink mode is currently enabled. */
     bool myBlinkEnabled{false};
 
     /** @brief Current LED blink period config in milliseconds. */
     std::uint32_t myPeriodMs{500U};
+
+#if CONFIG_P02_ENABLE_MQTT
+    /** @brief Flag tracking whether the MQTT command topic subscription is active. */
+    bool myMqttSubscribed{false};
+#endif
 };
 
 } // namespace app::logic
-

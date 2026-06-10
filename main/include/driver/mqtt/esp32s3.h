@@ -77,6 +77,8 @@ public:
      */
     void loop() noexcept override;
 
+    bool readMessage(char* topic, std::uint16_t topicMaxLen, char* payload, std::uint16_t payloadMaxLen) noexcept override;
+
     // Delete copy/move constructors and operators.
     Esp32s3(const Esp32s3&)            = delete;
     Esp32s3(Esp32s3&&)                 = delete;
@@ -108,5 +110,19 @@ private:
     /** @brief Boolean flag tracking the connection status. */
     bool myConnected;
                                  
+    /** @brief Maximum stored topic length including null terminator. */
+    static constexpr std::uint16_t topicBufSize{64U};
+
+    /** @brief Maximum stored payload length including null terminator. */
+    static constexpr std::uint16_t payloadBufSize{128U};
+
+    /** @brief Last received MQTT topic. */
+    char myLastTopic[topicBufSize];
+
+    /** @brief Last received MQTT payload. */
+    char myLastPayload[payloadBufSize];
+
+    /** @brief True when an unread MQTT message is stored. */
+    bool myMessageAvailable;
 };
 } // namespace driver::mqtt
