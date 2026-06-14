@@ -1,3 +1,6 @@
+//! @note File header missing.
+
+//! @brief Sort the headers.
 #include <cstdio>
 #include <cstdint>
 
@@ -60,13 +63,13 @@ std::uint16_t Stub::write(const char* msg) noexcept
     // String index + length.
     std::uint16_t i{};
 
-    // Pint each character one by one.
+    // Print each character one by one.
     // Simulate that the bytes are sent on at a time).
+    //! @note i is initialized above => you can omit i = 0U here, i.e. for (; msg[i] != '\0'; ++i)
     for (i = 0U; msg[i] != '\0'; ++i)
     {
         std::printf("%c", msg[i]);
     }
-
     // Return the number of written bytes.
     return i;
 }
@@ -97,11 +100,21 @@ std::uint8_t Stub::read() noexcept
 // -----------------------------------------------------------------------------
 std::uint16_t Stub::read(char* buf, std::uint16_t maxLen) noexcept
 {
+    //! @note Please place parenthese around conditions when using multiple =>
+    //!       you show intend + you don't rely on operator precedence. It works the way it is,
+    //!       since == is evaluated before ||, but regular static code analyzers would give you
+    //!       a warning for this.
     if (!myConnected || nullptr == buf || 0U == maxLen || !myDataAvailable) 
     { 
         return 0U; 
     }
 
+    //! @note Feel free to use auto here, since you explicitly cast to std::uint16_t =>
+    //!       to much "kaka på kaka" => prefer this: 
+    //!       const auto limit = static_cast<std::uint16_t>(maxLen - 1U).
+    //!       And yes, auto pairs fairly badly with {}, since {1} might be an integer, or it might
+    //!       be an array of one element => const auto x{1} might become an initializer list
+    //!       => use = when using auto, otherwise use {}.
     const std::uint16_t limit{static_cast<std::uint16_t>(maxLen - 1U)};
     std::uint16_t bytesRead{};
 
