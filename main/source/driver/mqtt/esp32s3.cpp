@@ -1,3 +1,4 @@
+//! @note Missing file header.
 #include <cstdint>
 #include <cstring>
 
@@ -12,16 +13,16 @@ namespace
 {
 void copyMqttField(char* dst, std::uint16_t dstSize, const char* src, int srcLen) noexcept
 {
+    //! @note Yoda notation: write nullptr == dst instead of dst == nullptr etc.
     if ((dst == nullptr) || (dstSize == 0U)) { return; }
-
     std::uint16_t count{0U};
 
+    //! @note Yoda notation: write nullptr != src instead of src != nullptr.
     if ((src != nullptr) && (srcLen > 0))
     {
         const auto maxCopy = static_cast<std::uint16_t>(dstSize - 1U);
         const auto wanted = static_cast<std::uint16_t>(
-            (srcLen < static_cast<int>(maxCopy)) ? srcLen : static_cast<int>(maxCopy)
-        );
+            (srcLen < static_cast<int>(maxCopy)) ? srcLen : static_cast<int>(maxCopy));
 
         while (count < wanted)
         {
@@ -29,16 +30,14 @@ void copyMqttField(char* dst, std::uint16_t dstSize, const char* src, int srcLen
             ++count;
         }
     }
-
     dst[count] = '\0';
 }
-}
+} // namespace
 
 namespace driver::mqtt
 {
 // -----------------------------------------------------------------------------
-Esp32s3::Esp32s3(const char* brokerUri,
-            const char* clientId) noexcept
+Esp32s3::Esp32s3(const char* brokerUri, const char* clientId) noexcept
     : myHandle{nullptr}
     , myBrokerUri{brokerUri}
     , myClientId{clientId}
@@ -58,6 +57,7 @@ Esp32s3::~Esp32s3() noexcept
 bool Esp32s3::connect() noexcept
 {
     if (myConnected) { return true; }
+    //! @note Yoda notation: write nullptr != myHandle instead of myHandle != nullptr.
     if (myHandle != nullptr) { return true; }
 
     esp_mqtt_client_config_t config{};
@@ -69,10 +69,8 @@ bool Esp32s3::connect() noexcept
     if (nullptr == myHandle) { return false; }
 
     // Register MQTT event callback handler.
-    if (esp_mqtt_client_register_event(myHandle,
-                                       MQTT_EVENT_ANY,
-                                       &Esp32s3::mqttEventHandler,
-                                       this)
+    //! @note Use Yoda notation you should (with Yoda's voice).
+    if (esp_mqtt_client_register_event(myHandle, MQTT_EVENT_ANY, &Esp32s3::mqttEventHandler, this)
         != ESP_OK)
     {
         esp_mqtt_client_destroy(myHandle);
@@ -151,13 +149,11 @@ bool Esp32s3::subscribe(const char* topic) noexcept
 void Esp32s3::loop() noexcept{}
 
 // -----------------------------------------------------------------------------
-void Esp32s3::mqttEventHandler(void* handler_args,
-                               esp_event_base_t base,
-                               int32_t event_id,
-                               void* event_data)
+//! @note camelCase and std::int32_t, as specified in the header.
+void Esp32s3::mqttEventHandler(void* handler_args, esp_event_base_t base,
+                               int32_t event_id, void* event_data)
 {
-    (void)base;
-
+    (void) (base);
 
     // Recover class instance from callback context.
     if (nullptr == handler_args) { return; }
@@ -187,8 +183,6 @@ void Esp32s3::mqttEventHandler(void* handler_args,
             self->myMessageAvailable = true;
             break;
         }
-
-
         default:
         {
             break;
@@ -196,22 +190,20 @@ void Esp32s3::mqttEventHandler(void* handler_args,
     }
 }
 
-bool Esp32s3::readMessage(char* topic,
-                         std::uint16_t topicMaxLen,
-                         char* payload,
-                         std::uint16_t payloadMaxLen ) noexcept {
-
+bool Esp32s3::readMessage(char* topic, std::uint16_t topicMaxLen,
+                         char* payload, std::uint16_t payloadMaxLen) noexcept 
+{
     if (!myMessageAvailable) { return false; }
+    //! @note Yoda.
     if ((topic == nullptr) || (payload == nullptr)) { return false; }
     if ((topicMaxLen == 0U) || (payloadMaxLen == 0U)) { return false; }
 
+    //! @note Consider adding local constants or a helper function for the last parameter of this call.
+    //! For instance this:
+    //! int getStrLen(const char* topic) noexcept { return static_cast<int>(std::strlen(topic); }
     copyMqttField(topic, topicMaxLen, myLastTopic, static_cast<int>(std::strlen(myLastTopic)));
     copyMqttField(payload, payloadMaxLen, myLastPayload, static_cast<int>(std::strlen(myLastPayload)));
-
     myMessageAvailable = false;
     return true;
-
- }
-
-// -----------------------------------------------------------------------------
+}
 } // namespace driver::mqtt
