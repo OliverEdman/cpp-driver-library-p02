@@ -1,3 +1,6 @@
+//! @note Missing file header.
+
+//! @note Sort headers.
 #include "driver/factory/esp32s3.h"
 
 #include "driver/adc/esp32s3.h"
@@ -8,28 +11,30 @@
 #include "driver/mqtt/esp32s3.h"
 #include "driver/wifi/esp32s3.h"
 
-namespace driver::factory {
-
-
-std::unique_ptr<adc::Interface> Esp32s3::adc(std::uint8_t pin) noexcept {
+namespace driver::factory
+{
+std::unique_ptr<adc::Interface> Esp32s3::adc(std::uint8_t pin) noexcept
+{
     // Instante the real ADC driver and encapsulate the pin at construction
     return std::make_unique<driver::adc::Esp32s3>(pin);
 }
 
 
-std::unique_ptr<gpio::Interface> Esp32s3::gpioInput(std::uint8_t pin) noexcept {
+std::unique_ptr<gpio::Interface> Esp32s3::gpioInput(std::uint8_t pin) noexcept
+{
     // Create a real GPIO pin configured as an input
     return std::make_unique<driver::gpio::Esp32s3>(pin, driver::gpio::Direction::Input);
 }
 
 
-std::unique_ptr<gpio::Interface> Esp32s3::gpioOutput(std::uint8_t pin) noexcept {
+std::unique_ptr<gpio::Interface> Esp32s3::gpioOutput(std::uint8_t pin) noexcept
+{
     // Create a real GPIO pin configured as an output
     return std::make_unique<driver::gpio::Esp32s3>(pin, driver::gpio::Direction::Output);
 }
 
-
-std::unique_ptr<serial::Interface> Esp32s3::serial(std::uint32_t baud_bps) noexcept {
+std::unique_ptr<serial::Interface> Esp32s3::serial(std::uint32_t baud_bps) noexcept
+{
     // Create the real UART driver with the specified baud rate
     const driver::serial::Config config{
         .port       = UART_NUM_0,       // unused in USB-JTAG mode
@@ -42,28 +47,29 @@ std::unique_ptr<serial::Interface> Esp32s3::serial(std::uint32_t baud_bps) noexc
     return std::make_unique<driver::serial::Esp32s3>(config);
 }
 
-
-std::unique_ptr<tempsensor::Interface> Esp32s3::tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept {
+std::unique_ptr<tempsensor::Interface> Esp32s3::tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept
+{
     // Inject both the hardware pin and the required ADC dependency into the TMP36 instance
     return std::make_unique<driver::tempsensor::Tmp36>(adc, pin);
 }
 
-
-std::unique_ptr<timer::Interface> Esp32s3::timer(std::uint32_t timeout_ms) noexcept {
-
-    auto t = std::make_unique<driver::timer::Esp32s3>();
-    t->setPeriod(timeout_ms);
-    return t;
+std::unique_ptr<timer::Interface> Esp32s3::timer(std::uint32_t timeout_ms) noexcept
+{
+    //! @note Good solution to set the timeout.
+    //!       However, I think that the timer class should have a constructor that accepts
+    //!       the timeout directly. Maybe something to add in the future?
+    auto timer = std::make_unique<driver::timer::Esp32s3>();
+    timer->setPeriod(timeout_ms);
+    return timer;
 }
 
-std::unique_ptr<wifi::Interface> Esp32s3::wifi(const char* ssid, const char* password) noexcept {
-
+std::unique_ptr<wifi::Interface> Esp32s3::wifi(const char* ssid, const char* password) noexcept
+{
     return std::make_unique<driver::wifi::Esp32s3>(ssid, password);
 }
 
-std::unique_ptr<mqtt::Interface> Esp32s3::mqtt(const char *brokerUri, const char *clientId) noexcept {
-
+std::unique_ptr<mqtt::Interface> Esp32s3::mqtt(const char *brokerUri, const char *clientId) noexcept
+{
     return std::make_unique<driver::mqtt::Esp32s3>(brokerUri, clientId);
 }
-
 } // namespace driver::factory
