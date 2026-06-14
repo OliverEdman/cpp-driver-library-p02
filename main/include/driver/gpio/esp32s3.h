@@ -1,5 +1,4 @@
 /**
- * @file esp32s3.h
  * @brief GPIO driver for ESP32-S3.
  */
 #pragma once
@@ -13,8 +12,9 @@ namespace driver::gpio
 {
 /**
  * @brief GPIO driver implementation for ESP32-S3.
- * * This class handles physical GPIO pin configuration.
- * It is explicitly non-copyable and non-movable.
+ * 
+ *        This class handles physical GPIO pin configuration.
+ *        It is explicitly non-copyable and non-movable.
  */
 class Esp32s3 final : public Interface
 {
@@ -67,8 +67,10 @@ public:
 private:
     /** @brief The assigned hardware GPIO pin number. */
     const std::uint8_t myPin;
+
     /** @brief The configured data direction for the pin. */
     const Direction myDirection;
+    
     /** @brief Flag indicating if the hardware was successfully initialized. */
     bool myInitialized;
 };

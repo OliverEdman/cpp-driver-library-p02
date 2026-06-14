@@ -1,7 +1,8 @@
+//! @note Missing file header.
 #include <cstdint>
 
+//! @note Sort headers.
 #include "driver/gpio.h"
-
 #include "driver/gpio/direction.h"
 #include "driver/gpio/esp32s3.h"
 #include "system/pin_manager/esp32s3.h"
@@ -9,8 +10,6 @@
 
 namespace driver::gpio
 {
-// -----------------------------------------------------------------------------
-
 /** Singleton pin manager instance. */
 auto& myPinManager = sys::pin_manager::Esp32s3::instance();
 
@@ -34,6 +33,7 @@ Esp32s3::Esp32s3(std::uint8_t pin, Direction direction) noexcept
     config.intr_type    = GPIO_INTR_DISABLE;
     
     // Enable pull-up resistor if specified.
+    //! @note Yoda notation: write Direction::InputPullup == direction instead of direction == Direction::InputPullup.
     const auto pullup = direction == Direction::InputPullup ? GPIO_PULLUP_ENABLE : GPIO_PULLUP_DISABLE;
     config.pull_up_en = pullup;
     const esp_err_t result = gpio_config(&config);
@@ -68,9 +68,13 @@ void Esp32s3::write(bool state) noexcept
 bool Esp32s3::read() const noexcept
 {
     // Read state, cast to bool (1 => true, 0 => false).
+    //! @note Use std::uint8_t instead of uint8_t. 
+    //!       Also initialize with {} (or auto combined with =).
+    //!       In this case I would use auto and = for the two assignments below.
     const uint8_t gpioLevel = gpio_get_level(static_cast<gpio_num_t>(myPin));
+    
+    //! @note state can be omitted, you can return static_cast<bool>(gpioLevel) directly.
     const bool state = static_cast<bool>(gpioLevel);
-
     return state; 
 }
 
