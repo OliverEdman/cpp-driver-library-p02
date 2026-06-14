@@ -1,21 +1,20 @@
+//! @note Thanks for the file header. However, please skip the redundant @file parameter.
 /**
  * @file esp32s3.h
  * @brief ADC driver for ESP32-S3. 
  */
 #pragma once
 
-#include "driver/adc/interface.h"
+//! @note Include <cstdint>.
 
+#include "driver/adc/interface.h"
 #include "esp_adc/adc_oneshot.h"
 
 namespace driver::adc 
 {
-
-
+//! @note Missing class header.
 class Esp32s3 final : public Interface
 {
-
-        
 public:    
     /**
      * @brief Constructor.
@@ -23,6 +22,7 @@ public:
      * @param[in] pin The pin to read analog value from (1-10).
      */
     explicit Esp32s3(std::uint8_t pin) noexcept;
+
     /**
      * @brief Destructor.
      */
@@ -35,32 +35,34 @@ public:
      */
     bool isInitialized() const noexcept override;
 
-     /**
-      * @brief Initialize ADC
-      *
-      * @return True if the ADC was initialized successfully, false otherwise.
-      */
+    /**
+     * @brief Initialize ADC
+     *
+     * @return True if the ADC was initialized successfully, false otherwise.
+     */
     bool init() noexcept override;
 
-     /**
-      * @brief Deinitialize ADC
-      *
-      * @return True if the ADC was deinitialized successfully, false otherwise.
-      *
-      */
+    /**
+     * @brief Deinitialize ADC
+     *
+     * @return True if the ADC was deinitialized successfully, false otherwise.
+     *
+     */
     bool deinit() noexcept override;
 
     /**
-    * @brief Read input from the given pin.
-    *
-    * @return Input value.
-    */
+     * @brief Read input from the given pin.
+     *
+     * @return Input value.
+     */
     std::uint16_t readRaw() const noexcept override;
 
 
+    //! @note Write imperative comments: use "convert" instead of "converts".
     /**
      * @brief Read the input voltage in Volts.
-     * Converts the raw value to voltage.
+     * 
+     *        Converts the raw value to voltage.
      * 
      * @return Input voltage in Volts.
      */
@@ -70,15 +72,18 @@ public:
     Esp32s3(Esp32s3&&)                 = delete; // No move constructor.
     Esp32s3& operator=(const Esp32s3&) = delete; // No copy assignment.
     Esp32s3& operator=(Esp32s3&&)      = delete; // No move assignment.
+
 private:
     /** ADC state. */
     bool myState;
+
     /** Target ADC pin. */
     std::uint8_t myPin;
+
     /** ESP-IDF ADC1 channel mapped from the GPIO pin.  */
     adc_channel_t myChannel;
+
     /** ESP-IDF ADC unit handle. */
     adc_oneshot_unit_handle_t myHandle;
 };
-
 } // namespace driver::adc 
