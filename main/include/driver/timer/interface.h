@@ -1,25 +1,24 @@
 /**
- * @file interface.h
  * @brief Interface for Timer driver.
  */
-
 #pragma once
+
 #include <cstdint>
 
-
-namespace driver::timer {
-
+namespace driver::timer
+{
 /**
- * @brief Interface for imer driver.
+ * @brief Interface for timer driver.
  */
-
-class Interface {
+class Interface
+{
 public:
-
     /**
      * @brief Virtual destructor.
      */
     virtual ~Interface() noexcept = default; 
+
+    //! @note Use imperative comments => "start", "stop", "configures etc.".
     
     /**
      * @brief Starts the timer.
@@ -33,21 +32,23 @@ public:
     
     /**
      * @brief Sets the timer period in milliseconds.
+     * 
      * * @param[in] period_ms The alarm period in milliseconds.
      */
     virtual void setPeriod(std::uint32_t period_ms) noexcept = 0;
     
     /**
      * @brief Check if a timeout has occured since the last call.
+     * 
      * @return True if a timeout occurred, false otherwise.
      */
     virtual bool isTimeout() noexcept = 0; 
 
     /**
      * @brief Checks if the timer hardware is successfully initialized.
+     * 
      * * @return True if initialized and ready for use, false otherwise.
      */
     virtual bool isInitialized() const noexcept = 0;
 };
-
 } // namespace driver::timer
