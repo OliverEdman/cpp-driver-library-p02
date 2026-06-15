@@ -1,5 +1,4 @@
 /**
- * @file stub.h
  * @brief WiFi driver stub for simulation.
  */
 #pragma once
@@ -26,6 +25,7 @@ public:
 
     /**
      * @brief Simulate connecting to WiFi.
+     * 
      * @return Always true.
      */
     bool connect() noexcept override
@@ -37,6 +37,7 @@ public:
 
     /**
      * @brief Simulate a non-blocking WiFi reconnect request.
+     * 
      * @return Always true.
      */
     bool reconnect() noexcept override
@@ -56,6 +57,7 @@ public:
 
     /**
      * @brief Check simulated WiFi connection state.
+     * 
      * @return True if simulated WiFi is connected.
      */
     bool isConnected() const noexcept override
@@ -65,6 +67,7 @@ public:
 
     /**
      * @brief Check simulated WiFi initialization state.
+     * 
      * @return True if connect has been called.
      */
     bool isInitialized() const noexcept override
@@ -79,6 +82,7 @@ public:
 
 private:
     /** @brief Simulated initialization state. */
+    //! @note I would prefer initialization via the default constructor, but OK. :)
     bool myInitialized{false};
 
     /** @brief Simulated connection state. */

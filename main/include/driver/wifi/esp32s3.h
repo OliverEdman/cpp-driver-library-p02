@@ -1,19 +1,21 @@
 /**
- * @file esp32s3.h
  * @brief WiFi driver for ESP32-S3.
  */
 #pragma once
 
+//! @note Include standard headers first.
 #include "driver/wifi/interface.h"
 
 #include <cstdint>
 
-extern "C" {
+extern "C" 
+{
+//! @note Sort headers.
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 #include "esp_event.h"
 #include "esp_netif.h"
-}
+} // extern "C"
 
 namespace driver::wifi
 {
@@ -25,9 +27,11 @@ class Esp32s3 final : public Interface
 public:
     /**
      * @brief Constructor.
+     * 
      * @param[in] ssid WiFi network SSID.
      * @param[in] password WiFi network password.
      */
+    //! @note Mark explicit.
     Esp32s3(const char* ssid, const char* password) noexcept;
 
     /**
@@ -37,12 +41,14 @@ public:
 
     /**
      * @brief Connect to the configured WiFi network.
+     * 
      * @return True if connected and an IP address was acquired.
      */
     bool connect() noexcept override;
 
     /**
      * @brief Request a reconnect without waiting for the result.
+     * 
      * @return True if a reconnect attempt was started or WiFi is already connected.
      */
     bool reconnect() noexcept override;
@@ -54,12 +60,14 @@ public:
 
     /**
      * @brief Check if WiFi is connected.
+     * 
      * @return True if connected and ready for network traffic.
      */
     bool isConnected() const noexcept override;
 
     /**
      * @brief Check if the WiFi driver is initialized.
+     * 
      * @return True if initialized.
      */
     bool isInitialized() const noexcept override;
@@ -73,11 +81,10 @@ private:
     /**
      * @brief ESP-IDF WiFi and IP event callback.
      */
-    static void eventHandler(void* arg,
-                             esp_event_base_t eventBase,
-                             int32_t eventId,
-                             void* eventData);
+    //! @note Add noexcept and use std::int32_t.
+    static void eventHandler(void* arg, esp_event_base_t eventBase, int32_t eventId, void* eventData);
 
+    //! @note Skip @brief on one liners.
     /** @brief WiFi connected event bit. */
     static constexpr EventBits_t ConnectedBit{1U << 0U};
 
@@ -109,6 +116,7 @@ private:
     esp_event_handler_instance_t myIpEventHandler;
 
     /** @brief Number of current connection retries. */
+    //! @note Set to unsigned unless ESP32 stuff forces you to use int.
     int myRetryCount;
 
     /** @brief Last tick when a reconnect request was sent. */
