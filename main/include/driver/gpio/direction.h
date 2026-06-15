@@ -1,3 +1,5 @@
+//! @note No more @file, no more @file sung as No More Lies by Iron Maiden 
+//!       (Anthon, you know what I mean).
 /**
  * @file direction.h
  * @brief GPIO direction type.
@@ -13,13 +15,9 @@ namespace driver::gpio
  */
 enum class Direction : std::uint8_t
 {
-    /** @brief Configure pin as a standard digital input (floating). */
-    Input,
-    
-    /** @brief Configure pin as a digital input with an internal pull-up resistor enabled. */
-    InputPullup,
-    
-    /** @brief Configure pin as a standard digital output. */
-    Output,
+    //! @note Enums are usually commented like this.
+    Input,       ///< Standard digital input (floating).
+    InputPullup, ///< Digital input with an internal pull-up resistor enabled.
+    Output,      ///< Standard digital output.
 };
 } // namespace driver::gpio

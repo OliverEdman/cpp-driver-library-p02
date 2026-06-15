@@ -1,5 +1,4 @@
 /**
- * @file esp32s3.h
  * @brief MQTT driver for the ESP32-S3.
  */
 #pragma once
@@ -9,9 +8,10 @@
 /**
  * @brief Include ESP-IDF MQTT C API with C linkage.
  */
-extern "C" {
+extern "C"
+{
 #include "mqtt_client.h"
-}
+} // extern "C"
 
 #include "driver/mqtt/interface.h"
 
@@ -19,20 +19,21 @@ namespace driver::mqtt
 {
 /**
  * @brief MQTT driver implementation for ESP32-S3.
- * This class uses the built in ESP-IDF functions to talk to an MQTT broker over the network.
- * It is explicitly non-copyable and non-movable
+ * 
+ *        This class uses the built in ESP-IDF functions to talk to an MQTT broker over the network.
+ *        It is explicitly non-copyable and non-movable
  */
 class Esp32s3 final : public Interface
 {
 public:
     /**
-     * @brief Constructor
+     * @brief Constructor.
      * 
      * @param[in] brokerUri MQTT broker URI.
      * @param[in] clientId MQTT client ID.
      */
-    Esp32s3(const char* brokerUri,
-            const char* clientId) noexcept;
+    //! @note Mark explicit.
+    Esp32s3(const char* brokerUri, const char* clientId) noexcept;
 
     /**
      * @brief Destructor.
@@ -41,6 +42,7 @@ public:
 
     /**
      * @brief Connect to the MQTT broker.
+     * 
      * @return True if connection succeeded, false otherwise.
      */
     bool connect() noexcept override;
@@ -52,31 +54,38 @@ public:
 
     /**
      * @brief Check the current connection state.
+     * 
      * @return True if currently connected to the broker, false otherwise.
      */
     bool isConnected() const noexcept override;
 
     /**
      * @brief Publish MQTT message.
+     * 
      * @param[in] topic MQTT topic.
      * @param[in] payload Message payload.
+     * 
      * @return True if the message was successfully published, false otherwise.
      */
     bool publish(const char* topic, const char* payload) noexcept override;
 
     /**
      * @brief Subscribe to a specific MQTT topic.
+     * 
      * @param[in] topic MQTT topic.
+     * 
      * @return True if subscription succeeded, false otherwise.
      */
     bool subscribe(const char* topic) noexcept override;
 
     /**
      * @brief Process MQTT events and incoming messages.
-     * should be called periodically from the main loop/task.
+     *        
+     *        Should be called periodically from the main loop/task.
      */
     void loop() noexcept override;
 
+    //! @note Missing doc comment.
     bool readMessage(char* topic, std::uint16_t topicMaxLen, char* payload, std::uint16_t payloadMaxLen) noexcept override;
 
     // Delete copy/move constructors and operators.
@@ -92,12 +101,13 @@ private:
      * @param[in] base The event base.
      * @param[in] event_id The specific event ID.
      * @param[in] event_data Pointer to the raw event data structure.
-     */ 
-    static void mqttEventHandler(void* handler_args,
-                                 esp_event_base_t base,
-                                 int32_t event_id,
-                                 void* event_data);
+     */
+    //! @note Prefer camelCase, such as handlerArgs, instead of snake_cast.
+    //!       Also use std::int32_t, not int32_t from C.
+    static void mqttEventHandler(void* handler_args, esp_event_base_t base,
+                                 int32_t event_id, void* event_data);
 
+    //! @note Great comments, but you can skip @brief on one-liners.
     /** @brief ESP-IDF MQTT client handle. */
     esp_mqtt_client_handle_t myHandle;
 
@@ -109,7 +119,10 @@ private:
 
     /** @brief Boolean flag tracking the connection status. */
     bool myConnected;
-                                 
+
+
+    //! @note Place constants above the member variables.
+    //!       Prefer PascalCase or camelCase for class constants (note the uppercase leading letter).                             
     /** @brief Maximum stored topic length including null terminator. */
     static constexpr std::uint16_t topicBufSize{64U};
 

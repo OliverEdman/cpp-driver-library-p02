@@ -1,3 +1,4 @@
+//! @note Please skip the redundant @file parameter.
 /**
  * @file interface.h
  * @brief ADC driver interface
@@ -14,7 +15,6 @@ namespace driver::adc
 class Interface
 {
 public:    
-
     /**
      * @brief Destructor.
      */
@@ -52,5 +52,4 @@ public:
      */
     virtual float readVoltage() const noexcept = 0;
 };
-
 } // namespace driver::adc

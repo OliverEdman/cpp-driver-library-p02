@@ -1,3 +1,4 @@
+//! @note File header missing.
 #include <cstdint>
 #include <cstring>
 
@@ -16,7 +17,7 @@ Esp32s3::Esp32s3(const Config& config) noexcept
     , myQueue{nullptr}
     , myConnected{false}
     , myLineBuf{}
-    , myLineLen{0}
+    , myLineLen{}
 {}
 
 // -----------------------------------------------------------------------------
@@ -36,13 +37,18 @@ bool Esp32s3::connect() noexcept
         // The secondary console (CONFIG_ESP_CONSOLE_SECONDARY_USB_SERIAL_JTAG)
         // only uses the low-level FIFO for log output — it does NOT install the
         // full driver. We must install it ourselves so read_bytes/write_bytes work.
+        //! @note auto would fit perfectly here:
+        //! auto cfg = USB_SERIAL_JTAG_DRIVER_CONFIG_DEFAULT();
         usb_serial_jtag_driver_config_t cfg = USB_SERIAL_JTAG_DRIVER_CONFIG_DEFAULT();
         const esp_err_t err = usb_serial_jtag_driver_install(&cfg);
+        
+        //! @note Yoda.
         if (err == ESP_OK)
         {
             // Mark that we own the driver so disconnect() can uninstall it.
             myQueue = reinterpret_cast<QueueHandle_t>(1);
         }
+        //! @note Yoda.
         else if (err != ESP_ERR_INVALID_STATE)
         {
             return false; // unexpected error
@@ -58,6 +64,7 @@ bool Esp32s3::connect() noexcept
 
     if (!preInstalled)
     {
+        //! Skip = here, the brackets will do fine.
         const uart_config_t uartConfig = {
             .baud_rate           = myConfig.baudRate,
             .data_bits           = UART_DATA_8_BITS,
@@ -69,11 +76,13 @@ bool Esp32s3::connect() noexcept
             .flags               = {},
         };
 
+        //! @note Yoda.
         if (uart_param_config(myConfig.port, &uartConfig) != ESP_OK)
         {
             return false;
         }
 
+        //! @note Yoda.
         if (uart_set_pin(myConfig.port,
                          myConfig.txPin,
                          myConfig.rxPin,
@@ -83,6 +92,7 @@ bool Esp32s3::connect() noexcept
             return false;
         }
 
+        //! @note Yoda + avoid magic number 0.
         if (uart_driver_install(myConfig.port,
                                 static_cast<int>(myConfig.rxBufSize),
                                 0,
@@ -95,6 +105,7 @@ bool Esp32s3::connect() noexcept
     }
 
     // Enable hardware detection of '\n' as the message delimiter.
+    //! @note Yoda + avoid magic numbers.
     if (uart_enable_pattern_det_baud_intr(myConfig.port, '\n', 1, 9, 0, 0) != ESP_OK)
     {
         if (!preInstalled) { uart_driver_delete(myConfig.port); }
@@ -103,7 +114,6 @@ bool Esp32s3::connect() noexcept
 
     // Align the pattern queue size with the event queue depth.
     uart_pattern_queue_reset(myConfig.port, QueueDepth);
-
     myConnected = true;
     return true;
 }
@@ -113,6 +123,7 @@ void Esp32s3::disconnect() noexcept
 {
     if (myConfig.useUsbJtag)
     {
+        //! @note Yoda.
         if (myQueue != nullptr)
         {
             usb_serial_jtag_driver_uninstall();
@@ -122,6 +133,8 @@ void Esp32s3::disconnect() noexcept
     else
     {
         uart_disable_pattern_det_intr(myConfig.port);
+
+        //! @note Yoda.
         if (myQueue != nullptr)
         {
             uart_driver_delete(myConfig.port);
@@ -137,9 +150,11 @@ void Esp32s3::write(std::uint8_t byte) noexcept
     if (!myConnected) { return; }
     if (myConfig.useUsbJtag)
     {
+        //! @note Avoid magic numbers, use constexpr.
         usb_serial_jtag_write_bytes(&byte, 1U, pdMS_TO_TICKS(10U));
         return;
     }
+    //! @note Same here.
     uart_write_bytes(myConfig.port, &byte, 1U);
 }
 
@@ -151,9 +166,12 @@ std::uint16_t Esp32s3::write(const char* msg) noexcept
 
     if (myConfig.useUsbJtag)
     {
+        //! @note Initialize with {} or use auto.
+        //! @note constexpr std::uint8_t sleep_ms{100U} instead of magic number 100U?
         const int written = usb_serial_jtag_write_bytes(msg, std::strlen(msg), pdMS_TO_TICKS(100U));
         return (written < 0) ? 0U : static_cast<std::uint16_t>(written);
     }
+    //! @note Initialize with {} or use auto.
     const int written = uart_write_bytes(myConfig.port, msg, std::strlen(msg));
     return (written < 0) ? 0U : static_cast<std::uint16_t>(written);
 }
@@ -166,9 +184,11 @@ std::uint8_t Esp32s3::read() noexcept
     std::uint8_t byte{};
     if (myConfig.useUsbJtag)
     {
+        //! @note Magic numbers.
         usb_serial_jtag_read_bytes(&byte, 1U, pdMS_TO_TICKS(10U));
         return byte;
     }
+    //! @note Magic numbers.
     uart_read_bytes(myConfig.port, &byte, 1U, pdMS_TO_TICKS(10U));
     return byte;
 }
@@ -184,13 +204,22 @@ std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
     {
         // Accumulate bytes into myLineBuf across calls. Return a complete line
         // only when '\n' or '\r' is received — handles slow typing correctly.
+        //! @note auto here.
         const std::uint16_t limit{static_cast<std::uint16_t>(LineBufSize - 1U)};
+
         while (myLineLen < limit)
         {
             std::uint8_t ch{};
+
+            //! @note Lots of magic going on here.
             if (usb_serial_jtag_read_bytes(&ch, 1U, 0) <= 0) { break; }
             if (ch == '\n' || ch == '\r')
             {
+                //! @note Tip: Create a constant for static_cast<std::uint16_t>(maxLen - 1U):
+                //! const auto len = static_cast<std::uint16_t>(maxLen - 1U);
+                //!
+                //! Then you would get this:
+                //! const auto n = myLineLen < len ? myLineLen : len;
                 const std::uint16_t n{(myLineLen < static_cast<std::uint16_t>(maxLen - 1U))
                                        ? myLineLen
                                        : static_cast<std::uint16_t>(maxLen - 1U)};
@@ -201,27 +230,41 @@ std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
             }
             myLineBuf[myLineLen++] = static_cast<char>(ch);
         }
-        buf[0] = '\0';
+        buf[0U] = '\0';
+
+        //! @note Should you return the number of bytes read?
         return 0U;
     }
 
     // UART path: use hardware pattern detection for '\n'.
+    //! @note Initialize with {} or use auto here.
     const int patternPos = uart_pattern_pop_pos(myConfig.port);
+
+    //! @note Yoda.
     if (patternPos < 0) { return 0U; }
 
+    //! @note auto for these and a constant for static_cast<std::uint16_t>(patternPos).
     const std::uint16_t limit{static_cast<std::uint16_t>(maxLen - 1U)};
     const std::uint16_t toRead{(static_cast<std::uint16_t>(patternPos) < limit)
                                 ? static_cast<std::uint16_t>(patternPos)
                                 : limit};
 
+    //! @note Initialize with {} or use auto here, avoid magic number 100.
     const int result = uart_read_bytes(myConfig.port,
                                        reinterpret_cast<std::uint8_t*>(buf),
                                        toRead,
                                        pdMS_TO_TICKS(100U));
 
     std::uint8_t newline{};
+
+    //! @note Magic.
     uart_read_bytes(myConfig.port, &newline, 1U, pdMS_TO_TICKS(10U));
 
+    //! @note How about this:
+    //! const auto bytesRead ? 0 > result ? 0 : result;
+    //! 
+    //! Then cast bytesRead to std::uint16_t when returning:
+    //! return static_cast<std::uint16_t>(bytesRead);
     const std::uint16_t bytesRead{result < 0 ? std::uint16_t{0} : static_cast<std::uint16_t>(result)};
     buf[bytesRead] = '\0';
     return bytesRead;
@@ -231,14 +274,13 @@ std::uint16_t Esp32s3::read(char* buf, std::uint16_t maxLen) noexcept
 bool Esp32s3::isDataAvailable() const noexcept
 {
     if (!myConnected) { return false; }
+
+    //! @note Yoda for these.
     if (myConfig.useUsbJtag) { return myLineLen > 0U; }
     return uart_pattern_get_pos(myConfig.port) >= 0;
 }
 
 // -----------------------------------------------------------------------------
-bool Esp32s3::isInitialized() const noexcept
-{
-    return myConnected;
-}
+bool Esp32s3::isInitialized() const noexcept { return myConnected; }
 
 } // namespace driver::serial

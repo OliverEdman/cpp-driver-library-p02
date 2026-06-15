@@ -1,6 +1,8 @@
+//! @note Missing file header.
 #include <cstdio>
 #include <cstdint>
 
+//! @note Sort headers.
 #include "driver/adc/esp32s3.h"
 #include "system/pin_manager/esp32s3.h"
 #include "esp_log.h"
@@ -9,15 +11,18 @@ namespace driver::adc
 {
 namespace
 {
-
+//! @note Can be marked constexpr - this can be evaluated at compile-time.
 bool isAdcPin(const std::uint8_t pin) noexcept 
 {
     return (pin >= 1U) && (pin <= 10U);
 }
 
-
+//! @note Same here.
 adc_channel_t pinToAdc1Channel(const std::uint8_t pin) noexcept
 {
+    //! @note Maybe add a check so that pin != 0:
+    //!       const auto channel = 0U < pin ? pin - 1U : pin;
+    //!       return static_cast<adc_channel_t>(channel);
     return static_cast<adc_channel_t>(pin - 1U);
 }
 
@@ -38,6 +43,7 @@ bool Esp32s3::isInitialized() const noexcept
 {
     return myState;
 }
+
 bool Esp32s3::init() noexcept
 {
     // Return false if ADC is already initialized.
@@ -73,6 +79,7 @@ bool Esp32s3::init() noexcept
         myPinManager.releasePin(myPin);
         return false;
     }
+    //! @note Initialize with {} instead of = {} => you can remove = from the next line.
     adc_oneshot_chan_cfg_t channelConfig = {};
     channelConfig.bitwidth = ADC_BITWIDTH_DEFAULT;
     channelConfig.atten = ADC_ATTEN_DB_12;
@@ -94,7 +101,7 @@ bool Esp32s3::init() noexcept
 bool Esp32s3::deinit() noexcept 
 {
     // Return false if init() never succeeded.
-    if ( !myState ) { return false; }
+    if (!myState) { return false; }
     
     // Release ESP-IDF ADC unit resources.
     if(adc_oneshot_del_unit(myHandle) != ESP_OK) { return false; }
@@ -115,6 +122,8 @@ std::uint16_t Esp32s3::readRaw() const noexcept
     int rawValue{0U};
 
     // Read raw ADC value, return 0 on failure.
+    //! @note Please use Yoda notation:
+    //!       if (ESP_OK != adc_oneshot_read(myHandle, myChannel, &rawValue))
     if(adc_oneshot_read(myHandle, myChannel, &rawValue) != ESP_OK)
     {
         return 0U;
@@ -131,9 +140,9 @@ float Esp32s3::readVoltage() const noexcept
     const auto rawValue = readRaw();
 
     // Convert raw ADC value to volts.
+    //! @note You can skip the voltage parameter here and just return the value directly:
+    //!       return (rawValue / maxRawValue) * supplyVoltage;
     const auto voltage = (rawValue / maxRawValue) * supplyVoltage;
-
     return voltage;
 }
-
 } // namespace driver::adc 
