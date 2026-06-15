@@ -1,3 +1,6 @@
+//! @note Missing file header.
+
+//! @note Include <cstdint>.
 #include <cstdio>
 
 #include "system/pin_manager/interface.h"
@@ -5,6 +8,8 @@
 
 namespace test
 {
+// -----------------------------------------------------------------------------
+//! @note Very nice test, good work! :)
 bool runPinManagerTest(sys::pin_manager::Interface& manager) noexcept
 {
     constexpr std::uint8_t pinMax{100U};

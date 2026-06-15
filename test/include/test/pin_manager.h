@@ -1,10 +1,8 @@
+//! @note Missing file header.
 #pragma once
 
 /** Pin manager interface. */
-namespace sys::pin_manager
-{
-class Interface;
-} // namespace sys::pin_manager
+namespace sys::pin_manager { class Interface; }
 
 namespace test
 {
