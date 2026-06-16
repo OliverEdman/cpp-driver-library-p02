@@ -1,17 +1,23 @@
 /**
- * @file esp32s3.h
  * @brief ADC driver for ESP32-S3. 
  */
 #pragma once
 
-#include "driver/adc/interface.h"
+#include <cstdint>
 
+#include "driver/adc/interface.h"
 #include "esp_adc/adc_oneshot.h"
 
 namespace driver::adc 
 {
 
-
+/**
+ * @brief ADC driver implementation for ESP32-S3.
+ *
+ * This class provides an interface for interacting with the ESP32-S3's 
+ * built in Analog to Digital Converter (ADC). It handles initialization, 
+ * resource management, and conversion of raw ADC into voltage values.
+ */
 class Esp32s3 final : public Interface
 {
 
@@ -60,7 +66,7 @@ public:
 
     /**
      * @brief Read the input voltage in Volts.
-     * Converts the raw value to voltage.
+     * Convert the raw value to voltage.
      * 
      * @return Input voltage in Volts.
      */

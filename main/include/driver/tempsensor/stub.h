@@ -1,5 +1,4 @@
 /**
- * @file Stub.h
  * @brief Temperature sensor driver stub for simulation.
  */
 
@@ -20,8 +19,8 @@ public:
      * @brief Constructor.
      */
     Stub() noexcept 
-	    : my_simulatedTemp{25.0f}
-            , my_initialized{true}
+	    : mySimulatedTemp{25.0f}
+            , myInitialized{true}
 {
 
 }
@@ -32,49 +31,47 @@ public:
      */
     ~Stub() noexcept override = default;
 
-    // Delete copy/move cpnstructors and operators.
+    // Delete copy/move constructors and operators.
     Stub(const Stub&)            = delete;
     Stub& operator=(const Stub&) = delete;
     Stub(Stub&&)                 = delete;
     Stub& operator=(Stub&&)      = delete;
 
     /**
-     * @brief Reads the current simulated temperature.
+     * @brief Read the current simulated temperature.
+	 *
      * @return The simulated temperature value in degrees Celsius.
      */
-    float readCelsius() noexcept override {
-        return my_simulatedTemp;
-    }
+	float readCelsius() noexcept override { return mySimulatedTemp; }
 
     /**
-     * @brief Checks if the simulated sensor driver is successfully initialized.
+     * @brief Check if the simulated sensor driver is successfully initialized.
+	 *
      * @return True if initialized, false otherwise.
      */
-    bool isInitialized() const noexcept override {
-        return my_initialized;
-    }
+    bool isInitialized() const noexcept override { return myInitialized; }
 
     /**
      * @brief Set the simulated temperature value that the stub should return.
+	 *
      * @param[in] temp The target temperature in degrees Celsius.
      */
-    void setTemperature(float temp) noexcept {
-        my_simulatedTemp = temp;
-    }
+    void setTemperature(float temp) noexcept { mySimulatedTemp = temp; }
 
     /**
      * @brief Sets the initialization state of the stub.
+	 *
      * @param[in] state Set to true to simulate an initialized sensor, false otherwise.
      */
     void setInitialized(bool state) noexcept {
-        my_initialized = state;
+        myInitialized = state;
     }
 
 private:
-    /** @brief The currently stored simulated temperature value. */
+    /** The currently stored simulated temperature value. */
     float mySimulatedTemp;
 
-    /** @brief The currently stored simulated initialization state. */
+    /** The currently stored simulated initialization state. */
     bool myInitialized;
 };
 

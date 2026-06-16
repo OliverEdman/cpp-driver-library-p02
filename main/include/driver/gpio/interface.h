@@ -1,5 +1,4 @@
-/*
- * @file interface.h 
+/**
  * @brief Abstract interface for GPIO driver.
  */
 
@@ -22,13 +21,15 @@ public:
 
     /**
      * @brief Write the digital output state of the GPIO pin.
-     * * @param[in] state True to set the pin logic high, false to set it logic low.
+     *
+     * @param[in] state True to set the pin logic high, false to set it logic low.
      */
     virtual void write(bool state) noexcept = 0;
 
     /**
      * @brief Read the digital input state of the GPIO pin.
-     * * @return True if the pin is logic high, false if it is logic low.
+     *
+     * @return True if the pin is logic high, false if it is logic low.
      */
     virtual bool read() const noexcept = 0;
 
@@ -39,7 +40,8 @@ public:
 
     /**
      * @brief Check if the GPIO pin has been successfully configured and initialized.
-     * * @return True if the driver is initialized and ready for use, false otherwise.
+     *
+     * @return True if the driver is initialized and ready for use, false otherwise.
      */
     virtual bool isInitialized() const noexcept = 0;
     
