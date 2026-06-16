@@ -75,9 +75,6 @@ private:
      *
      * @param[in] timer    Handle to the timer.
      * @param[in] event    Pointer to the alarm event data.
-     * @param[in] userData User-provided context.
-     *
-     * @return True if a high-priority task was woken.
      */
     static bool IRAM_ATTR timerCallback(gptimer_handle_t timer,
                                         const gptimer_alarm_event_data_t *event,
