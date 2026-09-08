@@ -11,6 +11,8 @@ idf_component_register(
         "source/driver/wifi/esp32s3.cpp"
         "source/driver/mqtt/esp32s3.cpp"
         "source/system/logic/logic.cpp"
+        "source/ml/lin_reg/adaptive.cpp"
+        "source/ml/lin_reg/fixed.cpp"
         # Lägg till eeprom och watchdog här för VG sen
     INCLUDE_DIRS
         "include"
