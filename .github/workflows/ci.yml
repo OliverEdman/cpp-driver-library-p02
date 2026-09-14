@@ -30,7 +30,7 @@ jobs:
       - name: Build firmware with ESP-IDF
         uses: espressif/esp-idf-ci-action@v1
         with:
-          esp_idf_version: v5.2
+          esp_idf_version: v6.1
           target: esp32s3
           command: idf.py build
       - name: Collect artifacts
