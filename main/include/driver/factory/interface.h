@@ -8,37 +8,17 @@
 #include <cstdint>
 #include <memory>
 
-namespace driver::adc
-{
-class Interface;
-}
-namespace driver::gpio
-{
-class Interface;
-}
-namespace driver::serial
-{
-class Interface;
-}
-namespace driver::tempsensor
-{
-class Interface;
-}
-namespace driver::timer
-{
-class Interface;
-}
-namespace driver::mqtt
-{
-class Interface;
-}
-namespace driver::wifi
-{
-class Interface;
-}
+// clang-format off
+namespace driver::adc { class Interface; }
+namespace driver::gpio { class Interface; }
+namespace driver::serial { class Interface; }
+namespace driver::tempsensor { class Interface; }
+namespace driver::timer { class Interface; }
+namespace driver::mqtt { class Interface; }
+namespace driver::wifi { class Interface; }
 
-namespace driver::factory
-{
+namespace driver::factory {
+// clang-format on
 
 /**
  * @brief Abstract Factory interface for creating drivers.

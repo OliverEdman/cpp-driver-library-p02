@@ -9,41 +9,19 @@
 #include <cstdint>
 #include <memory>
 
-namespace driver
-{
-namespace adc
-{
-class Interface;
-}
-namespace gpio
-{
-class Interface;
-}
-namespace serial
-{
-class Interface;
-}
-namespace tempsensor
-{
-class Interface;
-}
-namespace timer
-{
-class Interface;
-}
-namespace mqtt
-{
-class Interface;
-}
-namespace wifi
-{
-class Interface;
-}
-} // namespace driver
+// clang-format off
+namespace driver {
+namespace adc { class Interface; }
+namespace gpio { class Interface; }
+namespace serial { class Interface; }
+namespace tempsensor { class Interface; }
+namespace timer { class Interface; }
+namespace mqtt { class Interface; }
+namespace wifi { class Interface; }
+} 
 
-namespace driver::factory
-{
-
+namespace driver::factory {
+// clang-format on
 /**
  * @brief Factory for creating real ESP32-S3 hardware drivers.
  */
