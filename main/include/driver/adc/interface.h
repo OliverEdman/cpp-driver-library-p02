@@ -2,7 +2,7 @@
  * @file interface.h
  * @brief ADC driver interface
  */
-#pragma once 
+#pragma once
 
 #include <cstdint>
 
@@ -13,13 +13,12 @@ namespace driver::adc
  */
 class Interface
 {
-public:    
-
+public:
     /**
      * @brief Destructor.
      */
     virtual ~Interface() noexcept = default;
-    
+
     /**
      * @brief Initialize ADC
      * * @return True if the ADC was initialized successfully, false otherwise.

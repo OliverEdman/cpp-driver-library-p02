@@ -14,7 +14,7 @@ namespace sys::pin_manager
  * @brief Abstract interface for GPIO pin management.
  * Provides an interface for validating, checking, reserving, and releasing
  * hardware pins to prevent resource conflicts.
- */	
+ */
 class Interface
 {
 public:
@@ -40,7 +40,7 @@ public:
     /**
      * @brief Reserve pin.
      * @param[in] pin Corresponding bit to reserve in PinRegister
-     * @return True on success, false otherwise.  
+     * @return True on success, false otherwise.
      */
     virtual bool reservePin(std::uint8_t pin) noexcept = 0;
 

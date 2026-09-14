@@ -1,6 +1,6 @@
 /**
  * @file esp32s3.h
- * @brief ADC driver for ESP32-S3. 
+ * @brief ADC driver for ESP32-S3.
  */
 #pragma once
 
@@ -8,18 +8,15 @@
 
 #include "esp_adc/adc_oneshot.h"
 
-namespace driver::adc 
+namespace driver::adc
 {
-
 
 class Esp32s3 final : public Interface
 {
-
-        
-public:    
+public:
     /**
      * @brief Constructor.
-     * 
+     *
      * @param[in] pin The pin to read analog value from (1-10).
      */
     explicit Esp32s3(std::uint8_t pin) noexcept;
@@ -27,41 +24,40 @@ public:
      * @brief Destructor.
      */
     ~Esp32s3() noexcept override = default;
-     
+
     /**
      * @brief Check if the ADC is initialized.
-     * 
+     *
      * @return True if initialized, false otherwise.
      */
     bool isInitialized() const noexcept override;
 
-     /**
-      * @brief Initialize ADC
-      *
-      * @return True if the ADC was initialized successfully, false otherwise.
-      */
+    /**
+     * @brief Initialize ADC
+     *
+     * @return True if the ADC was initialized successfully, false otherwise.
+     */
     bool init() noexcept override;
 
-     /**
-      * @brief Deinitialize ADC
-      *
-      * @return True if the ADC was deinitialized successfully, false otherwise.
-      *
-      */
+    /**
+     * @brief Deinitialize ADC
+     *
+     * @return True if the ADC was deinitialized successfully, false otherwise.
+     *
+     */
     bool deinit() noexcept override;
 
     /**
-    * @brief Read input from the given pin.
-    *
-    * @return Input value.
-    */
+     * @brief Read input from the given pin.
+     *
+     * @return Input value.
+     */
     std::uint16_t readRaw() const noexcept override;
-
 
     /**
      * @brief Read the input voltage in Volts.
      * Converts the raw value to voltage.
-     * 
+     *
      * @return Input voltage in Volts.
      */
     float readVoltage() const noexcept override;
@@ -81,4 +77,4 @@ private:
     adc_oneshot_unit_handle_t myHandle;
 };
 
-} // namespace driver::adc 
+} // namespace driver::adc

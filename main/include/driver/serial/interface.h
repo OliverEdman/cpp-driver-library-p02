@@ -59,7 +59,7 @@ public:
      */
     virtual std::uint16_t read(char* buf, std::uint16_t maxLen) noexcept = 0;
 
-     /**
+    /**
      * @brief Check if a complete newline-terminated message is ready to be read.
      * @return True if a full line is waiting in the buffer, false otherwise.
      */
@@ -71,4 +71,4 @@ public:
      */
     virtual bool isInitialized() const noexcept = 0;
 };
-}// namespace driver:: serial
+} // namespace driver::serial

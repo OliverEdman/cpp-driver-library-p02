@@ -1,15 +1,14 @@
 /**
  * @file stub.h
  * @brief Serial driver interface for simulation.
- * 
+ *
  */
 #pragma once
 
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 
 #include "driver/serial/interface.h"
-
 
 namespace driver::serial
 {
@@ -17,10 +16,9 @@ namespace driver::serial
  * @brief Serial Interface
  * This class is non-copyable, non-movable and non-inheritable
  */
-class Stub final: public Interface
+class Stub final : public Interface
 {
 public:
-
     /**
      * @brief Constructor.
      */
@@ -95,9 +93,8 @@ public:
     // Delete no/copy move constructors and operators.
     Stub(const Stub&)            = delete;
     Stub(Stub&&)                 = delete;
-    Stub& operator=(const Stub&) = delete; 
-    Stub& operator=(Stub&&)      = delete; 
-
+    Stub& operator=(const Stub&) = delete;
+    Stub& operator=(Stub&&)      = delete;
 
 private:
     /** @brief Maximum simulated buffer size. */
@@ -118,4 +115,4 @@ private:
     /** @brief Flag tracking if the simulated device is connected*/
     bool myConnected;
 };
-}// namespace driver:: serial
+} // namespace driver::serial

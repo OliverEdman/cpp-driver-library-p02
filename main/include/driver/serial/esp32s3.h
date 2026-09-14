@@ -42,7 +42,7 @@ struct Config
  * @brief Serial driver for ESP32-S3.
  * This class is non-copyable and non-movable.
  */
-class Esp32s3 final: public Interface
+class Esp32s3 final : public Interface
 {
 public:
     /**

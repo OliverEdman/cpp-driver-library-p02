@@ -9,12 +9,13 @@
 #include "driver/factory/interface.h"
 
 #include <atomic>
-#include <memory>
 #include <cstdint>
+#include <memory>
 
 #include "sdkconfig.h"
 
-namespace app::logic {
+namespace app::logic
+{
 
 /**
  * @brief Main system logic class.
@@ -29,9 +30,9 @@ namespace app::logic {
  * - Timer based blinking
  * - Temperature reading
  */
-class Logic final {
+class Logic final
+{
 public:
-
     /**
      * @brief The constructor uses the factory to create all drivers needed by the system.
      * @param[in] factory Reference to a driver factory.
@@ -56,10 +57,10 @@ public:
      * The logic class owns hardware drivers through
      * std::unique_ptr and should not be copied or moved.
      */
-    Logic(const Logic&) = delete;
+    Logic(const Logic&)            = delete;
     Logic& operator=(const Logic&) = delete;
-    Logic(Logic&&) = delete;
-    Logic& operator=(Logic&&) = delete;
+    Logic(Logic&&)                 = delete;
+    Logic& operator=(Logic&&)      = delete;
 
 private:
     /**

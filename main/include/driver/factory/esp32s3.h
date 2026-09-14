@@ -6,29 +6,52 @@
 #pragma once
 
 #include "interface.h"
-#include <memory>
 #include <cstdint>
+#include <memory>
 
+namespace driver
+{
+namespace adc
+{
+class Interface;
+}
+namespace gpio
+{
+class Interface;
+}
+namespace serial
+{
+class Interface;
+}
+namespace tempsensor
+{
+class Interface;
+}
+namespace timer
+{
+class Interface;
+}
+namespace mqtt
+{
+class Interface;
+}
+namespace wifi
+{
+class Interface;
+}
+} // namespace driver
 
-namespace driver {
-    namespace adc { class Interface; }
-    namespace gpio { class Interface; }
-    namespace serial { class Interface; }
-    namespace tempsensor { class Interface; }
-    namespace timer { class Interface; }
-    namespace mqtt { class Interface; }
-    namespace wifi { class Interface; }
-} 
-
-namespace driver::factory {
+namespace driver::factory
+{
 
 /**
  * @brief Factory for creating real ESP32-S3 hardware drivers.
  */
 
-class Esp32s3 final : public Interface {
+class Esp32s3 final : public Interface
+{
 public:
-    Esp32s3() noexcept = default;
+    Esp32s3() noexcept           = default;
     ~Esp32s3() noexcept override = default;
 
     /**
@@ -65,7 +88,8 @@ public:
      * @param[in] adc Reference to the initialized ADC driver instance to use for reading.
      * @return A unique pointer to the created Temperature Sensor interface instance.
      */
-    std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept override;
+    std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin,
+                                                      adc::Interface& adc) noexcept override;
 
     /**
      * @brief Create a real ESP32-S3 Timer hardware instance.
@@ -90,7 +114,8 @@ public:
      * @param[in] clientId  MQTT client ID.
      * @return A unique pointer to the created MQTT interface instance.
      */
-    std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri, const char* clientId) noexcept override;
+    std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri,
+                                          const char* clientId) noexcept override;
 
     // no copy move operators
     Esp32s3(const Esp32s3&)            = delete;
