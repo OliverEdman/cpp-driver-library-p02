@@ -4,21 +4,22 @@
  */
 
 #pragma once
-#include "interface.h"
 #include "driver/gptimer.h"
 #include "esp_attr.h"
+#include "interface.h"
 
-namespace driver::timer {
+namespace driver::timer
+{
 
 /**
  * @brief Real hardware interface for the ESP32-S3 timer driver.
  * This class configures and control a hardware Genreal Purpose Timer (GPTimer)
  * This class cannot be copied or moved.
  */
-class Esp32s3 final : public Interface {
+class Esp32s3 final : public Interface
+{
 public:
-
-     // Delete no copy/move contrustors and operators.
+    // Delete no copy/move contrustors and operators.
     Esp32s3(const Esp32s3&)            = delete;
     Esp32s3& operator=(const Esp32s3&) = delete;
     Esp32s3(Esp32s3&&)                 = delete;
@@ -40,7 +41,7 @@ public:
     /** @brief Stops the ESP32-S3 hardware timer. */
     void stop() noexcept override;
 
-    /** @brief Configures the alarm value based on milliseconds. 
+    /** @brief Configures the alarm value based on milliseconds.
      * @param[in] period_ms Period in milliseconds.
      */
     void setPeriod(std::uint32_t period_ms) noexcept override;
@@ -50,7 +51,6 @@ public:
      */
     bool isTimeout() noexcept override;
 
-    
     /** @brief Check the initialization status of the GPTimer.
      * @return True if initialized, false otherwise.
      */
@@ -65,12 +65,10 @@ private:
 
     /** @brief Flag tracking if the hardware timer is successfully initialized. */
     bool my_initialized = false;
-    
-    
-     /** @brief ISR callback function triggered on timer alarm events. */
-    static bool IRAM_ATTR timer_callback(gptimer_handle_t timer, 
-                                        const gptimer_alarm_event_data_t *edata, 
-                                        void *user_data);
+
+    /** @brief ISR callback function triggered on timer alarm events. */
+    static bool IRAM_ATTR timer_callback(gptimer_handle_t timer,
+                                         const gptimer_alarm_event_data_t* edata, void* user_data);
 };
 
 } // namespace driver::timer

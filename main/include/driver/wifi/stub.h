@@ -49,28 +49,19 @@ public:
     /**
      * @brief Simulate disconnecting from WiFi.
      */
-    void disconnect() noexcept override
-    {
-        myConnected = false;
-    }
+    void disconnect() noexcept override { myConnected = false; }
 
     /**
      * @brief Check simulated WiFi connection state.
      * @return True if simulated WiFi is connected.
      */
-    bool isConnected() const noexcept override
-    {
-        return myConnected;
-    }
+    bool isConnected() const noexcept override { return myConnected; }
 
     /**
      * @brief Check simulated WiFi initialization state.
      * @return True if connect has been called.
      */
-    bool isInitialized() const noexcept override
-    {
-        return myInitialized;
-    }
+    bool isInitialized() const noexcept override { return myInitialized; }
 
     Stub(const Stub&)            = delete;
     Stub(Stub&&)                 = delete;

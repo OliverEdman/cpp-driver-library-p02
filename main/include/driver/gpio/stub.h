@@ -4,8 +4,8 @@
  */
 #pragma once
 
-#include <cstdint>
 #include "driver/gpio/interface.h"
+#include <cstdint>
 
 namespace driver::gpio
 {
@@ -33,33 +33,25 @@ public:
     /**
      * @brief Write the simulated digital output state of the GPIO pin.
      * * @param[in] state True to set the simulated pin logic high, false to set it logic low.
-     */ 
-    void write(bool state) noexcept override {
-        myState = state;
-    }
+     */
+    void write(bool state) noexcept override { myState = state; }
 
-     /**
+    /**
      * @brief Read the simulated digital state of the GPIO pin.
      * * @return True if the simulated pin is logic high, false if it is logic low.
-     */ 
-    bool read() const noexcept override {
-        return myState;
-    }
+     */
+    bool read() const noexcept override { return myState; }
 
-     /**
+    /**
      * @brief Toggle the current simulated digital state of the GPIO pin.
-     */ 
-    void toggle() noexcept override {
-        myState = !myState;
-    }
+     */
+    void toggle() noexcept override { myState = !myState; }
 
-     /**
+    /**
      * @brief Check if the simulated GPIO driver is initialized.
      * * @return Always returns true since the simulation stub requires no hardware setup.
-     */ 
-    bool isInitialized() const noexcept override {
-    return true;
-    }
+     */
+    bool isInitialized() const noexcept override { return true; }
     // Delete copy/move operators.
     Stub(const Stub&)            = delete;
     Stub(Stub&&)                 = delete;

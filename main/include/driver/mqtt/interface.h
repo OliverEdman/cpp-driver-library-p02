@@ -69,9 +69,7 @@ public:
      * @param[in] payloadMaxLen Size of the payload buffer.
      * @return True if a message was copied, false otherwise.
      */
-    virtual bool readMessage(char* topic,
-                            std::uint16_t topicMaxLen,
-                             char* payload,
-                             std::uint16_t payloadMaxLen ) noexcept = 0;
+    virtual bool readMessage(char* topic, std::uint16_t topicMaxLen, char* payload,
+                             std::uint16_t payloadMaxLen) noexcept = 0;
 };
 } // namespace driver::mqtt

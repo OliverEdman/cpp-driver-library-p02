@@ -1,5 +1,5 @@
 /*
- * @file interface.h 
+ * @file interface.h
  * @brief Abstract interface for GPIO driver.
  */
 
@@ -42,6 +42,5 @@ public:
      * * @return True if the driver is initialized and ready for use, false otherwise.
      */
     virtual bool isInitialized() const noexcept = 0;
-    
 };
 } // namespace driver::gpio

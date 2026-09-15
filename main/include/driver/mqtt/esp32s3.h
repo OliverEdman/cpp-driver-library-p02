@@ -9,7 +9,8 @@
 /**
  * @brief Include ESP-IDF MQTT C API with C linkage.
  */
-extern "C" {
+extern "C"
+{
 #include "mqtt_client.h"
 }
 
@@ -27,12 +28,11 @@ class Esp32s3 final : public Interface
 public:
     /**
      * @brief Constructor
-     * 
+     *
      * @param[in] brokerUri MQTT broker URI.
      * @param[in] clientId MQTT client ID.
      */
-    Esp32s3(const char* brokerUri,
-            const char* clientId) noexcept;
+    Esp32s3(const char* brokerUri, const char* clientId) noexcept;
 
     /**
      * @brief Destructor.
@@ -77,7 +77,8 @@ public:
      */
     void loop() noexcept override;
 
-    bool readMessage(char* topic, std::uint16_t topicMaxLen, char* payload, std::uint16_t payloadMaxLen) noexcept override;
+    bool readMessage(char* topic, std::uint16_t topicMaxLen, char* payload,
+                     std::uint16_t payloadMaxLen) noexcept override;
 
     // Delete copy/move constructors and operators.
     Esp32s3(const Esp32s3&)            = delete;
@@ -86,16 +87,14 @@ public:
     Esp32s3& operator=(Esp32s3&&)      = delete;
 
 private:
-     /**
+    /**
      * @brief Static MQTT event callback handler dispatched by the ESP-IDF framework.
      * @param[in] handler_args User arguments.
      * @param[in] base The event base.
      * @param[in] event_id The specific event ID.
      * @param[in] event_data Pointer to the raw event data structure.
-     */ 
-    static void mqttEventHandler(void* handler_args,
-                                 esp_event_base_t base,
-                                 int32_t event_id,
+     */
+    static void mqttEventHandler(void* handler_args, esp_event_base_t base, int32_t event_id,
                                  void* event_data);
 
     /** @brief ESP-IDF MQTT client handle. */
@@ -109,7 +108,7 @@ private:
 
     /** @brief Boolean flag tracking the connection status. */
     bool myConnected;
-                                 
+
     /** @brief Maximum stored topic length including null terminator. */
     static constexpr std::uint16_t topicBufSize{64U};
 

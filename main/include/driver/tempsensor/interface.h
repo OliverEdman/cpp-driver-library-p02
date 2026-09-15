@@ -3,22 +3,23 @@
  * @brief Interface for the temperature driver.
  */
 
-#pragma once 
+#pragma once
 
-namespace driver::tempsensor {
+namespace driver::tempsensor
+{
 
 /**
  * @brief Abstract interface for temperature sensor driver.
  */
-class Interface {
+class Interface
+{
 public:
-
     /**
-    * @brief Virtual destructor.
-    */
+     * @brief Virtual destructor.
+     */
 
     virtual ~Interface() noexcept = default;
-	
+
     /**
      * @brief Read the current temperature from the sensor.
      * @return The temperature value in degrees Celsius.
@@ -35,4 +36,3 @@ public:
 };
 
 } // namespace driver::tempsensor
-

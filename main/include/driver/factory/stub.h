@@ -6,25 +6,27 @@
 #pragma once
 
 #include "interface.h"
-#include <memory>
 #include <cstdint>
+#include <memory>
 
 #include "driver/adc/stub.h"
 #include "driver/gpio/stub.h"
-#include "driver/serial/stub.h"
-#include "driver/timer/stub.h"
-#include "driver/tempsensor/stub.h"
 #include "driver/mqtt/stub.h"
+#include "driver/serial/stub.h"
+#include "driver/tempsensor/stub.h"
+#include "driver/timer/stub.h"
 #include "driver/wifi/stub.h"
 
-namespace driver::factory {
+namespace driver::factory
+{
 
 /**
  * @brief Factory for creating simulated driver stubs.
  * Used to run and test the application without physical hardware.
  */
 
-class Stub final : public Interface {
+class Stub final : public Interface
+{
 public:
     /**
      * @brief Constructor.
@@ -42,9 +44,10 @@ public:
      * @param[in] pin The hardware pin number to simulate (unused).
      * @return A unique pointer to the created simulated GPIO interface instance.
      */
-    std::unique_ptr<gpio::Interface> gpioInput(std::uint8_t pin) noexcept override {
+    std::unique_ptr<gpio::Interface> gpioInput(std::uint8_t pin) noexcept override
+    {
         (void)pin;
-        return std::make_unique<driver::gpio::Stub>(); 
+        return std::make_unique<driver::gpio::Stub>();
     }
 
     /**
@@ -53,9 +56,10 @@ public:
      * @param[in] pin The hardware pin number to simulate (unused).
      * @return A unique pointer to the created simulated GPIO interface instance.
      */
-    std::unique_ptr<gpio::Interface> gpioOutput(std::uint8_t pin) noexcept override {
+    std::unique_ptr<gpio::Interface> gpioOutput(std::uint8_t pin) noexcept override
+    {
         (void)pin;
-        return std::make_unique<driver::gpio::Stub>(); 
+        return std::make_unique<driver::gpio::Stub>();
     }
 
     /**
@@ -64,9 +68,10 @@ public:
      * @param[in] pin The hardware pin number to simulate (unused).
      * @return A unique pointer to the created simulated ADC interface instance.
      */
-    std::unique_ptr<adc::Interface> adc(std::uint8_t pin) noexcept override {
+    std::unique_ptr<adc::Interface> adc(std::uint8_t pin) noexcept override
+    {
         (void)pin;
-	return std::make_unique<driver::adc::Stub>();
+        return std::make_unique<driver::adc::Stub>();
     }
 
     /**
@@ -75,7 +80,8 @@ public:
      * @param[in] baud_bps The communication speed to simulate (unused).
      * @return A unique pointer to the created simulated Serial interface instance.
      */
-    std::unique_ptr<serial::Interface> serial(std::uint32_t baud_bps) noexcept override {
+    std::unique_ptr<serial::Interface> serial(std::uint32_t baud_bps) noexcept override
+    {
         (void)baud_bps;
         return std::make_unique<driver::serial::Stub>();
     }
@@ -87,7 +93,9 @@ public:
      * @param[in] adc Reference to the simulated ADC driver instance (unused).
      * @return A unique pointer to the created simulated Temperature Sensor interface instance.
      */
-    std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept override {
+    std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin,
+                                                      adc::Interface& adc) noexcept override
+    {
         (void)pin;
         (void)adc;
         return std::make_unique<driver::tempsensor::Stub>();
@@ -99,9 +107,10 @@ public:
      * @param[in] timeout_ms The timer timeout duration to simulate (unused).
      * @return A unique pointer to the created simulated Timer interface instance.
      */
-    std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept override {
+    std::unique_ptr<timer::Interface> timer(std::uint32_t timeout_ms) noexcept override
+    {
         (void)timeout_ms;
-        return std::make_unique<driver::timer::Stub>(); 
+        return std::make_unique<driver::timer::Stub>();
     }
 
     /**
@@ -111,7 +120,8 @@ public:
      * @param[in] password WiFi network password to simulate (unused).
      * @return A unique pointer to the created simulated WiFi stub instance.
      */
-    std::unique_ptr<wifi::Interface> wifi(const char* ssid, const char* password) noexcept override {
+    std::unique_ptr<wifi::Interface> wifi(const char* ssid, const char* password) noexcept override
+    {
         (void)ssid;
         (void)password;
         return std::make_unique<driver::wifi::Stub>();
@@ -124,7 +134,9 @@ public:
      * @param[in] clientId  MQTT client ID to simulate (unused).
      * @return A unique pointer to the created simulated MQTT stub instance.
      */
-    std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri, const char* clientId) noexcept override {
+    std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri,
+                                          const char* clientId) noexcept override
+    {
         (void)brokerUri;
         (void)clientId;
         return std::make_unique<driver::mqtt::Stub>();

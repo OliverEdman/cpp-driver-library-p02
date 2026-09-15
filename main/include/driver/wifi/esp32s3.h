@@ -8,11 +8,12 @@
 
 #include <cstdint>
 
-extern "C" {
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
+extern "C"
+{
 #include "esp_event.h"
 #include "esp_netif.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/event_groups.h"
 }
 
 namespace driver::wifi
@@ -73,9 +74,7 @@ private:
     /**
      * @brief ESP-IDF WiFi and IP event callback.
      */
-    static void eventHandler(void* arg,
-                             esp_event_base_t eventBase,
-                             int32_t eventId,
+    static void eventHandler(void* arg, esp_event_base_t eventBase, int32_t eventId,
                              void* eventData);
 
     /** @brief WiFi connected event bit. */
