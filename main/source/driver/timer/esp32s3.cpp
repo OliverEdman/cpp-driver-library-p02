@@ -1,4 +1,4 @@
-#include "esp_attr.h" // IRAM_ATTR
+#include "arch/env/hw_platform.h"
 #include "driver/timer/esp32s3.h"
 namespace driver::timer {
 

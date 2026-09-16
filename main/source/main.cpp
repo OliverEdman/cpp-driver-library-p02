@@ -8,9 +8,7 @@
 #include "driver/tempsensor/tmp36.h"
 #include "driver/gpio/esp32s3.h"
 #include "driver/adc/esp32s3.h"
-#include "esp_log.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
+#include "arch/env/hw_platform.h"
 
 #else
 

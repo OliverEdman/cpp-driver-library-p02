@@ -1,12 +1,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "arch/env/hw_platform.h"
 #include "driver/serial/esp32s3.h"
-#include "driver/uart.h"
-#include "driver/usb_serial_jtag.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
-#include "freertos/task.h"
 
 namespace driver::serial
 {

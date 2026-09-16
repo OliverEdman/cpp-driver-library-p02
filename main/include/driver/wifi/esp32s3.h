@@ -8,13 +8,7 @@
 
 #include <cstdint>
 
-extern "C"
-{
-#include "esp_event.h"
-#include "esp_netif.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-}
+#include "arch/env/hw_platform.h"
 
 namespace driver::wifi
 {

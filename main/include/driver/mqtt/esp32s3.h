@@ -6,14 +6,7 @@
 
 #include <cstdint>
 
-/**
- * @brief Include ESP-IDF MQTT C API with C linkage.
- */
-extern "C"
-{
-#include "mqtt_client.h"
-}
-
+#include "arch/env/hw_platform.h"
 #include "driver/mqtt/interface.h"
 
 namespace driver::mqtt
