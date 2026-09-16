@@ -14,7 +14,7 @@ extern "C"
 #define ESP_ERR_NVS_NO_FREE_PAGES -4
 #define ESP_ERR_NVS_NEW_VERSION_FOUND -5
 
-typedef int esp_err_t;
+    typedef int esp_err_t;
 
 #define IRAM_ATTR
 
