@@ -30,7 +30,7 @@ extern "C"
     } gpio_config_t;
 
     inline int gpio_mock_last_pin            = -1;
-    inline int gpio_mock_last_level          = 0; 
+    inline int gpio_mock_last_level          = 0;
     inline int gpio_mock_level               = 0;
     inline int gpio_mock_set_level_calls     = 0;
     inline int gpio_mock_config_calls        = 0;
@@ -61,8 +61,11 @@ extern "C"
     }
 
     static inline void gpio_mock_set_level_value(int level) { gpio_mock_level = level; }
-    static inline void gpio_mock_set_config_result(esp_err_t result) { gpio_mock_config_result = result; }
-    
+    static inline void gpio_mock_set_config_result(esp_err_t result)
+    {
+        gpio_mock_config_result = result;
+    }
+
     static inline int gpio_mock_get_last_pin(void) { return gpio_mock_last_pin; }
     static inline int gpio_mock_get_last_level(void) { return gpio_mock_last_level; }
     static inline int gpio_mock_get_set_level_calls(void) { return gpio_mock_set_level_calls; }
@@ -86,7 +89,7 @@ extern "C"
     static inline esp_err_t gpio_set_level(gpio_num_t gpio_num, uint32_t level)
     {
         gpio_mock_last_pin   = static_cast<int>(gpio_num);
-        gpio_mock_last_level = static_cast<int>(level); 
+        gpio_mock_last_level = static_cast<int>(level);
         gpio_mock_level      = static_cast<int>(level);
         ++gpio_mock_set_level_calls;
         return ESP_OK;
@@ -95,7 +98,7 @@ extern "C"
     static inline int gpio_get_level(gpio_num_t gpio_num)
     {
         (void)gpio_num;
-        return gpio_mock_level; 
+        return gpio_mock_level;
     }
 
 #ifdef __cplusplus
