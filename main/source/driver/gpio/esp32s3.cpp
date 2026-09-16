@@ -1,11 +1,9 @@
 #include <cstdint>
 
-#include "driver/gpio.h"
-
+#include "arch/env/hw_platform.h"
 #include "driver/gpio/direction.h"
 #include "driver/gpio/esp32s3.h"
 #include "system/pin_manager/esp32s3.h"
-#include "esp_log.h"
 
 namespace driver::gpio
 {

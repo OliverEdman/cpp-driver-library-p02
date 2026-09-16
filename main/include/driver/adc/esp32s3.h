@@ -6,7 +6,7 @@
 
 #include "driver/adc/interface.h"
 
-#include "esp_adc/adc_oneshot.h"
+#include "arch/env/hw_platform.h"
 
 namespace driver::adc
 {

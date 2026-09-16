@@ -1,4 +1,5 @@
 #include "system/logic/logic.h"
+#include "arch/env/hw_platform.h"
 #include "driver/serial/interface.h"
 #include "driver/gpio/interface.h"
 #include "driver/timer/interface.h"
@@ -13,8 +14,6 @@
 #endif
 
 #include <cstdio>
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 
 namespace
 {

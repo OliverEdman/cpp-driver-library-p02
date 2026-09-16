@@ -1,12 +1,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "arch/env/hw_platform.h"
 #include "driver/mqtt/esp32s3.h"
-
-extern "C" 
-{
-#include "mqtt_client.h"
-} // extern "C"
 
 namespace
 {

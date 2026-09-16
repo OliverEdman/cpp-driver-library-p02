@@ -1,9 +1,9 @@
 #include <cstdio>
 #include <cstdint>
 
+#include "arch/env/hw_platform.h"
 #include "driver/adc/esp32s3.h"
 #include "system/pin_manager/esp32s3.h"
-#include "esp_log.h"
 
 namespace driver::adc 
 {

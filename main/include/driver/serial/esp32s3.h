@@ -6,10 +6,8 @@
 
 #include <cstdint>
 
+#include "arch/env/hw_platform.h"
 #include "driver/serial/interface.h"
-#include "driver/uart.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/queue.h"
 
 namespace driver::serial
 {

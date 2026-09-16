@@ -4,8 +4,7 @@
  */
 
 #pragma once
-#include "driver/gptimer.h"
-#include "esp_attr.h"
+#include "arch/env/hw_platform.h"
 #include "interface.h"
 
 namespace driver::timer

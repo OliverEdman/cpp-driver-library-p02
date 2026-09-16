@@ -8,12 +8,22 @@ TST_SRC := source/
 
 CXX_COMPILER := g++
 
-CXX_FLAGS := -Wall -Werror -std=c++17 -I$(INC_DIR) -I$(TST_INC) -static-libstdc++ -static-libgcc
+# Define TESTSUITE to use your mocked ESP32 implementation.
+CXX_FLAGS := -Wall -Werror -std=c++17 -I$(INC_DIR) -I$(TST_INC) -static-libstdc++ -static-libgcc -DTESTSUITE
 
 TEST_FILES := $(TST_SRC)/test.cpp \
               $(TST_SRC)/test/pin_manager.cpp \
 
-SOURCE_FILES := $(SRC_DIR)/system/pin_manager/esp32s3.cpp \
+SOURCE_FILES := $(SRC_DIR)/driver/adc/esp32s3.cpp \
+                $(SRC_DIR)/driver/factory/esp32s3.cpp \
+                $(SRC_DIR)/driver/gpio/esp32s3.cpp \
+                $(SRC_DIR)/driver/mqtt/esp32s3.cpp \
+                $(SRC_DIR)/driver/serial/esp32s3.cpp \
+                $(SRC_DIR)/driver/tempsensor/tmp36.cpp \
+                $(SRC_DIR)/driver/timer/esp32s3.cpp \
+                $(SRC_DIR)/driver/wifi/esp32s3.cpp \
+                $(SRC_DIR)/system/logic/logic.cpp \
+                $(SRC_DIR)/system/pin_manager/esp32s3.cpp \
 
 ALL_FILES := $(TEST_FILES) $(SOURCE_FILES)
 

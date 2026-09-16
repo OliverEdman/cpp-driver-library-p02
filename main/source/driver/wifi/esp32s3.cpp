@@ -2,16 +2,8 @@
 #include <cstdint>
 #include <cstring>
 
+#include "arch/env/hw_platform.h"
 #include "driver/wifi/esp32s3.h"
-
-extern "C" {
-#include "esp_err.h"
-#include "esp_netif.h"
-#include "esp_wifi.h"
-#include "esp_wifi_default.h"
-#include "freertos/task.h"
-#include "nvs_flash.h"
-}
 
 namespace
 {
