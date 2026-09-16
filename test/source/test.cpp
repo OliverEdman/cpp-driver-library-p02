@@ -1,12 +1,15 @@
-#include <cstdio>
-
+#include "yrgo/test/test.h"
 #include "system/pin_manager/esp32s3.h"
-#include "test/pin_manager.h"
+#include "test/pin_manager.h" 
 
 int main()
 {
     auto& pinManager = sys::pin_manager::Esp32s3::instance();
-    if (!test::runPinManagerTest(pinManager)) { return -1; }
 
-    return 0;
+    if (!test::runPinManagerTest(pinManager)) 
+    { 
+        return -1; 
+    }
+
+    return yrgo::test::runAllTests() ? 0 : -1;
 }

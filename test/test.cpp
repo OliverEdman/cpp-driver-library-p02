@@ -1,11 +1,15 @@
-#include <cstdio>
-
-#include "driver/adc/stub.h"
+#include "yrgo/test/test.h"
+#include "system/pin_manager/esp32s3.h"
+#include "test/pin_manager.h" 
 
 int main()
 {
-    driver::adc::Stub adc{};
-    adc.init();
-    adc.simulateInput(230U);
-    std::printf("ADC input: %u!\n", adc.readRaw());
+    auto& pinManager = sys::pin_manager::Esp32s3::instance();
+
+    if (!test::runPinManagerTest(pinManager)) 
+    { 
+        return -1; 
+    }
+
+    return yrgo::test::runAllTests() ? 0 : -1;
 }
