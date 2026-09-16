@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <memory>
 
+// clang-format off
 namespace driver::adc { class Interface; }
 namespace driver::gpio { class Interface; }
 namespace driver::serial { class Interface; }
@@ -17,13 +18,13 @@ namespace driver::mqtt { class Interface; }
 namespace driver::wifi { class Interface; }
 
 namespace driver::factory {
+// clang-format on
 
 /**
  * @brief Abstract Factory interface for creating drivers.
  */
-class Interface {
-
-
+class Interface
+{
 public:
     virtual ~Interface() noexcept = default;
 
@@ -66,7 +67,8 @@ public:
      * @param[in] adc Reference to an initialized ADC driver instance used for reading.
      * @return A unique pointer to the created Temperature Sensor interface instance.
      */
-    virtual std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin, adc::Interface& adc) noexcept = 0;
+    virtual std::unique_ptr<tempsensor::Interface> tempSensor(std::uint8_t pin,
+                                                              adc::Interface& adc) noexcept = 0;
 
     /**
      * @brief Create a Timer driver instance.
@@ -83,7 +85,8 @@ public:
      * @param[in] password WiFi network password.
      * @return A unique pointer to the created WiFi interface instance.
      */
-    virtual std::unique_ptr<wifi::Interface> wifi(const char* ssid, const char* password) noexcept = 0;
+    virtual std::unique_ptr<wifi::Interface> wifi(const char* ssid,
+                                                  const char* password) noexcept = 0;
 
     /**
      * @brief Create a MQTT driver instance,
@@ -92,7 +95,8 @@ public:
      * @param[in] clientId  MQTT client ID.
      * @return A unique pointer to the created MQTT interface instance.
      */
-    virtual std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri, const char *clientId) noexcept = 0;
+    virtual std::unique_ptr<mqtt::Interface> mqtt(const char* brokerUri,
+                                                  const char* clientId) noexcept = 0;
 
     // No copy and move operations allowed
     Interface(const Interface&)            = delete;
@@ -100,9 +104,7 @@ public:
     Interface(Interface&&)                 = delete;
     Interface& operator=(Interface&&)      = delete;
 
-
 protected:
-
     /**
      * @brief Protected constructor to allow inheritance but prevent creating objects directly.
      */

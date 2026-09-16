@@ -6,21 +6,21 @@
 #pragma once
 #include <cstdint>
 
-
-namespace driver::timer {
+namespace driver::timer
+{
 
 /**
  * @brief Interface for imer driver.
  */
 
-class Interface {
+class Interface
+{
 public:
-
     /**
      * @brief Virtual destructor.
      */
-    virtual ~Interface() noexcept = default; 
-    
+    virtual ~Interface() noexcept = default;
+
     /**
      * @brief Starts the timer.
      */
@@ -30,18 +30,18 @@ public:
      * @brief Stops the timer.
      */
     virtual void stop() noexcept = 0;
-    
+
     /**
      * @brief Sets the timer period in milliseconds.
      * * @param[in] period_ms The alarm period in milliseconds.
      */
     virtual void setPeriod(std::uint32_t period_ms) noexcept = 0;
-    
+
     /**
      * @brief Check if a timeout has occured since the last call.
      * @return True if a timeout occurred, false otherwise.
      */
-    virtual bool isTimeout() noexcept = 0; 
+    virtual bool isTimeout() noexcept = 0;
 
     /**
      * @brief Checks if the timer hardware is successfully initialized.

@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check-format:
+    name: Analyze code with clang-format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+      - name: Perform analysis
+        run: make check-format
+
+  firmware-build:
+    name: Build firmware
+    runs-on: ubuntu-latest
+    needs: check-format
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          submodules: recursive
+      - name: Build firmware with ESP-IDF
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v6.1
+          target: esp32s3
+          command: idf.py build
+      - name: Collect artifacts
+        run: |
+          mkdir -p fw
+          cp build/*.bin fw/
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          path: fw
+          name: firmware
+          if-no-files-found: error
+          retention-days: 1
