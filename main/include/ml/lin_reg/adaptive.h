@@ -57,7 +57,7 @@ public:
     bool train(std::size_t epochCount, double learningRate = 0.01,
                double precisionThreshold = 0.999999) noexcept;
 
-    Adaptive()                        = delete; // No default constructor.
+    Adaptive()                           = delete; // No default constructor.
     Adaptive(const Adaptive&)            = delete; // No copy constructor.
     Adaptive(Adaptive&&)                 = delete; // No move constructor.
     Adaptive& operator=(const Adaptive&) = delete; // No copy assignment.
