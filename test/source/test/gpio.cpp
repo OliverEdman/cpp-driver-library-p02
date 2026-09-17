@@ -5,16 +5,15 @@
 #include "arch/env/test/esp32/gpio_mock.h"
 
 
-/****************************************************************************************
- *                              NOTERING TILL MIG SJÄLV
- * 
- * ESP IDF funktioner använder intar istället för bool där 0 är false och 1 är true
+/**
+ * @brief Checks that an input pin reads the current logic level from the GPIO mock.
  *
- * level i funktionerna är samma sak som state av typen bool logisk 0 eller 1a
- *
- ****************************************************************************************/
-
- TEST(Esp32s3GpioTest, ReadFunction)
+ * The test first sets the mocked pin level to HIGH and expects `read()` to return
+ * true. It then sets the level to LOW and expects `read()` to return false.
+ * This verifies that the GPIO driver converts the ESP-IDF-style integer level
+ * (0 or 1) into the driver's boolean result correctly.
+ */
+TEST(Esp32s3GpioTest, ReadFunction)
 {
     gpio_mock_reset();
 
@@ -31,9 +30,15 @@
     }
 }
 
+/**
+ * @brief Checks that the GPIO driver writes the correct value to output pins.
+ *
+ * The test also checks that writing to an input pin does not change the GPIO
+ * State. It repeats these checks for pins 0 through 15.
+ */
 TEST(Esp32s3GpioTest, WriteFunction)
 {
-    // Skapar en variabel för en pinne som vi kan ha som ingående parameter och öka med 1 varje varv så vi testar alla pinnar.
+    // Increase the pin number on every iteration so pins 0 through 15 are tested.
     for (std::uint8_t testpin = 0; testpin <= 15; ++testpin)
     {
         gpio_mock_reset();
@@ -51,7 +56,7 @@ TEST(Esp32s3GpioTest, WriteFunction)
             EXPECT_EQ(gpio_mock_get_last_level(), 0);
         }
 
-        // Rensar ifall mina variabler har ändras. Detta är som en init funktion sätter varaibler till standard värden.
+        // Reset the mock before testing the next pin direction.
         gpio_mock_reset();
 
         driver::gpio::Esp32s3 inputPin(testpin, driver::gpio::Direction::Input);
@@ -60,7 +65,7 @@ TEST(Esp32s3GpioTest, WriteFunction)
         {
             inputPin.write(true);
             
-            // Kontrollerar så att Inget anrop till gpio_set_level ska ha skett eftersom det är en Input
+            // An input pin should NOT call gpio_set_level when write() is used.
             EXPECT_EQ(gpio_mock_get_set_level_calls(), 0);
         }
     }
