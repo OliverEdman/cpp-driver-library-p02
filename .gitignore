@@ -31,6 +31,9 @@ managed_components/
 # --- Unit Test & Simulations ---
 bin/
 gen/
+/test/test
+/test/*.out
+/test/*.bin
 
 # --- System Files ---
 .DS_Store
