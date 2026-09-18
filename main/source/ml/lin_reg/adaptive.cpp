@@ -1,5 +1,5 @@
 /**
- * @file Linear regression model with fixed learning rate.
+ * @file Linear regression model with adaptive learning rate.
  */
 #include <algorithm>
 #include <cmath>
@@ -111,11 +111,11 @@ bool Adaptive::train(const std::size_t epochCount, double learningRate,
                 return true;
             }
 
-            if (delta < 0U)
+            if (delta < 0.0)
             {
                 learningRate *= 0.5;
             }
-            else if (delta > 0U)
+            else if (delta > 0.0)
             {
                 learningRate *= 1.1;
             }
@@ -123,7 +123,7 @@ bool Adaptive::train(const std::size_t epochCount, double learningRate,
             {
                 return true;
             }
-            // Ensure that the learning rate is withing the valid range [0.001, 0.25].
+            // Ensure that the learning rate is within the valid range [0.001, 0.25].
             learningRate = std::clamp(learningRate, minLr, maxLr);
 
             prevPrecision = precision;

@@ -1,5 +1,5 @@
 /**
- * @file Linear regression model with fixed learning rate.
+ * @file Linear regression model with adaptive learning rate.
  */
 #pragma once
 
@@ -11,7 +11,7 @@
 namespace ml::lin_reg
 {
 /**
- * @brief Linear regression model with fixed learning rate.
+ * @brief Linear regression model with adaptive learning rate.
  *
  *        This class is non-copyable and non-movable.
  */
