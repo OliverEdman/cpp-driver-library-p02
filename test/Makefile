@@ -16,6 +16,7 @@ CXX_FLAGS := -Wall -Werror -std=c++17 -I$(INC_DIR) -I$(TST_INC) -I$(YRGO_TEST_DI
 TEST_FILES := $(TST_SRC)/test.cpp \
               $(TST_SRC)/test/gpio.cpp \
               $(TST_SRC)/test/pin_manager.cpp \
+              $(TST_SRC)/test/adc.cpp                 
 
 SOURCE_FILES := $(SRC_DIR)/driver/adc/esp32s3.cpp \
                 $(SRC_DIR)/driver/factory/esp32s3.cpp \
