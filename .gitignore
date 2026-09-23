@@ -19,7 +19,7 @@ managed_components/
 *.bin
 *.elf
 *.map
-
+*.clangd
 # --- VS Code & IDEs ---
 .vscode/
 !.vscode/extensions.json
