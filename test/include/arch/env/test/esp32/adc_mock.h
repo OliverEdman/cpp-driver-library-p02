@@ -17,11 +17,11 @@ extern "C"
 #define ADC_BITWIDTH_DEFAULT 12
 #define ADC_ATTEN_DB_12 12
 
-    inline int adc_mock_raw_value = 0;
-    inline esp_err_t adc_mock_new_unit_result = ESP_OK;
+    inline int adc_mock_raw_value                   = 0;
+    inline esp_err_t adc_mock_new_unit_result       = ESP_OK;
     inline esp_err_t adc_mock_config_channel_result = ESP_OK;
-    inline esp_err_t adc_mock_read_result = ESP_OK;
-    inline esp_err_t adc_mock_del_unit_result = ESP_OK;
+    inline esp_err_t adc_mock_read_result           = ESP_OK;
+    inline esp_err_t adc_mock_del_unit_result       = ESP_OK;
 
     typedef struct
     {
@@ -37,11 +37,11 @@ extern "C"
 
     static inline void adc_mock_reset(void)
     {
-        adc_mock_raw_value = 0;
-        adc_mock_new_unit_result = ESP_OK;
+        adc_mock_raw_value             = 0;
+        adc_mock_new_unit_result       = ESP_OK;
         adc_mock_config_channel_result = ESP_OK;
-        adc_mock_read_result = ESP_OK;
-        adc_mock_del_unit_result = ESP_OK;
+        adc_mock_read_result           = ESP_OK;
+        adc_mock_del_unit_result       = ESP_OK;
     }
 
     static inline void adc_mock_set_raw_value(int value) { adc_mock_raw_value = value; }
@@ -58,10 +58,7 @@ extern "C"
         adc_mock_config_channel_result = result;
     }
 
-    static inline void adc_mock_set_read_result(esp_err_t result)
-    {
-        adc_mock_read_result = result;
-    }
+    static inline void adc_mock_set_read_result(esp_err_t result) { adc_mock_read_result = result; }
 
     static inline void adc_mock_set_del_unit_result(esp_err_t result)
     {
