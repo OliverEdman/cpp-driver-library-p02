@@ -1,7 +1,3 @@
-/**
- * @file Implementation for the smart temperature sensor using ML linear regression adaptive model.
- */
-
 #include "driver/tempsensor/smart.h"
 
 namespace driver::tempsensor
@@ -21,16 +17,15 @@ float Smart::readCelsius() noexcept
         return 0.0f;
     }
 
-    // Get value from sensor via read();
+    // Get value from sensor via read()
     const auto rawAdcValue = myAdc.read();
 
-    // Use ML model to predict RawAdcValue and save in predictedTemp
-    const double predictedTemp = myModel->predict(static_cast<double>(rawAdcValue));
+    // Use ML model to predict temperature
+    const float predictedTemp = myModel->predict(static_cast<float>(rawAdcValue));
 
-    // Convert result from double to float and return value.
-    return static_cast<float>(predictedTemp);
-
+    return predictedTemp;
 }
+
 // -----------------------------------------------------------------------------
 bool Smart::isInitialized() const noexcept
 {
@@ -41,14 +36,13 @@ bool Smart::isInitialized() const noexcept
 bool Smart::train(const ml::lin_reg::Matrix1d& trainIn, 
                   const ml::lin_reg::Matrix1d& trainOut,
                   std::size_t epochCount, 
-                  double learningRate,
-                  double precisionThreshold) noexcept
+                  float learningRate,
+                  float precisionThreshold)
 {
-    
-    // Allocate and initialize the ML model dynamically with the training data in memory.
+
     myModel = std::make_unique<ml::lin_reg::Adaptive>(trainIn, trainOut);
 
-    // Start the training algorithm and return if we have reached the target preccision.
+    // Start training algorithm and return true if target precision was reached.
     return myModel->train(epochCount, learningRate, precisionThreshold);
 }
 
